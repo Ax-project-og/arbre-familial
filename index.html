@@ -1,0 +1,1783 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Arbre généalogique — branche maternelle</title>
+<style>
+:root{
+  --paper:#EEEDE6;
+  --paper-lite:#F8F7F2;
+  --ink:#1F3350;
+  --ink-2:#4B617F;
+  --ink-3:#8092AC;
+  --rule:#C3CBD8;
+  --doubt:#9B2D2D;
+  --doubt-soft:#C08682;
+  --act-n:#3C6E52;
+  --act-d:#6B4C7A;
+  --act-m:#2C6E8E;
+  --fresh:#2E6B4F;
+  --fresh-line:#9BBFA9;
+  --serif:"Iowan Old Style","Hoefler Text","Palatino Linotype","Book Antiqua",Georgia,serif;
+  --sans:ui-sans-serif,-apple-system,"Segoe UI","Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--paper);
+  background-image:
+    radial-gradient(circle at 12% 5%, rgba(255,255,255,.6), transparent 45%),
+    radial-gradient(circle at 90% 95%, rgba(31,51,80,.05), transparent 52%);
+  color:var(--ink);
+  font-family:var(--sans);
+  -webkit-font-smoothing:antialiased;
+}
+.sheet{max-width:1820px;margin:0 auto;padding:34px 24px 56px}
+
+/* ---------- En-tête ---------- */
+.masthead{border-bottom:1.5px solid var(--ink);padding-bottom:18px}
+.eyebrow{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:10.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--ink-2);margin-bottom:10px}
+.eyebrow span:not(:first-child)::before{content:"·";margin-right:14px;color:var(--ink-3)}
+h1{font-family:var(--serif);font-size:clamp(28px,3.4vw,44px);line-height:1.05;margin:0 0 10px;font-weight:600;letter-spacing:-.01em}
+h1 em{font-style:italic;color:var(--ink-2);font-weight:400}
+.deck{font-family:var(--serif);font-size:15.5px;line-height:1.5;color:var(--ink-2);max-width:940px;margin:0}
+
+/* ---------- Onglets ---------- */
+.tabs{display:flex;gap:0;border-bottom:1.5px solid var(--ink);margin:0 0 22px}
+.tab{font-family:var(--sans);font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+  background:transparent;border:0;border-bottom:2.5px solid transparent;margin-bottom:-1.5px;
+  color:var(--ink-3);padding:14px 22px;cursor:pointer}
+.tab:hover{color:var(--ink-2)}
+.tab.is-active{color:var(--ink);border-bottom-color:var(--ink)}
+.tab:focus-visible{outline:2px solid var(--ink);outline-offset:-4px}
+.tab .count{font-family:var(--serif);font-size:12px;letter-spacing:0;color:var(--ink-3);margin-left:8px}
+.panel{display:none}
+.panel.is-active{display:block}
+
+/* ---------- Légendes + outils ---------- */
+.bar{display:flex;flex-wrap:wrap;gap:22px 44px;align-items:flex-start;justify-content:space-between;
+     padding:0 0 18px;border-bottom:1px solid var(--rule);margin-bottom:24px}
+.legend-group h6{margin:0 0 10px;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+.legend{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center}
+.leg{display:flex;align-items:center;gap:9px;font-size:11.5px;color:var(--ink-2);line-height:1.3}
+.swatch{width:30px;height:19px;border-radius:2px;flex:none}
+.sw-solid{background:var(--paper-lite);border:1.5px solid var(--ink)}
+.sw-dash{background:var(--paper-lite);border:1.5px dashed var(--doubt-soft)}
+.glyph{font-family:var(--serif);font-size:15px;color:var(--doubt);width:30px;text-align:center;flex:none}
+.dot{width:9px;height:9px;border-radius:2px;flex:none}
+.dot-n{background:var(--act-n)} .dot-d{background:var(--act-d)} .dot-m{background:var(--act-m)}
+.dot-x{width:16px;height:14px;border:1px dashed var(--doubt-soft);border-radius:2px;position:relative}
+.dot-x::after{content:"?";position:absolute;inset:0;font-size:9px;line-height:12px;text-align:center;color:var(--doubt)}
+.leg .tag-new{margin-left:0}
+.tools{display:flex;gap:8px;align-self:center}
+.tools button{font-family:var(--sans);font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  background:transparent;border:1px solid var(--rule);color:var(--ink-2);padding:7px 12px;border-radius:2px;cursor:pointer}
+.tools button:hover{border-color:var(--ink);color:var(--ink)}
+.tools button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+
+/* ---------- Scène ---------- */
+#viewport{width:100%;overflow:hidden}
+#wrap{position:relative}
+#stage{position:relative;width:1760px;height:3150px;transform-origin:top left}
+.wires{position:absolute;inset:0;width:1760px;height:3150px}
+.wire{fill:none;stroke:var(--ink-2);stroke-width:1.6}
+.wire--doubt{fill:none;stroke:var(--doubt-soft);stroke-width:1.6;stroke-dasharray:7 5}
+.wire--thin{fill:none;stroke:var(--ink-3);stroke-width:1.2;stroke-dasharray:4 4}
+.band{fill:var(--ink);opacity:.035}
+.node{fill:var(--paper);stroke:var(--ink-2);stroke-width:1.6}
+
+/* ---------- Colonne des générations ---------- */
+.rail{position:absolute;left:6px;width:146px;transform:translateY(-50%);text-align:right}
+.rail .num{font-family:var(--serif);font-size:27px;line-height:1;color:var(--ink)}
+.rail .lbl{font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-3);margin-top:6px}
+.rail .yrs{font-family:var(--serif);font-size:12.5px;font-style:italic;color:var(--ink-2);margin-top:3px}
+
+/* ---------- Fiches ---------- */
+.card{position:absolute;left:var(--x);top:var(--y);width:var(--w);height:var(--h);
+  background:var(--paper-lite);border:1.5px solid var(--ink);border-radius:3px;
+  padding:12px 14px;display:flex;flex-direction:column;justify-content:flex-start;overflow:hidden;
+  box-shadow:0 1px 0 rgba(31,51,80,.14), 0 6px 14px -10px rgba(31,51,80,.5);
+  transition:transform .18s ease, box-shadow .18s ease}
+.card:hover{transform:translateY(-2px);box-shadow:0 1px 0 rgba(31,51,80,.2), 0 12px 22px -12px rgba(31,51,80,.65)}
+.card.is-doubt{border-style:dashed;border-color:var(--doubt-soft);background:rgba(248,247,242,.7)}
+.card .nm{font-family:var(--serif);font-size:15.5px;line-height:1.22;margin:0 0 9px;font-weight:400}
+.card .nm b{font-weight:600;letter-spacing:.04em}
+.card.is-small .nm{font-size:14px;margin-bottom:7px}
+.q{color:var(--doubt);font-weight:600}
+.meta{display:grid;grid-template-columns:58px 1fr;gap:3px 8px;align-items:baseline;margin:0}
+.meta dt{font-size:8.4px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);padding-top:2px}
+.meta dd{margin:0;font-family:var(--serif);font-size:12.6px;line-height:1.34;color:var(--ink)}
+.meta dd i,.meta dd .alt{font-style:italic;color:var(--ink-2)}
+.note-line{font-family:var(--serif);font-size:11.6px;font-style:italic;line-height:1.3;color:var(--doubt);margin:8px 0 0}
+.note-line.is-firm{color:var(--ink-2)}
+
+/* Marqueur des apports des séances des 23 et 24 août 2026 */
+.tag-new{display:inline-block;font-family:var(--sans);font-size:7.4px;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--fresh);border:1px solid var(--fresh-line);
+  border-radius:2px;padding:1px 5px;vertical-align:middle;margin-left:7px;white-space:nowrap}
+
+/* Actes détenus */
+.acts{display:flex;flex-wrap:wrap;gap:5px 12px;align-items:center;margin:10px 0 0;padding-top:8px;
+  border-top:1px solid rgba(31,51,80,.14);list-style:none}
+.acts li{display:flex;align-items:center;gap:5px;font-size:8.4px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
+.acts li::before{content:"";width:7px;height:7px;border-radius:2px;flex:none}
+.acts .a-n::before{background:var(--act-n)}
+.acts .a-d::before{background:var(--act-d)}
+.acts .a-m::before{background:var(--act-m)}
+.acts .a-x{color:var(--doubt);border:1px dashed var(--doubt-soft);border-radius:2px;padding:2px 6px}
+.acts .a-x::before{display:none}
+
+/* Union : pastille posée sur le trait */
+.union{position:absolute;left:var(--x);top:var(--y);width:var(--w);transform:translateY(-50%);
+  background:var(--paper);border:1.5px dashed var(--doubt-soft);border-radius:14px;
+  padding:8px;text-align:center}
+.union .k{font-size:8.4px;letter-spacing:.15em;text-transform:uppercase;color:var(--doubt);display:block}
+.union .v{font-family:var(--serif);font-size:12.5px;color:var(--ink);display:block;margin-top:2px}
+.union .x{display:inline-block;margin-top:6px;font-size:7.6px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--doubt);border:1px dashed var(--doubt-soft);border-radius:2px;padding:2px 6px}
+.union.is-firm{border:1.5px solid var(--act-m);background:var(--paper-lite)}
+.union.is-firm .k{color:var(--act-m)}
+.union.is-firm .x{color:var(--act-m);border:1px solid var(--act-m)}
+
+/* Encarts latéraux */
+.aside{position:absolute;left:var(--x);top:var(--y);width:var(--w);min-height:var(--h);border-radius:3px;padding:14px 16px}
+.aside h4{margin:0 0 10px;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;font-weight:600}
+.aside--doubt{background:rgba(248,247,242,.7);border:1.5px dashed var(--doubt-soft)}
+.aside--doubt h4{color:var(--doubt)}
+.aside--firm{background:var(--paper-lite);border:1.5px solid var(--ink)}
+.aside--firm h4{color:var(--ink-3)}
+.roster{list-style:none;margin:0;padding:0}
+.roster li{display:grid;grid-template-columns:112px 1fr;gap:10px;padding:7px 0;border-top:1px solid rgba(31,51,80,.13)}
+.roster li:first-child{border-top:0;padding-top:0}
+.roster .role{font-size:8.6px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);padding-top:3px}
+.roster .who{font-family:var(--serif);font-size:12.2px;line-height:1.35;color:var(--ink)}
+.roster .who i{color:var(--ink-2)}
+.aside--doubt .roster li{border-top-color:rgba(155,45,45,.18)}
+.aside--doubt .roster .role{color:var(--doubt)}
+.roster--tight li{padding:5px 0;grid-template-columns:100px 1fr}
+.roster--tight .who{font-size:11.5px;line-height:1.28}
+.roster--tight .role{font-size:8.2px}
+
+/* Liste de fratrie */
+.sibs{list-style:none;margin:0;padding:0}
+.sibs li{display:grid;grid-template-columns:1fr auto;gap:12px;padding:5.5px 0;
+  border-top:1px solid rgba(31,51,80,.13);align-items:baseline}
+.sibs li:first-child{border-top:0;padding-top:0}
+.sibs .who{font-family:var(--serif);font-size:12.2px;line-height:1.28;color:var(--ink)}
+.sibs .who b{font-weight:600}
+.sibs .yr{font-family:var(--serif);font-size:11.4px;color:var(--ink-2);white-space:nowrap;text-align:right}
+.sibs .yr .died{color:var(--doubt)}
+.sibs li.is-line{background:rgba(46,107,79,.07);margin:0 -8px;padding-left:8px;padding-right:8px;border-radius:2px}
+.sibs--two{column-count:2;column-gap:20px}
+.sibs--two li{display:block;break-inside:avoid;page-break-inside:avoid;padding:4.5px 0}
+.sibs--two .who{display:block;font-size:11.6px;line-height:1.24}
+.sibs--two .yr{display:block;text-align:left;font-size:10.3px;margin-top:1px;line-height:1.2}
+.sibs--two li.is-line{margin:0 -6px;padding-left:6px;padding-right:6px}
+
+.unions{list-style:none;margin:0;padding:0}
+.unions li{display:grid;grid-template-columns:92px 1fr;gap:10px;padding:9px 0;border-top:1px solid rgba(155,45,45,.18)}
+.unions li:first-child{border-top:0;padding-top:0}
+.unions .rank{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--doubt);padding-top:3px}
+.unions .txt{font-family:var(--serif);font-size:12.4px;line-height:1.35;color:var(--ink)}
+.unions .txt i{color:var(--ink-2)}
+.unions .txt .tag{display:inline-block;margin-top:5px;font-family:var(--sans);font-size:7.6px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--doubt);border:1px dashed var(--doubt-soft);border-radius:2px;padding:2px 6px}
+.unions .txt .tag.tag-ok{color:var(--act-m);border:1px solid var(--act-m)}
+
+/* ---------- Bas de page ---------- */
+.footnotes{margin-top:38px;border-top:1.5px solid var(--ink);padding-top:20px;
+  display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:24px 40px;align-items:start}
+.footnotes h5{margin:0 0 8px;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-3)}
+.footnotes p{margin:0 0 14px;font-family:var(--serif);font-size:13px;line-height:1.5;color:var(--ink-2)}
+.footnotes p:last-child{margin-bottom:0}
+.todo{border-left:2px solid var(--doubt);padding-left:16px}
+.todo h5{color:var(--doubt)}
+.todo h6{margin:18px 0 7px;font-size:8.6px;letter-spacing:.17em;text-transform:uppercase;color:var(--doubt);font-weight:600}
+.todo h6 .rk{font-family:var(--serif);font-size:12px;letter-spacing:0;text-transform:none;color:var(--ink-3);margin-left:6px;font-weight:400;font-style:italic}
+.todo ol{margin:0;padding-left:18px;font-family:var(--serif);font-size:13px;line-height:1.5;color:var(--ink)}
+.todo ol li{margin-bottom:7px;padding-left:2px}
+.todo ol li::marker{color:var(--doubt);font-size:11px}
+.sources{list-style:none;margin:0;padding:0;font-family:var(--serif);font-size:12.6px;line-height:1.45;color:var(--ink-2)}
+.sources li{padding:5px 0;border-top:1px solid var(--rule)}
+.sources li:first-child{border-top:0}
+.sources b{color:var(--ink);font-weight:600}
+.sources .grp{border-top:0;padding:12px 0 2px;font-size:8.6px;letter-spacing:.17em;text-transform:uppercase;color:var(--ink-3)}
+.sources li.grp:first-child{padding-top:0}
+.negative{border-left:2px solid var(--ink-3);padding-left:14px;margin-top:18px}
+.negative h5{color:var(--ink-3)}
+
+/* ---------- Onglet Transcriptions ---------- */
+.tr-intro{max-width:840px;font-family:var(--serif);font-size:14px;line-height:1.6;color:var(--ink-2);margin:0 0 30px}
+.tr-wrap{max-width:1060px}
+.tr-sep{max-width:1060px;margin:8px 0 22px;padding-bottom:8px;border-bottom:1.5px solid var(--ink);
+  font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-3)}
+.tr{border:1.5px solid var(--ink);border-radius:3px;background:var(--paper-lite);
+    padding:24px 28px;margin-bottom:26px;
+    box-shadow:0 1px 0 rgba(31,51,80,.12), 0 8px 18px -14px rgba(31,51,80,.5)}
+.tr.is-partial{border-style:dashed;border-color:var(--doubt-soft);background:rgba(248,247,242,.72)}
+.tr-head{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:baseline;justify-content:space-between;
+  border-bottom:1px solid var(--rule);padding-bottom:12px;margin-bottom:16px}
+.tr h3{font-family:var(--serif);font-size:19px;font-weight:600;margin:0;letter-spacing:-.01em}
+.tr .when{font-family:var(--serif);font-size:14px;font-style:italic;color:var(--ink-2);white-space:nowrap}
+.tr .ref{font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);margin:0 0 16px}
+.tr blockquote{margin:0;font-family:var(--serif);font-size:14px;line-height:1.72;color:var(--ink);
+  border-left:2px solid var(--rule);padding-left:18px}
+.tr blockquote b{font-weight:600}
+.tr .sign{display:block;margin-top:12px;font-style:italic;color:var(--ink-2);font-size:13px}
+.tr .gloss{margin:16px 0 0;padding-top:14px;border-top:1px solid rgba(31,51,80,.14);
+  font-family:var(--serif);font-size:13px;line-height:1.6;color:var(--ink-2)}
+.tr .gloss b{color:var(--ink);font-weight:600}
+.tr .gloss .warn{color:var(--doubt);font-style:italic}
+.tr-chips{display:inline-flex;flex-wrap:wrap;gap:6px}
+.chip{font-family:var(--sans);font-size:8px;letter-spacing:.13em;text-transform:uppercase;
+  border:1px solid var(--rule);border-radius:2px;padding:3px 8px;color:var(--ink-2)}
+.chip.c-n{border-color:var(--act-n);color:var(--act-n)}
+.chip.c-d{border-color:var(--act-d);color:var(--act-d)}
+.chip.c-m{border-color:var(--act-m);color:var(--act-m)}
+.chip.c-warn{border-color:var(--doubt-soft);color:var(--doubt)}
+
+@media (max-width:900px){.footnotes{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){.card{transition:none}}
+
+@media print{
+  @page{size:A3 portrait;margin:9mm}
+  body{background:#fff;background-image:none}
+  .tools,.tabs{display:none}
+  .sheet{padding:0;max-width:none}
+  .panel{display:block!important}
+  #panel-transcriptions{break-before:page;page-break-before:always;padding-top:14px}
+  #viewport{overflow:visible}
+  #stage{transform:scale(.46)!important}
+  #wrap{height:1450px!important}
+  .card{box-shadow:none}
+  .tr{box-shadow:none;break-inside:avoid;page-break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <header class="masthead">
+    <div class="eyebrow"><span>Document de travail</span><span>Recherches en cours</span><span>Mise à jour : 25 août 2026, dixième séance</span></div>
+    <h1>Arbre généalogique <em>— branche maternelle</em></h1>
+    <p class="deck">Synthèse provisoire, de 1743 à aujourd'hui. Quinze actes dépouillés. Ceux de <b>Vars</b> donnent <b>Barbe RENEVIER née le 19 juin 1774</b>, <b>François AMIOT né le 24 décembre 1780 à Mont-le-Frânois</b>, et Claude RENEVIER <b>fils de François RENEVIER et de Barbe GUIGNARD</b>. Le <b>mariage du 25 octobre 1836 à Fahy-lès-Autrey</b> vient de rouvrir la piste décisive : François AMIOT y est dit <b>vivant, cinquante-cinq ans, propriétaire, demeurant à Vars</b> — il n'a pas assisté au mariage de sa fille, qui lui a fait signifier un acte respectueux. Un <b>baptême de février 1781</b> révèle une fille aînée, <b>Françoise AMYOT</b>, et donne au père son métier : <b>laboureur</b>. Enfin, l'<b>acte de naissance lyonnais d'Yvonne</b> et ses mentions marginales dénouent l'énigme de son père : reconnue en 1892 par <b>Victor Jean-Baptiste CARPENTIER</b>, elle voit cette reconnaissance <b>annulée en 1897 par le tribunal de Beaune</b>, puis se fait <b>adopter par sa propre grand-mère Théolinde</b>. Le dépouillement de <b>Fahy-lès-Autrey</b> porte la fratrie de Théolinde à <b>douze enfants, dont huit morts avant leur premier trimestre</b>. Enfin, deux actes referment les deux plus vieilles questions du dossier : <b>François AMIOT meurt à Vars le 18 mars 1839</b>, remarié, son gendre venant le déclarer ; et le mariage BOURDEAU de 1899 révèle que Joséphine était <b>veuve en premières noces de Victor Jean-Baptiste CARPENTIER</b>, lieutenant d'infanterie territoriale mort à Bourges en 1898 — le père d'Yvonne, qu'elle avait donc épousé. Le recensement de <b>Serrigny</b> les montre enfin sous le même toit, lui <b>pharmacien</b> : le pharmacien de la tradition orale familiale, longtemps invérifiable, c'était lui.</p>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="Sections du document">
+    <button type="button" class="tab is-active" id="tab-arbre" role="tab" aria-selected="true" aria-controls="panel-arbre" data-panel="panel-arbre">Arbre</button>
+    <button type="button" class="tab" id="tab-transcriptions" role="tab" aria-selected="false" aria-controls="panel-transcriptions" data-panel="panel-transcriptions">Transcriptions <span class="count">52</span></button>
+  </nav>
+
+  <!-- ================= ONGLET ARBRE ================= -->
+  <section class="panel is-active" id="panel-arbre" role="tabpanel" aria-labelledby="tab-arbre">
+
+  <div class="bar">
+    <div class="legend-group">
+      <h6>Fiabilité de l'information</h6>
+      <div class="legend">
+        <div class="leg"><span class="swatch sw-solid"></span>Information établie<br>ou fortement probable</div>
+        <div class="leg"><span class="swatch sw-dash"></span>Information incertaine,<br>à confirmer</div>
+        <div class="leg"><span class="glyph">≈</span>Date approximative</div>
+        <div class="leg"><span class="glyph">?</span>Donnée à vérifier</div>
+      </div>
+    </div>
+    <div class="legend-group">
+      <h6>Code documentaire — actes en notre possession</h6>
+      <div class="legend">
+        <div class="leg"><span class="dot dot-n"></span>Acte de naissance<br>confirmé</div>
+        <div class="leg"><span class="dot dot-d"></span>Acte de décès<br>confirmé</div>
+        <div class="leg"><span class="dot dot-m"></span>Acte de mariage<br>confirmé</div>
+        <div class="leg"><span class="dot-x"></span>Acte non retrouvé<br>ou non renseigné</div>
+        <div class="leg"><span class="tag-new">23-24 août 2026</span>Apport des dernières<br>séances de dépouillement</div>
+      </div>
+    </div>
+    <div class="tools">
+      <button type="button" id="zoomOut" aria-label="Réduire l'affichage">−</button>
+      <button type="button" id="zoomFit">Ajuster</button>
+      <button type="button" id="zoomIn" aria-label="Agrandir l'affichage">+</button>
+      <button type="button" id="printBtn">Imprimer / PDF</button>
+    </div>
+  </div>
+
+  <div id="viewport">
+   <div id="wrap">
+    <div id="stage">
+
+      <svg class="wires" viewBox="0 0 1760 3150" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect class="band" x="0" y="10"   width="1760" height="190"/>
+        <rect class="band" x="0" y="262"  width="1760" height="216"/>
+        <rect class="band" x="0" y="498"  width="1760" height="264"/>
+        <rect class="band" x="0" y="1060" width="1760" height="240"/>
+        <rect class="band" x="0" y="2090" width="1760" height="290"/>
+        <rect class="band" x="0" y="2710" width="1760" height="170"/>
+
+        <!-- Génération −2 — RENEVIER × GUIGNARD, puis descente vers Claude -->
+        <path class="wire--doubt" d="M850 105 H890"/>
+        <rect class="node" x="864" y="99" width="12" height="12" transform="rotate(45 870 105)"/>
+        <path class="wire" d="M870 105 V240 H805 V270"/>
+
+        <!-- Génération −1 — AMIOT × BERTAULT, à Mont-le-Frânois, puis descente vers François -->
+        <path class="wire--doubt" d="M380 370 H420"/>
+        <rect class="node" x="394" y="364" width="12" height="12" transform="rotate(45 400 370)"/>
+        <path class="wire" d="M400 370 V478 H285 V505"/>
+
+        <!-- Génération −1 — RENEVIER × PETITOT, à Vars, puis descente vers Barbe -->
+        <path class="wire--doubt" d="M910 370 H950"/>
+        <rect class="node" x="924" y="364" width="12" height="12" transform="rotate(45 930 370)"/>
+        <path class="wire" d="M930 370 V478 H655 V505"/>
+
+        <!-- Génération 0 — AMIOT × RENEVIER, mariage du 6 floréal an XI, puis descente vers Françoise -->
+        <path class="wire" d="M400 630 H540"/>
+        <path class="wire" d="M470 630 V760 H410 V780"/>
+
+        <!-- Génération 0 — PAUFARD × REDOUTET, à Oyrières -->
+        <path class="wire" d="M1030 630 H1060"/>
+        <rect class="node" x="1039" y="624" width="12" height="12" transform="rotate(45 1045 630)"/>
+        <path class="wire" d="M1045 630 V760 H820 V780"/>
+
+        <!-- Génération I — PAUFARD × AMIOT, mariage du 25 octobre 1836, puis descente vers Théolinde -->
+        <path class="wire" d="M540 905 H680"/>
+        <path class="wire" d="M610 905 V1040 H700 V1065"/>
+        <!-- ...et branche vers l'encart de la fratrie -->
+        <path class="wire--thin" d="M610 1000 H556 V1060"/>
+
+        <!-- Génération I — GRILLOT × ÉCARNOT, puis descente vers Napoléon -->
+        <path class="wire" d="M1370 905 H1430"/>
+        <rect class="node" x="1394" y="899" width="12" height="12" transform="rotate(45 1400 905)"/>
+        <path class="wire" d="M1400 905 V1040 H1140 V1065"/>
+
+        <!-- Génération II — mariage du 6 juin 1866, puis descente vers Joséphine -->
+        <path class="wire" d="M840 1180 H1000"/>
+        <path class="wire" d="M920 1180 V1530 H845 V1570"/>
+
+        <!-- Génération III — Joséphine × BOUDEAU, et renvoi vers l'encart des unions -->
+        <path class="wire--doubt" d="M560 1695 H700"/>
+        <path class="wire" d="M990 1695 H1130"/>
+
+        <!-- Joséphine → Yvonne -->
+        <path class="wire" d="M845 1820 V2080 H705 V2105"/>
+
+        <!-- Génération IV — mariage du 22 septembre 1906, puis fratrie -->
+        <path class="wire" d="M850 2237 H1000"/>
+        <path class="wire" d="M925 2237 V2400 M480 2400 H1310 M480 2400 V2460 M1310 2400 V2460"/>
+
+        <!-- Génération V -->
+        <path class="wire--doubt" d="M610 2545 H810"/>
+        <path class="wire" d="M710 2545 V2670 M480 2670 H1310 M480 2670 V2720 M1310 2670 V2720"/>
+
+        <!-- Génération VI -->
+        <path class="wire--doubt" d="M610 2795 H810"/>
+        <path class="wire" d="M710 2795 V2910 M455 2910 H1095 M455 2910 V2950 M775 2910 V2950 M1095 2910 V2950"/>
+      </svg>
+
+      <!-- ===== Colonne des générations ===== -->
+      <div class="rail" style="top:105px"><div class="num">−2</div><div class="lbl">Génération</div><div class="yrs">≈ 1710 · 1720</div></div>
+      <div class="rail" style="top:370px"><div class="num">−1</div><div class="lbl">Génération</div><div class="yrs">≈ 1731 · 1743</div></div>
+      <div class="rail" style="top:630px"><div class="num">0</div><div class="lbl">Génération</div><div class="yrs">1774 · ≈ 1789</div></div>
+      <div class="rail" style="top:905px"><div class="num">I</div><div class="lbl">Génération</div><div class="yrs">1810 · 1813</div></div>
+      <div class="rail" style="top:1180px"><div class="num">II</div><div class="lbl">Génération</div><div class="yrs">1837 · 1843</div></div>
+      <div class="rail" style="top:1695px"><div class="num">III</div><div class="lbl">Génération</div><div class="yrs">1869</div></div>
+      <div class="rail" style="top:2237px"><div class="num">IV</div><div class="lbl">Génération</div><div class="yrs">1877 · 1889</div></div>
+      <div class="rail" style="top:2545px"><div class="num">V</div><div class="lbl">Génération</div><div class="yrs">1906 · 1911</div></div>
+      <div class="rail" style="top:2795px"><div class="num">VI</div><div class="lbl">Génération</div><div class="yrs">1933 · 1944</div></div>
+      <div class="rail" style="top:3020px"><div class="num">VII</div><div class="lbl">Génération</div><div class="yrs">dates à établir</div></div>
+
+      <!-- ===== Génération −2 ===== -->
+      <article class="card is-small" style="--x:640px;--y:20px;--w:210px;--h:170px">
+        <p class="nm">François <b>RENEVIER</b></p>
+        <dl class="meta">
+          <dt>Lieu</dt><dd>Vars <span class="q">?</span></dd>
+          <dt>Décès</dt><dd>avant 1807 <i>(présumé)</i></dd>
+        </dl>
+        <ul class="acts"><li class="a-x">Acte non retrouvé</li></ul>
+      </article>
+
+      <article class="card is-small" style="--x:890px;--y:20px;--w:210px;--h:170px">
+        <p class="nm">Barbe <b>GUIGNARD</b></p>
+        <dl class="meta">
+          <dt>Lieu</dt><dd>Vars <span class="q">?</span></dd>
+          <dt>Décès</dt><dd>avant 1807 <i>(présumé)</i></dd>
+        </dl>
+        <p class="note-line is-firm">Sa petite-fille Barbe porte son prénom.</p>
+      </article>
+
+      <aside class="aside aside--doubt" style="--x:1180px;--y:15px;--w:400px;--h:180px">
+        <h4>Ce que l'on ignore encore en amont</h4>
+        <ul class="roster">
+          <li><span class="role">Côté AMIOT</span><span class="who">Les parents de <b>Bernard AMYOT</b>, laboureur, et de <b>Nicolle BERTAUT</b> — registre paroissial de Mont-le-Frânois, accessible pour 1781</span></li>
+          <li><span class="role">Hypothèse</span><span class="who"><b>Nicolas AMIOT × Jeanne ANDRÉ</b>, parents de Barbe AMIOT († Fahy 1839, 79 ans) : peut-être aussi ceux de Bernard. À tester par la succession de Barbe et par son mariage avec Nicolas VANNEY<span class="tag-new">Nouveau</span></span></li>
+          <li><span class="role">Côté PETITOT</span><span class="who">Les parents de <b>Catherine PETITOT</b> — les PETITOT semblent venir d'<b>Écuelle</b>, à cinq kilomètres de Vars</span></li>
+        </ul>
+      </aside>
+
+      <!-- ===== Génération −1 ===== -->
+      <article class="card is-small" style="--x:170px;--y:270px;--w:210px;--h:200px">
+        <p class="nm">François Bernard <b>AMIOT</b><span class="tag-new">Métier</span></p>
+        <dl class="meta">
+          <dt>Métier</dt><dd>laboureur <i>(1781)</i>, propriétaire</dd>
+          <dt>Lieu</dt><dd>Mont-le-Frânois</dd>
+          <dt>Décès</dt><dd>avant avril 1803</dd>
+        </dl>
+        <p class="note-line is-firm">Écrit « Bernard AMYOT » en 1781, « BERTHAUD » pour sa femme en 1839.</p>
+      </article>
+
+      <article class="card is-small" style="--x:420px;--y:270px;--w:210px;--h:200px">
+        <p class="nm">Nicolle <b>BERTAULT</b></p>
+        <dl class="meta">
+          <dt>Variantes</dt><dd>BERTAUT, BERTHAUD</dd>
+          <dt>Domicile</dt><dd>Champlitte <i>(1803)</i>, puis Mont-le-Frânois</dd>
+          <dt>Décès</dt><dd>1803-1839, <b>à Mont-le-Frânois</b><span class="tag-new">Lieu</span></dd>
+        </dl>
+        <p class="note-line is-firm">Dite « propriétaire à Mont-le-Frânois » en 1839 : elle y était revenue.</p>
+      </article>
+
+      <article class="card is-small" style="--x:700px;--y:270px;--w:210px;--h:200px">
+        <p class="nm">Claude <b>RENEVIER</b></p>
+        <dl class="meta">
+          <dt>Né</dt><dd>≈ 1743, Vars <span class="q">?</span></dd>
+          <dt>Métier</dt><dd>propriétaire cultivateur</dd>
+          <dt>Décès</dt><dd>04/08/1807, 17 h — Vars, <i>64 ans</i></dd>
+        </dl>
+        <ul class="acts"><li class="a-d">Décès</li></ul>
+      </article>
+
+      <article class="card is-small" style="--x:950px;--y:270px;--w:210px;--h:200px">
+        <p class="nm">Catherine <b>PETITOT</b></p>
+        <dl class="meta">
+          <dt>Née</dt><dd>≈ 1731 <span class="q">?</span></dd>
+          <dt>Décès</dt><dd>31/03/1807, 7 h — Vars, <i>76 ans</i> <span class="q">?</span></dd>
+        </dl>
+        <ul class="acts"><li class="a-d">Décès</li></ul>
+      </article>
+
+      <aside class="aside aside--firm" style="--x:1200px;--y:265px;--w:400px;--h:210px">
+        <h4>L'année 1807 à Vars</h4>
+        <ul class="roster">
+          <li><span class="role">31 mars</span><span class="who">Catherine PETITOT meurt à 7 h ; c'est son mari qui déclare</span></li>
+          <li><span class="role">4 août</span><span class="who">Claude RENEVIER meurt à 17 h ; c'est son gendre <b>François AMIOT</b>, 26 ans, qui déclare — et qui nomme les parents du défunt</span></li>
+          <li><span class="role">Effet</span><span class="who">Barbe est orpheline des deux côtés à 32 ans, quatre ans après son mariage</span></li>
+        </ul>
+      </aside>
+
+      <!-- ===== Génération 0 ===== -->
+      <article class="card is-small" style="--x:170px;--y:505px;--w:230px;--h:250px">
+        <p class="nm">François <b>AMIOT</b><span class="tag-new">Acte trouvé</span></p>
+        <dl class="meta">
+          <dt>Né</dt><dd>24/12/1780, Mont-le-Frânois</dd>
+          <dt>Métier</dt><dd>cordonnier, puis propriétaire</dd>
+          <dt>Remarié</dt><dd>à Françoise [Gueniffet <span class="q">?</span>], après 1818</dd>
+          <dt>Décès</dt><dd>18/03/1839, 6 h — Vars, <i>58 ans</i></dd>
+        </dl>
+        <p class="note-line is-firm">C'est son gendre Claude PAUFARD, venu de Fahy, qui déclare le décès.</p>
+        <ul class="acts"><li class="a-m">Mariage</li><li class="a-d">Décès</li></ul>
+      </article>
+
+      <div class="union is-firm" style="--x:415px;--y:630px;--w:110px">
+        <span class="k">Mariage</span>
+        <span class="v">26/04/1803</span>
+        <span class="x">6 floréal an XI</span>
+      </div>
+
+      <article class="card is-small" style="--x:540px;--y:505px;--w:230px;--h:250px">
+        <p class="nm">Barbe <b>RENEVIER</b></p>
+        <dl class="meta">
+          <dt>Née</dt><dd>19/06/1774, Vars</dd>
+          <dt>Décès</dt><dd>05/03/1818, 4 h du matin — Vars, <i>43 ans</i></dd>
+        </dl>
+        <p class="note-line is-firm">Illettrée : n'a pas signé son acte de mariage.</p>
+        <ul class="acts"><li class="a-m">Mariage</li><li class="a-d">Décès</li></ul>
+      </article>
+
+      <article class="card is-small" style="--x:800px;--y:505px;--w:230px;--h:250px">
+        <p class="nm">Jean-Baptiste <b>PAUFARD</b><span class="tag-new">Daté</span></p>
+        <dl class="meta">
+          <dt>Né</dt><dd>≈ 1788 <i>(48 ans en 1836)</i></dd>
+          <dt>Métier</dt><dd>tailleur de pierre, puis propriétaire</dd>
+          <dt>Domicile</dt><dd>Oyrières <i>(1813)</i>, Fahy <i>(1836)</i></dd>
+          <dt>Décès</dt><dd>1836-1865, <b>à Fahy-lès-Autrey</b><span class="tag-new">Lieu</span></dd>
+        </dl>
+      </article>
+
+      <article class="card is-small" style="--x:1060px;--y:505px;--w:230px;--h:250px">
+        <p class="nm">Denise <b>REDOUTET</b><span class="tag-new">Datée</span></p>
+        <dl class="meta">
+          <dt>Née</dt><dd>≈ 1789 <i>(47 ans en 1836)</i></dd>
+          <dt>Domicile</dt><dd>Oyrières <i>(1813)</i>, Fahy <i>(1836)</i></dd>
+          <dt>Décès</dt><dd>1836-1865, <b>à Fahy-lès-Autrey</b><span class="tag-new">Lieu</span></dd>
+        </dl>
+        <p class="note-line is-firm">Illettrée ; présente et consentante en 1836.</p>
+      </article>
+
+      <aside class="aside aside--firm" style="--x:1320px;--y:498px;--w:420px;--h:264px">
+        <h4>La famille AMIOT de Mont-le-Frânois</h4>
+        <ul class="roster">
+          <li><span class="role">Sœur aînée</span><span class="who">Françoise <b>AMYOT</b>, <b>marraine en février 1781</b> — donc née au plus tard vers 1768<span class="tag-new">Nouveau</span></span></li>
+          <li><span class="role">Frères</span><span class="who">Jean-Baptiste <b>AMIOT</b>, cultivateur, 29 ans en 1803 <i>(né ≈ 1774)</i> · François Bernard <b>AMIOT</b>, propriétaire, 27 ans <i>(né ≈ 1776, porte le nom du père)</i></span></li>
+          <li><span class="role">Oncle de Barbe</span><span class="who">Claude François <b>RENEVIER</b>, jardinier à Vars, 54 ans en 1803 <i>(né ≈ 1749)</i> — frère probable de Claude</span></li>
+          <li><span class="role">Grand-tante <span class="q">?</span></span><span class="who">Barbe <b>AMIOT</b>, veuve de Nicolas VANNEY, † Fahy-lès-Autrey le 04/06/1839 à 79 ans, <b>rue d'Autrey</b> — fille de <b>Nicolas AMIOT et Jeanne ANDRÉ</b>. Sœur probable de Bernard, non prouvée<span class="tag-new">Nouveau</span></span></li>
+          <li><span class="role">Témoin récurrent</span><span class="who">Jean François <b>SORLIN</b>, tissier à Vars — présent en 1803, 1807, 1810 et 1818</span></li>
+        </ul>
+      </aside>
+
+      <!-- ===== Génération I ===== -->
+      <article class="card" style="--x:280px;--y:780px;--w:260px;--h:250px">
+        <p class="nm">Françoise <b>AMIOT</b></p>
+        <dl class="meta">
+          <dt>Née</dt><dd>28/11/1810, 15 h — Vars</dd>
+          <dt>Domicile</dt><dd>Vars jusqu'en 1836, puis Fahy</dd>
+          <dt>Métier</dt><dd>propriétaire</dd>
+          <dt>Décès</dt><dd>30/04/1878, minuit — Fahy-lès-Autrey, <i>67 ans</i></dd>
+        </dl>
+        <p class="note-line">Douze enfants en quinze ans ; huit meurent en bas âge.</p>
+        <ul class="acts"><li class="a-n">Naissance</li><li class="a-m">Mariage</li><li class="a-d">Décès</li></ul>
+      </article>
+
+      <div class="union is-firm" style="--x:550px;--y:905px;--w:120px">
+        <span class="k">Mariage</span>
+        <span class="v">25/10/1836</span>
+        <span class="x">Acte n° 16</span>
+      </div>
+
+      <article class="card" style="--x:680px;--y:780px;--w:280px;--h:250px">
+        <p class="nm">Claude Alexis <b>PAUFARD</b>, <i>dit Alexis</i></p>
+        <dl class="meta">
+          <dt>Né</dt><dd>07/06/1813, 6 h — Oyrières</dd>
+          <dt>Métier</dt><dd>tailleur de pierre <i>(1836)</i>, propriétaire, puis <b>entrepreneur de travaux publics</b> <i>(1850)</i></dd>
+          <dt>Domicile</dt><dd>rue d'Autrey, Fahy-lès-Autrey</dd>
+          <dt>Décès</dt><dd>12/05/1865, 17 h — Fahy, <i>51 ans</i></dd>
+        </dl>
+        <ul class="acts"><li class="a-n">Naissance</li><li class="a-m">Mariage</li><li class="a-d">Décès</li></ul>
+      </article>
+
+      <article class="card" style="--x:1120px;--y:815px;--w:250px;--h:180px">
+        <p class="nm">Jeanne <b>ESCARNOT</b><span class="tag-new">Datée</span></p>
+        <dl class="meta">
+          <dt>Née</dt><dd>1810-1811 <i>(25 ans en 1835, 43 en 1854)</i></dd>
+          <dt>Variante</dt><dd>ESCARNOT sur l'extrait de 1835 seulement</dd>
+          <dt>Métier</dt><dd>sans profession, à Gray</dd>
+        </dl>
+        <p class="note-line is-firm">Présente et consentante en 1866 ; a signé l'acte de sa main.</p>
+        <ul class="acts"><li class="a-x">Acte non retrouvé</li></ul>
+      </article>
+
+      <article class="card" style="--x:1430px;--y:815px;--w:250px;--h:180px">
+        <p class="nm">Thomas <b>GRILLOT</b><span class="tag-new">Daté</span></p>
+        <dl class="meta">
+          <dt>Né</dt><dd>1810-1811 <i>(25 ans en 1835, 43 en 1854)</i></dd>
+          <dt>Métier</dt><dd>marchand boucher, Gray</dd>
+          <dt>Mariage</dt><dd>avant décembre 1835</dd>
+        </dl>
+        <p class="note-line is-firm">Absent au mariage de son fils en 1866 : consentement par acte notarié devant M<sup>e</sup> [Tonin], à Autrey.</p>
+      </article>
+
+      <!-- ===== Génération II ===== -->
+      <aside class="aside aside--firm" style="--x:176px;--y:1060px;--w:380px;--h:290px">
+        <h4>Fratrie PAUFARD — douze enfants<span class="tag-new">Complétée</span></h4>
+        <ul class="sibs sibs--two">
+          <li><span class="who">Françoise <b>Firmine</b></span><span class="yr">25/09/1837 · <span class="died">† 03/10/1838</span></span></li>
+          <li><span class="who"><b>Clotilde</b> Hortense</span><span class="yr">01/01/1839, 3 h</span></li>
+          <li><span class="who"><b>Marie-Louise</b> Léocadie</span><span class="yr">29/01/1840, 15 h</span></li>
+          <li><span class="who"><b>Bazille</b> Théophile Alphonse</span><span class="yr">≈ III/1841 · <span class="died">† 15/10/1841</span></span></li>
+          <li><span class="who"><b>Claude Alexis</b></span><span class="yr">10/07/1842, 16 h</span></li>
+          <li class="is-line"><span class="who">Adélaïde <b>Théolinde</b></span><span class="yr">23/09/1843, 2 h</span></li>
+          <li><span class="who"><b>Gustave</b> François</span><span class="yr">≈ 10/10/1844 · <span class="died">† 17/10/1844</span></span></li>
+          <li><span class="who"><b>Clotilde</b> Stéphanie Émérite</span><span class="yr">05/05/1846 · <span class="died">† 17/08/1846</span></span></li>
+          <li><span class="who"><b>Élise</b> Célestine</span><span class="yr">24/07/1847 · <span class="died">† 25/09/1847</span></span></li>
+          <li><span class="who"><b>Nicolas</b> Claude Alexis</span><span class="yr">19/02/1849 · <span class="died">† 07/04/1849</span></span></li>
+          <li><span class="who"><b>Maria</b></span><span class="yr">≈ 17/09/1850 · <span class="died">† 29/09/1850</span></span></li>
+          <li><span class="who"><b>Napoléon</b> Victorin François</span><span class="yr">01/05/1852 · <span class="died">† 05/07/1852</span></span></li>
+        </ul>
+        <p class="note-line">Tous les enfants nés à partir de 1844 sont morts avant leur premier trimestre — six fois de suite.</p>
+      </aside>
+
+      <article class="card" style="--x:560px;--y:1065px;--w:280px;--h:230px">
+        <p class="nm">Adélaïde Théolinde <b>PAUFARD</b></p>
+        <dl class="meta">
+          <dt>Née</dt><dd>23/09/1843, 2 h du matin — Fahy-lès-Autrey</dd>
+          <dt>Rang</dt><dd>sixième de <b>douze</b> enfants, quatrième survivante<span class="tag-new">Corrigé</span></dd>
+          <dt>Métier</dt><dd>épicière au village <i>(1905-1906)</i></dd>
+          <dt>Décès</dt><dd>1936 <span class="q">?</span></dd>
+        </dl>
+        <p class="note-line is-firm">Veuve en 1900, elle <b>adopte sa petite-fille Yvonne</b>.</p>
+        <ul class="acts"><li class="a-n">Naissance</li><li class="a-m">Mariage</li><li class="a-d">Décès</li></ul>
+      </article>
+
+      <div class="union is-firm" style="--x:860px;--y:1180px;--w:120px">
+        <span class="k">Mariage</span>
+        <span class="v">06/06/1866</span>
+        <span class="x">Acte n° 1</span>
+      </div>
+
+      <article class="card" style="--x:1000px;--y:1065px;--w:280px;--h:230px">
+        <p class="nm">André François Napoléon <b>GRILLOT</b><span class="tag-new">Nom complet</span></p>
+        <dl class="meta">
+          <dt>Né</dt><dd>27/01/1838, Gray</dd>
+          <dt>Métier</dt><dd>boucher à Gray <i>(1866)</i>, propriétaire à Fahy <i>(1869)</i>, marchand de bestiaux <i>(1878)</i></dd>
+          <dt>Décès</dt><dd>12/01/1900, Fahy-lès-Autrey</dd>
+        </dl>
+        <p class="note-line is-firm">Signe « Napoléon Grillot » ; le « Léon » des papiers familiaux en est l'abrégé.</p>
+        <ul class="acts"><li class="a-n">Naissance</li><li class="a-m">Mariage</li><li class="a-d">Décès</li></ul>
+      </article>
+
+      <aside class="aside aside--firm" style="--x:1320px;--y:1070px;--w:420px;--h:220px">
+        <h4>Collatéraux relevés dans les actes</h4>
+        <ul class="roster roster--tight">
+          <li><span class="role">Frères de Napoléon</span><span class="who"><b>Joseph GRILLOT</b>, né le <b>2 décembre 1835 à Gray</b>, maréchal des logis chef au 1<sup>er</sup> chasseurs, <b>chevalier de la Légion d'honneur</b>, militaire retraité à Gray · <b>Nicolas GRILLOT</b>, ≈ 1839, marchand de bétail à Gray, marié à Thérèse [Doursolet] — <i>il nomme son fils Albert <b>Thomas</b> en 1874</i> · <b>François GRILLOT</b>, né le 14 février 1837, sans doute mort en bas âge<span class="tag-new">Nouveau</span></span></li>
+          <li><span class="role">Frère cadet</span><span class="who"><b>Joseph Émile GRILLOT</b>, né le <b>6 avril 1854 à Gray, fils légitime de Thomas et Jeanne</b> — filiation prouvée sur acte ; marchand boucher rue du Marché. Quatre fils de 1877 à 1882, essaimés vers Nancy et Paris<span class="tag-new">Prouvé</span></span></li>
+          <li><span class="role">Cousin de Joséphine</span><span class="who">Auguste <b>PAUFARD</b>, 48 ans en 1899, tailleur de pierres à Autrey, <i>cousin du côté maternel</i> — probablement fils de François<span class="tag-new">Nouveau</span></span></li>
+          <li><span class="role">Oncle de Théolinde</span><span class="who"><b>François PAUFARD</b>, tailleur de pierre à Autrey, frère de Claude — 22 ans en 1836, 46 en 1865, 49 en 1866</span></li>
+          <li><span class="role">Oncle par alliance</span><span class="who">[Joseph] <b>CHATEAU</b>, meunier, beau-frère de Claude en 1836 — <i>preuve d'une sœur PAUFARD</i></span></li>
+          <li><span class="role">Cousin germain</span><span class="who">Joseph <b>GACONNET</b>, instituteur à Montarlot-lès-Champlitte, <i>cousin germain de Théolinde du côté paternel par alliance</i><span class="tag-new">Nouveau</span></span></li>
+          <li><span class="role">À trancher</span><span class="who">Alexis <b>PAUFARD</b>, 53 ans en 1906, négociant à Gray — <i>le Claude-Alexis né en 1842 aurait 64 ans</i></span></li>
+          <li><span class="role">Cousin par alliance</span><span class="who">Joseph <b>REDOUTET</b>, cultivateur puis propriétaire à Fahy — <i>cousin germain par alliance de Françoise AMIOT</i></span></li>
+        </ul>
+      </aside>
+
+      <!-- ===== Génération III ===== -->
+      <article class="card" style="--x:300px;--y:1570px;--w:260px;--h:250px">
+        <p class="nm">Victor Jean-Baptiste <b>CARPENTIER</b><span class="tag-new">Identifié</span></p>
+        <dl class="meta">
+          <dt>Né</dt><dd>09/10/1856 — Baume-les-Dames <i>(Doubs)</i></dd>
+          <dt>Métier</dt><dd><b>pharmacien</b> à Serrigny ; lieutenant au 62<sup>e</sup> régiment territorial d'infanterie<span class="tag-new">Nouveau</span></dd>
+          <dt>Parents</dt><dd>Louis CARPENTIER, huissier à Baume-les-Dames, et Marie Edwige THURIET</dd>
+          <dt>Décès</dt><dd>29/10/1898, 4 h — hôpital militaire de Bourges, <i>42 ans</i></dd>
+        </dl>
+        <ul class="acts"><li class="a-n">Naissance</li><li class="a-d">Décès</li></ul>
+      </article>
+
+      <div class="union" style="--x:575px;--y:1695px;--w:110px">
+        <span class="k">1<sup>re</sup> union</span>
+        <span class="v">1892-1896</span>
+        <span class="x">Acte à trouver</span>
+      </div>
+
+      <article class="card" style="--x:700px;--y:1570px;--w:290px;--h:250px">
+        <p class="nm">Françoise Léonie Joséphine <b>GRILLOT</b></p>
+        <dl class="meta">
+          <dt>Née</dt><dd>02/03/1869, 20 h — Fahy-lès-Autrey</dd>
+          <dt>En 1889</dt><dd>à <b>Lyon</b>, 1 Côte des Carmélites, célibataire, 20 ans</dd>
+          <dt>À Serrigny</dt><dd>femme du pharmacien, dite <b>Léonie</b>, 26 ans<span class="tag-new">Nouveau</span></dd>
+          <dt>Unions</dt><dd>veuve de CARPENTIER en 1898, remariée en 1899</dd>
+          <dt>Décès</dt><dd>08/09/1905, 10 h — Fahy-lès-Autrey, <i>36 ans</i></dd>
+        </dl>
+        <ul class="acts"><li class="a-n">Naissance</li><li class="a-m">Mariage</li><li class="a-d">Décès</li></ul>
+      </article>
+
+      <div class="union is-firm" style="--x:1005px;--y:1695px;--w:110px">
+        <span class="k">2<sup>e</sup> mariage</span>
+        <span class="v">30/12/1899</span>
+        <span class="x">Acte n° 3</span>
+      </div>
+
+      <article class="card" style="--x:1130px;--y:1595px;--w:260px;--h:200px">
+        <p class="nm">Maxime <b>BOURDEAU</b><span class="tag-new">Daté</span></p>
+        <dl class="meta">
+          <dt>Né</dt><dd>27/10/1863 — Fahy-lès-Autrey</dd>
+          <dt>Métier</dt><dd>propriétaire-vigneron</dd>
+          <dt>Parents</dt><dd>Urbain BOURDEAU, ancien gendarme, † 20/08/1898, et Angélique CHATEAU</dd>
+        </dl>
+        <p class="note-line is-firm">Graphie tranchée : BOURDEAU, avec un R.</p>
+      </article>
+
+      <aside class="aside aside--firm" style="--x:1410px;--y:1560px;--w:330px;--h:500px">
+        <h4>Le dossier lyonnais d'Yvonne</h4>
+        <ul class="unions">
+          <li><span class="rank">Reconnaissance</span><span class="txt">CARPENTIER reconnaît Yvonne à Lyon 1<sup>er</sup> le <b>1<sup>er</sup> septembre 1892</b>, conjointement avec Joséphine. <span class="tag tag-ok">Mention de 1892</span></span></li>
+          <li><span class="rank">Annulation</span><span class="txt">Le <b>Tribunal civil de Beaune</b> la déclare <b>nulle et de nul effet</b> le <b>14 mai 1897</b>. Yvonne redevient en droit fille de père inconnu — d'où le conseil de famille de 1906. <span class="tag tag-ok">Mention f° 145</span></span></li>
+          <li><span class="rank">Adoption</span><span class="txt">Yvonne est <b>adoptée par sa grand-mère</b> Théolinde PAUFARD, veuve de Napoléon GRILLOT, par arrêt dont la date reste à lire. <span class="tag">Date à relever</span></span></li>
+          <li><span class="rank">Le pharmacien</span><span class="txt"><b>Élucidé.</b> La tradition orale plaçait un pharmacien dans la vie de Joséphine. Le recensement de Serrigny donne <b>Carpentier Victor, pharmacien, chef de ménage</b>, et Léonie Grillot « sa femme » : la mémoire familiale avait raison, elle avait seulement perdu le nom. <span class="tag tag-ok">Confirmé</span></span></li>
+        </ul>
+      </aside>
+
+      <!-- ===== Génération IV ===== -->
+      <aside class="aside aside--doubt" style="--x:170px;--y:2105px;--w:370px;--h:230px">
+        <h4>Entourage d'Yvonne — mariage de 1906</h4>
+        <ul class="roster">
+          <li><span class="role">Tuteur ad hoc</span><span class="who">Émile <b>GRILLOT</b>, 33 ans, greffier de paix à Gray — <i>frère possible de Joséphine, non prouvé</i></span></li>
+          <li><span class="role">Subrogé tuteur</span><span class="who">Alexis <b>PAUFARD</b>, 53 ans, négociant à Gray — <i>grand-oncle maternel, très probable</i></span></li>
+          <li><span class="role">Aïeule</span><span class="who">Théolinde <b>PAUFARD</b>, 62 ans, épicière, quatrième témoin</span></li>
+        </ul>
+      </aside>
+
+      <article class="card" style="--x:560px;--y:2105px;--w:290px;--h:265px">
+        <p class="nm">Yvonne Marguerite <b>GRILLOT</b><span class="tag-new">Datée</span></p>
+        <dl class="meta">
+          <dt>Née</dt><dd>01/10/1889 — Lyon 1<sup>er</sup>, 1 Côte des Carmélites</dd>
+          <dt>Statut</dt><dd>fille naturelle de père inconnu ; <b>adoptée par sa grand-mère</b></dd>
+          <dt>Domicile</dt><dd>Fahy-lès-Autrey <i>(1906)</i></dd>
+          <dt>Mariage</dt><dd>22/09/1906, <b>à seize ans</b></dd>
+          <dt>Décès</dt><dd>11/02/1963 — Gray-la-Ville, <i>73 ans</i></dd>
+        </dl>
+        <ul class="acts"><li class="a-n">Naissance</li><li class="a-m">Mariage</li><li class="a-x">Décès : mention seule</li></ul>
+      </article>
+
+      <div class="union is-firm" style="--x:865px;--y:2237px;--w:120px">
+        <span class="k">Mariage</span>
+        <span class="v">22/09/1906</span>
+        <span class="x">Acte n° 3</span>
+      </div>
+
+      <article class="card" style="--x:1000px;--y:2105px;--w:290px;--h:265px">
+        <p class="nm">Camille Jean <b>VILLETTE</b></p>
+        <dl class="meta">
+          <dt>Né</dt><dd>24/07/1877</dd>
+          <dt>Lieu</dt><dd>Selongey <i>(Côte-d'Or)</i></dd>
+          <dt>Métier</dt><dd><b>huissier</b>, à son compte <i>(1911)</i><span class="tag-new">Nouveau</span></dd>
+          <dt>Domicile</dt><dd>Autrey-lès-Gray <i>(1906-1911)</i></dd>
+          <dt>Décès</dt><dd>21/03/1969, Gray</dd>
+        </dl>
+        <ul class="acts"><li class="a-n">Naissance</li><li class="a-m">Mariage</li><li class="a-d">Décès</li></ul>
+      </article>
+
+      <aside class="aside aside--firm" style="--x:1330px;--y:2105px;--w:410px;--h:230px">
+        <h4>Branche VILLETTE — Selongey</h4>
+        <ul class="roster">
+          <li><span class="role">Père</span><span class="who">Émile Adolphe <b>VILLETTE</b>, † Selongey le 20/03/1892</span></li>
+          <li><span class="role">Mère</span><span class="who">Joséphine <b>VERNEY</b>, ≈ 56 ans en 1906 <i>(née ≈ 1850)</i>, sans profession à Selongey — présente et consentante</span></li>
+          <li><span class="role">Frères</span><span class="who">Félix, 32 ans, comptable à Toul · Ernest, 31 ans, employé de commerce à Lille</span></li>
+        </ul>
+      </aside>
+
+      <!-- ===== Génération V ===== -->
+      <article class="card" style="--x:350px;--y:2460px;--w:260px;--h:170px">
+        <p class="nm">Renée Jeanne <b>VILLETTE</b></p>
+        <dl class="meta">
+          <dt>Née</dt><dd>31/01/1908</dd>
+          <dt>Lieu</dt><dd>Autrey-lès-Gray</dd>
+          <dt>Décès</dt><dd>18/10/2001</dd>
+        </dl>
+        <ul class="acts"><li class="a-n">Naissance</li><li class="a-d">Décès</li></ul>
+      </article>
+
+      <div class="union" style="--x:624px;--y:2545px;--w:172px">
+        <span class="k">Union possible</span>
+        <span class="v">06/09/1930</span>
+        <span class="x">Acte non retrouvé</span>
+      </div>
+
+      <article class="card" style="--x:810px;--y:2460px;--w:260px;--h:170px">
+        <p class="nm">Edmond Henri <b>RIBAUT</b></p>
+        <dl class="meta">
+          <dt>Né</dt><dd>06/04/1906</dd>
+        </dl>
+        <ul class="acts"><li class="a-x">Acte non retrouvé</li></ul>
+      </article>
+
+      <article class="card" style="--x:1180px;--y:2460px;--w:260px;--h:170px">
+        <p class="nm">Jean Émile <b>VILLETTE</b></p>
+        <dl class="meta">
+          <dt>Né</dt><dd>23/02/1911</dd>
+          <dt>Lieu</dt><dd>Autrey-lès-Gray</dd>
+          <dt>Décès</dt><dd>22/03/2000</dd>
+        </dl>
+        <ul class="acts"><li class="a-n">Naissance</li><li class="a-d">Décès</li></ul>
+      </article>
+
+      <!-- ===== Génération VI ===== -->
+      <article class="card" style="--x:350px;--y:2720px;--w:260px;--h:150px">
+        <p class="nm">Simone Camille <b>RIBAUT</b></p>
+        <dl class="meta">
+          <dt>Née</dt><dd>27/09/1933</dd>
+        </dl>
+        <ul class="acts"><li class="a-n">Naissance</li></ul>
+      </article>
+
+      <div class="union" style="--x:624px;--y:2795px;--w:172px">
+        <span class="k">Mariage</span>
+        <span class="v">date non confirmée</span>
+        <span class="x">Acte non retrouvé</span>
+      </div>
+
+      <article class="card" style="--x:810px;--y:2720px;--w:260px;--h:150px">
+        <p class="nm">Marcel <b>FONTANA</b></p>
+        <dl class="meta">
+          <dt>Né</dt><dd><span class="q">?</span></dd>
+        </dl>
+        <p class="note-line">Dates et lieux à documenter</p>
+      </article>
+
+      <article class="card" style="--x:1180px;--y:2720px;--w:260px;--h:150px">
+        <p class="nm">Françoise <b>RIBAUT</b></p>
+        <dl class="meta">
+          <dt>Née</dt><dd>19/01/1944</dd>
+          <dt>Lieu</dt><dd>Dijon</dd>
+        </dl>
+      </article>
+
+      <!-- ===== Génération VII ===== -->
+      <article class="card" style="--x:330px;--y:2950px;--w:250px;--h:140px">
+        <p class="nm">Cécile <b>FONTANA</b></p>
+        <dl class="meta">
+          <dt>Née</dt><dd><span class="q">?</span></dd>
+        </dl>
+        <ul class="acts"><li class="a-x">Acte non retrouvé</li></ul>
+      </article>
+
+      <article class="card" style="--x:650px;--y:2950px;--w:250px;--h:140px">
+        <p class="nm">Angélique <b>FONTANA</b></p>
+        <dl class="meta">
+          <dt>Née</dt><dd><span class="q">?</span></dd>
+        </dl>
+        <ul class="acts"><li class="a-x">Acte non retrouvé</li></ul>
+      </article>
+
+      <article class="card" style="--x:970px;--y:2950px;--w:250px;--h:140px">
+        <p class="nm">Isabelle <b>FONTANA</b></p>
+        <dl class="meta">
+          <dt>Née</dt><dd><span class="q">?</span></dd>
+          <dt>Union</dt><dd>épouse <b>GAYET</b></dd>
+        </dl>
+        <ul class="acts"><li class="a-x">Acte non retrouvé</li></ul>
+      </article>
+
+    </div>
+   </div>
+  </div>
+
+  <div class="footnotes">
+    <div class="todo">
+      <h5>Pistes de recherche — par ordre de priorité</h5>
+
+      <h6>Rang 1 — retrouver Carpentier entre 1889 et 1896 <span class="rk">priorité absolue</span></h6>
+      <ol>
+        <li><b>Fiche matricule de CARPENTIER, classe 1876</b>, bureau de Besançon, AD du Doubs, <b>en ligne</b>. Elle porte les <b>domiciles successifs année par année</b> : c'est le seul document qui dira où il vivait en 1889, en 1892 et en 1895 — donc où chercher le mariage. Lyon étant écarté, c'est le point de départ obligé.</li>
+        <li><b>Dossier d'officier au Service historique de la Défense</b>, Vincennes, si le matricule ne suffit pas : il contient d'ordinaire la situation de famille.</li>
+        <li><b>Mariage CARPENTIER × GRILLOT, 1892-1896</b>, à chercher là où le matricule le désigne ; à défaut, essayer <b>Baume-les-Dames</b> et les communes du Doubs liées à sa famille.</li>
+        <li><b>Jugement du Tribunal civil de Beaune, 14 mai 1897</b> — série U, AD de la Côte-d'Or, non numérisé : par le secrétariat. Il nommera les parties et donnera le motif de l'annulation.</li>
+        <li><b>Recensement de Serrigny de 1901</b> : qui tient la pharmacie après lui, et Joséphine y était-elle encore ?</li>
+        <li><b>Antoine CARPENTIER, maire de Baume-les-Dames</b> en 1856 et chevalier de la Légion d'honneur : parent de Louis selon toute vraisemblance. Dossier Léonore et état civil de Baume ouvriront la branche du Doubs.</li>
+        <li><b>Mariage Louis CARPENTIER × Marie Edwige THURIET</b>, avant 1856, à Baume-les-Dames ou alentour.</li>
+      </ol>
+
+      <h6>Rang 2 — refermer les GRILLOT de Gray</h6>
+      <ol start="6">
+        <li><b>Dossier Léonore de Joseph GRILLOT</b> — états de service, campagnes, décès, parfois un mariage. Gratuit et intégralement numérisé ; c'est de là que vient l'extrait de naissance de 1835.</li>
+        <li><b>Mariage Thomas GRILLOT × Jeanne ESCARNOT, 1833-1835</b>, et leurs naissances vers 1808-1812 — tables décennales de Gray, à chercher aux deux graphies <b>ESCARNOT</b> et ÉCARNOT.</li>
+        <li><b>Naissances GRILLOT à Gray, 1839-1854</b> : quinze ans séparent Nicolas de Joseph Émile, d'autres enfants s'y trouvent presque certainement. Ne retenir que les actes où la mère est <b>Jeanne ÉCARNOT</b> — trois autres foyers GRILLOT vivent à Gray à la même époque.</li>
+        <li><b>Décès de François GRILLOT à Gray en 1837</b> : né le 14 février, onze mois avant Napoléon, il est probablement mort en bas âge.</li>
+        <li><b>Naissance du 1<sup>er</sup> septembre 1877</b>, pour résoudre l'affaire des deux mères d'Ernest Jean Antoine.</li>
+        <li><b>Naissances GRILLOT à Gray, 1867-1868</b> — la seule fenêtre encore ouverte pour une fratrie de Joséphine, le couple étant domicilié à Fahy dès mars 1869.</li>
+        <li><b>Décès de Thomas et de Jeanne</b> à Gray, après juin 1866.</li>
+      </ol>
+
+      <h6>Rang 3 — Vars et Mont-le-Frânois, la ligne maternelle</h6>
+      <ol start="11">
+        <li><b>Second mariage de François AMIOT</b> avec Françoise [Gueniffet], à Vars entre mars 1818 et mars 1839.</li>
+        <li><b>Sépulture de Nicolle BERTHAUD à Mont-le-Frânois</b>, entre 1803 et 1839 — elle y est morte propriétaire, et non à Champlitte. Table décennale des décès, lettre B.</li>
+        <li><b>Les dix naissances AMIOT de Vars, 1803-1812</b> : ouvrir chaque acte et relever le nom de la mère pour distinguer notre famille de celle de Pierre AMIOT et Marguerite SAUVAGEOT. Commencer par <b>Étienne, 11 août 1803</b>.</li>
+        <li><b>Baptême de François AMIOT</b>, Mont-le-Frânois, 24 décembre 1780, et tous les AMIOT / AMYOT du registre paroissial 1760-1792 ; <b>sépulture de Bernard AMYOT</b> avant septembre 1792 ; <b>mariage Bernard AMYOT × Nicolle BERTAUT</b> vers 1760-1765.</li>
+      </ol>
+
+      <h6>Rang 4 — le reste des générations II à IV</h6>
+      <ol start="15">
+        <li><b>Décès de Napoléon GRILLOT</b>, Fahy, 12 janvier 1900 — treize jours après le mariage de sa fille ; et <b>décès de Théolinde</b> vers 1936, par les mairies puisque l'état civil en ligne s'arrête en 1922.</li>
+        <li><b>Le dossier d'Yvonne</b> : date de l'arrêt d'adoption au bas du folio 145 ; acte de décès du 11 février 1963 à la mairie de Gray-la-Ville ; reconnaissance du 1<sup>er</sup> septembre 1892 par la table alphabétique de Lyon 1<sup>er</sup>.</li>
+        <li><b>Deux contrats de mariage</b> : celui du 2 juin 1866 devant M<sup>e</sup> [Tonin] à Autrey, et celui du <b>29 décembre 1899 devant M<sup>e</sup> Gérard Prosper-Denis</b>, également à Autrey — ce dernier détaillera le patrimoine d'une veuve de trente ans, donc ce qu'elle tenait de Carpentier.</li>
+        <li><b>Naissances VILLETTE à Autrey-lès-Gray, 1912-1922</b> ; <b>mariage RIBAUT × VILLETTE</b> du 6 septembre 1930, par la mairie.</li>
+        <li><b>Urbain BOURDEAU et Angélique CHATEAU</b>, parents de Maxime : mariage à Fahy avant 1863, décès d'Urbain le 20 août 1898. Vérifier si Angélique descend du meunier CHATEAU beau-frère de Claude PAUFARD en 1836.</li>
+      </ol>
+
+      <h6>Rang 1 bis — Barbe AMIOT et l'hypothèse Nicolas AMIOT</h6>
+      <ol start="9">
+        <li><b>Succession de Barbe AMIOT</b>, veuve VANNEY, † Fahy le 4 juin 1839 — tables de successions du bureau de Gray. Si Françoise AMIOT figure parmi les héritiers, la parenté est établie et la génération −2 s'ouvre côté AMIOT.</li>
+        <li><b>Mariage Barbe AMIOT × Nicolas VANNEY</b>, vers 1780-1790 : il donnera son lieu de naissance. Mont-le-Frânois confirmerait tout d'un coup.</li>
+      </ol>
+
+      <h6>Rang 2 — les GRILLOT de Gray, génération I</h6>
+      <ol start="9">
+        <li>Naissance de <b>Thomas GRILLOT</b> (≈ 1812) et de <b>Jeanne ÉCARNOT</b> (≈ 1813) à Gray, puis leur mariage vers 1835 ; et le frère de Napoléon, <b>Joseph GRILLOT</b>, maréchal des logis chef au 1<sup>er</sup> chasseurs.</li>
+        <li><b>Contrat de mariage du 02/06/1866</b>, M<sup>e</sup> Tonin <span class="q">?</span> à Autrey — minutes notariales, série E.</li>
+      </ol>
+
+      <h6>Rang 3 — la ligne maternelle AMIOT <span class="rk">en attente</span></h6>
+      <ol start="11">
+        <li><b>Baptême de François AMIOT, 24 décembre 1780</b> — quelques pages avant celui du 4 février 1781 déjà retrouvé, dans le même registre paroissial. Relever parrain et marraine.</li>
+        <li><b>Tous les AMIOT / AMYOT du registre, 1760-1792</b>, dont l'aînée Françoise, marraine en 1781 ; et la <b>sépulture de Bernard AMYOT</b>, laboureur, avant septembre 1792.</li>
+        <li><b>Mariage Bernard AMYOT × Nicolle BERTAUT</b>, vers 1760-1765 : ouvre la génération −2.</li>
+        <li><b>Table décennale an XI-1812 de Mont-le-Frânois</b>, décès : si Bernard AMYOT est mort entre septembre 1802 et avril 1803, il y est. Puis les <b>dix actes AMIOT de 1792 à l'an XI</b> déjà repérés en table.</li>
+      </ol>
+
+      <h6>Rang 4 — François AMIOT à Vars, après 1836</h6>
+      <ol start="15">
+        <li><b>Recensement de Vars, 1836</b> ; <b>décès de François AMIOT à Vars</b> — l'acte de 1878 le dit « décédé audit Vars » — tables décennales 1833-1842 puis 1843-1852, et remariage éventuel ; <b>tables de successions</b>.</li>
+        <li><b>Acte respectueux du 23 septembre 1836</b> — minute notariale, série E ; et les <b>pièces annexes de Fahy pour 1836</b>.</li>
+      </ol>
+
+      <h6>Rang 5 — Vars, Champlitte, Oyrières</h6>
+      <ol start="17">
+        <li><b>Baptême de Barbe RENEVIER</b> (19 juin 1774) et de <b>Claude RENEVIER</b> (≈ 1743) ; <b>mariage François RENEVIER × Barbe GUIGNARD</b> ; <b>baptême de Catherine PETITOT</b> pour trancher l'âge de 76 ans.</li>
+        <li><b>Fratrie de Françoise AMIOT</b> : tables décennales de Vars 1803-1812.</li>
+        <li><b>Nicolle BERTAUT à Champlitte</b> : chercher sous Champlitte-et-le-Prélot, puis sous les cinq communes associées ; compléter l'acte n° 69, naissance d'Agathe BERTAUT.</li>
+        <li>La <b>sœur de Claude PAUFARD</b> mariée à un CHATEAU, meunier ; décès de <b>Jean-Baptiste PAUFARD</b> et de <b>Denise REDOUTET</b> entre 1836 et 1865 ; <b>naissance de Bazille Théophile</b>, Fahy, vers mars 1841 ; branche <b>VILLETTE</b> à Selongey ; actes <b>FONTANA</b>.</li>
+      </ol>
+    </div>
+
+    <div>
+      <h5>Actes dépouillés les 23 et 24 août 2026</h5>
+      <ul class="sources">
+        <li class="grp">Paroisse de Mont-le-Frânois</li>
+        <li><b>Baptême du 4 février 1781</b> — marraine Françoise AMYOT<span class="tag-new">Nouveau</span></li>
+        <li class="grp">Vars</li>
+        <li><b>Mariages an XI, 6 floréal</b> — AMIOT × RENEVIER, 26 avril 1803</li>
+        <li><b>Décès 1807, acte n° 11</b> — Catherine PETITOT, 31 mars</li>
+        <li><b>Décès 1807, acte n° 23</b> — Claude RENEVIER, 5 août</li>
+        <li><b>Naissances 1810, acte n° 30</b> — Françoise AMIOT, 28 novembre</li>
+        <li><b>Décès 1818, acte n° 9</b> — Barbe RENEVIER, 5 mars</li>
+        <li><b>Décès 1839, acte n° 5</b> — François AMIOT, 18 mars<span class="tag-new">Nouveau</span></li>
+        <li><b>Décès 1854, acte n° 15</b> — Christine AMIOT <i>(homonyme)</i><span class="tag-new">Nouveau</span></li>
+        <li><b>Table décennale des naissances, an XI-1812</b> — dix AMIOT relevés<span class="tag-new">Nouveau</span></li>
+        <li class="grp">Oyrières</li>
+        <li><b>Naissances 1813</b> — Claude PAUFARD, 7 juin</li>
+        <li class="grp">Champlitte</li>
+        <li><b>Naissances, acte n° 69</b> — Agathe BERTAUT <i>(vue incomplète)</i><span class="tag-new">Nouveau</span></li>
+        <li class="grp">Gray</li>
+        <li><b>Naissances 1833, acte n° 127</b> — Françoise Adélaïde <i>(homonyme)</i><span class="tag-new">Nouveau</span></li>
+        <li><b>Naissances 1835, acte n° 173</b> — Joseph GRILLOT, 2 décembre <i>(extrait militaire)</i></li>
+        <li><b>Naissances 1835, acte n° 177</b> — Anne Baptiste <i>(homonyme)</i><span class="tag-new">Nouveau</span></li>
+        <li><b>Naissances 1837, acte n° 23</b> — François, frère de Napoléon<span class="tag-new">Nouveau</span></li>
+        <li><b>Naissances 1854, acte n° 46</b> — Joseph Émile, 6 avril<span class="tag-new">Nouveau</span></li>
+        <li><b>Décès 1874, acte n° 17</b> — Anne Marie GRILLOT <i>(homonyme)</i></li>
+        <li><b>Décès 1879, acte n° 1</b> — Ernest Jean Antoine, fils de Joseph Émile<span class="tag-new">Nouveau</span></li>
+        <li><b>Naissances 1874, acte n° 123</b> — Albert Thomas, fils de Nicolas GRILLOT<span class="tag-new">Nouveau</span></li>
+        <li><b>Naissances 1877, 1879, 1880, 1882</b> — les quatre fils de Joseph Émile GRILLOT<span class="tag-new">Nouveau</span></li>
+        <li><b>Décès 1879, acte n° 149</b> — Joséphine GRILLOT <i>(homonyme)</i><span class="tag-new">Nouveau</span></li>
+        <li class="grp">Autrey-lès-Gray</li>
+        <li><b>Liste nominative de 1911</b> — ménage VILLETTE, lignes 70 à 73<span class="tag-new">Nouveau</span></li>
+        <li class="grp">Baume-les-Dames (Doubs) et Serrigny (Côte-d'Or)</li>
+        <li><b>Naissances 1856, acte n° 67</b> — Victor Jean-Baptiste CARPENTIER, 9 octobre<span class="tag-new">Nouveau</span></li>
+        <li><b>Liste nominative de Serrigny, ≈ 1896</b> — ménage CARPENTIER, lignes 68-69<span class="tag-new">Nouveau</span></li>
+        <li class="grp">Bourges (Cher)</li>
+        <li><b>Décès 1898, acte n° 863</b> — Victor Jean-Baptiste CARPENTIER, 29 octobre<span class="tag-new">Nouveau</span></li>
+        <li class="grp">Lyon, 1<sup>er</sup> arrondissement</li>
+        <li><b>Naissances 1889, acte n° 595</b> — Yvonne GRILLOT, 1<sup>er</sup> octobre, et ses mentions marginales de 1892, 1897 et 1963<span class="tag-new">Nouveau</span></li>
+        <li class="grp">Fahy-lès-Autrey</li>
+        <li><b>Mariages 1836, acte n° 16</b> — PAUFARD × AMIOT, 25 octobre<span class="tag-new">Nouveau</span></li>
+        <li><b>Naissances 1837, acte n° 14</b> — Françoise Firmine, 26 septembre</li>
+        <li><b>Décès 1838, acte n° 12</b> — Firmine, 4 octobre</li>
+        <li><b>Naissances 1839, acte n° 2</b> — Clotilde Hortense, 2 janvier</li>
+        <li><b>Naissances 1840, acte n° 2</b> — Marie-Louise, 30 janvier</li>
+        <li><b>Décès 1841, acte n° 28</b> — Bazille Théophile, 16 octobre</li>
+        <li><b>Naissances 1842, acte n° 15</b> — Claude Alexis, 11 juillet</li>
+        <li><b>Naissances 1843, acte n° 16</b> — Adélaïde Théolinde, 23 septembre</li>
+        <li><b>Décès 1839, acte n° 13</b> — Barbe AMIOT, veuve VANNEY, 4 juin<span class="tag-new">Nouveau</span></li>
+        <li><b>Décès 1844, acte n° 21</b> — Gustave François, 18 octobre<span class="tag-new">Nouveau</span></li>
+        <li><b>Naissances 1846, acte n° 7</b> et <b>décès 1846, acte n° 12</b> — Clotilde Stéphanie Émérite<span class="tag-new">Nouveau</span></li>
+        <li><b>Naissances 1847, acte n° 19</b> et <b>décès 1847, acte n° 23</b> — Élise Célestine<span class="tag-new">Nouveau</span></li>
+        <li><b>Naissances 1849, acte n° 1</b> et <b>décès 1849, acte n° 2</b> — Nicolas Claude Alexis<span class="tag-new">Nouveau</span></li>
+        <li><b>Naissances 1850, acte n° 9</b> et <b>décès 1850, acte n° 6</b> — Maria<span class="tag-new">Nouveau</span></li>
+        <li><b>Décès 1852, acte n° 2</b> — Napoléon Victorin François, 5 juillet<span class="tag-new">Nouveau</span></li>
+        <li><b>Décès 1865, acte n° 1</b> — Claude PAUFARD, 12 mai</li>
+        <li><b>Mariages 1866, acte n° 1</b> — GRILLOT × PAUFARD, 6 juin</li>
+        <li><b>Promesses de mariage 1866, n° 1 à 4</b></li>
+        <li><b>Naissances 1869, acte n° 2</b> — Joséphine, avec mention marginale BOUDEAU</li>
+        <li><b>Décès 1878, acte n° 1</b> — Françoise AMIOT, 30 avril</li>
+        <li><b>Décès 1905, acte n° 5</b> — Joséphine, 8 septembre</li>
+        <li><b>Mariages 1899, acte n° 3</b> — BOURDEAU × GRILLOT, 30 décembre<span class="tag-new">Nouveau</span></li>
+        <li><b>Mariages 1906, acte n° 3</b> — VILLETTE × GRILLOT, 22 septembre</li>
+      </ul>
+      <div class="negative">
+        <h5>Recherches négatives</h5>
+        <p><b>Mariage PAUFARD × AMIOT :</b> registres de <b>Vars, 1820-1850</b>, dépouillés le 24 août 2026 — l'acte n'y est pas, et pour cause : il a été célébré à <b>Fahy-lès-Autrey le 25 octobre 1836</b>, chez l'époux et non chez l'épouse. Recherche close.</p>
+        <p><b>Décès de Bernard AMYOT :</b> absent de la table décennale des décès de Mont-le-Frânois, 1792 – an XI. Il est donc mort <b>avant le 20 septembre 1792</b>, ou entre septembre 1802 et avril 1803.</p>
+        <p><b>Mariage GRILLOT × CARPENTIER, recherches menées :</b> <b>Serrigny 1880-1900</b>, rien — seul le décès de Carpentier figure à la table décennale ; <b>recensement de Serrigny 1891</b>, aucun Carpentier ; <b>Lyon, tous arrondissements</b>, rien — l'hypothèse du mariage lyonnais est abandonnée. Le couple n'arrive donc à Serrigny qu'<b>entre 1891 et 1896, déjà marié</b> : l'union a été célébrée ailleurs — et pas à Lyon. Restent les communes liées à Carpentier avant Serrigny : <b>Baume-les-Dames</b> et le Doubs, ou une commune de garnison. Sa <b>fiche matricule</b>, qui porte les domiciles successifs, est désormais le meilleur moyen de savoir où chercher.</p>
+        <p><b>Mentions marginales de l'acte de 1856 :</b> aucune, vue complète vérifiée. Normal — l'obligation date du 17 août 1897 et nul n'a fait la démarche après la mort de Carpentier.</p>
+        <p><b>Mariage GRILLOT × CARPENTIER, bornes :</b> L'acte de naissance de Joséphine ne porte en marge que le mariage BOURDEAU de 1899 — or l'obligation de mentionner les mariages date de la <b>loi du 17 août 1897</b>. Le premier mariage est donc <b>antérieur à août 1897</b>, ce qui resserre la fenêtre à 1892-1897.</p>
+        <p><b>Fratrie de Joséphine :</b> aucun frère ni sœur retrouvé, ni à Fahy ni à Gray. L'acte de naissance de 1869 dit Napoléon <b>domicilié à Fahy</b> : la famille avait donc déjà quitté Gray. Seule reste ouverte la fenêtre <b>1867-1868, à Gray</b>. Au-delà, l'hypothèse d'une <b>fille unique</b> devient sérieuse — à confirmer par le déclarant du décès de Napoléon en 1900 et par celui de Théolinde.</p>
+        <p><b>GRILLOT dans les recensements de Fahy :</b> quasi absents, et aucune trace d'une fratrie de Joséphine ni du mariage BOUDEAU. Explication probable : <b>Napoléon GRILLOT est boucher à Gray en 1866</b> et ne s'installe à Fahy qu'entre 1869 et 1878. Les recensements de Fahy de 1866 et 1872 ne peuvent rien contenir — <b>la recherche doit se porter sur Gray</b>. Essayer aussi les variantes GRILLOZ, GRILLIOT, GRILLOD dans les index.</p>
+        <p><b>Reconnaissance CARPENTIER du 01/09/1892 :</b> non retrouvée dans les naissances de Lyon 1<sup>er</sup> pour 1892. À Lyon les reconnaissances sont souvent <b>regroupées en fin de volume</b> plutôt qu'insérées à leur date : reprendre par la table alphabétique, à C comme CARPENTIER autant qu'à G comme GRILLOT.</p>
+      </div>
+    </div>
+
+    <div>
+      <h5>Le patronyme</h5>
+      <p>PAUFARD, et non PANFARD : la marge de l'acte de 1843, les signatures de Claude et de son frère François, l'acte d'Oyrières de 1813 et le mariage de 1836 concordent tous. Côté AMIOT, la graphie flotte : <b>AMYOT</b> sous la plume du curé en 1781, AMIOT dans tout l'état civil ensuite. De même <b>BERTAUT</b> en 1781, BERTAULT en 1803.</p>
+      <h5>Les âges déclarés</h5>
+      <p>François AMIOT, né le 24 décembre 1780, se dit 22 ans en 1803, 26 en 1807, 30 en 1810, <b>55 en 1836</b> — puis 42 ans en 1818 alors qu'il en a 37. Une seule anomalie sur cinq déclarations. Claude PAUFARD, né le 7 juin 1813, est régulier de 1836 à 1842 : 23, 24, 24, 26, 26, 27, 29. L'acte de 1843 lui donne en revanche <b>trente-neuf ans</b> alors qu'il en a trente : deux lectures indépendantes s'accordent sur ce mot écrit en toutes lettres, ce n'est donc pas une erreur de lecture mais <b>une erreur de l'officier</b>. C'est cette anomalie isolée qui a longtemps fait croire à une naissance vers 1804 ; l'acte d'Oyrières l'a écartée. Son frère François, en revanche, se dit 22 ans en 1836 et 46 ans en 1865 : cinq ans se sont ajoutés en route.</p>
+      <h5>Homonymes à écarter</h5>
+      <p>Deux GRILLOT de Gray portent des noms qui prêtent à confusion et <b>ne doivent pas entrer dans l'arbre</b>. <b>Joséphine GRILLOT</b>, † Gray le 12 décembre 1879 à 66 ans, journalière, veuve d'Étienne DARIOT, fille de François GRILLOT et Anne PAGE : née vers 1813, elle n'a rien à voir avec notre Joséphine née en 1869. Et <b>Anne Marie GRILLOT</b>, † Gray le 17 février 1874 à 75 ans, veuve de Jean-Baptiste [Vendeur], fille de [Nicolas] GRILLOT et Jeanne Baptiste [Frelot] : née vers 1799, une génération trop haut. Toutes deux pourraient être apparentées à Thomas, mais rien ne l'établit.</p>
+      <p>À Vars, une <b>seconde lignée AMIOT</b> coexiste avec la nôtre : celle de <b>Pierre AMIOT et Marguerite SAUVAGEOT</b>, cultivateurs, dont la fille Christine (1782-1854) épousa Claude POIROT. Elle explique la moitié des naissances AMIOT de la table décennale 1803-1812 — deux paires y sont trop rapprochées pour une seule mère. <b>Ouvrir chaque acte et relever le nom de la mère</b> avant tout rattachement.</p>
+      <p>Même situation à Gray, où <b>quatre foyers GRILLOT</b> coexistent dans les années 1830. Outre celui de Thomas et Jeanne ÉCARNOT, on relève <b>François GRILLOT, manouvrier illettré (né ≈ 1791), et Françoise THÉVENIN</b> ; <b>Jean GRILLOT, paveur (né ≈ 1803), et Anne Baptiste LÉONARD</b>, couturière née à Arc ; et le <b>François GRILLOT époux d'Anne PAGE</b>, parents de la Joséphine morte en 1879. Trois François GRILLOT, dont l'un pourrait être le père de Thomas — <b>aucune preuve, aucun rattachement</b>.</p>
+      <h5>Réserves de lecture</h5>
+      <p>L'âge de Catherine PETITOT en 1807 (« soixante seize », corrigé dans le manuscrit — 66 serait plus vraisemblable) ; le mot qualifiant SORLIN dans le même acte, peut-être « filleul de la défunte » ; l'âge de Firmine à son décès, transcrit « onze mois » alors qu'elle en avait douze ; le quatrième prénom de Marie-Louise, lu « Nivida » ; le métier de Jean-Baptiste PAUFARD en 1813 sur un cliché très pâle ; le patronyme des parents du baptisé de 1781 (lu Denervaux et Mourot) ; le prénom du beau-frère CHATEAU ; le patronyme de la seconde femme de François AMIOT, lu <b>Gueniffet</b> ; le prénom de la mère d'Ernest Jean Antoine GRILLOT, lu <b>Valentine Beuray</b> et contredit par les quatre autres actes ; et le nom du quatrième témoin de 1899, lu <b>Rascenet</b>.</p>
+      <h5>Où chercher</h5>
+      <p>État civil numérisé de la Haute-Saône jusqu'en 1922, registres paroissiaux depuis 1550. Attention au classement : le catalogue range les registres sous les <b>communes de 1972</b>. Mont-le-Frânois est à chercher aussi sous <b>Frânois</b> et sous <b>Framont</b> ; Champlitte sous <b>Champlitte-et-le-Prélot</b> et sous les cinq communes associées. L'<b>inventaire PDF de la sous-série 3 E</b> dit exactement ce qui existe et sous quelle cote. Pour identifier la paroisse d'Ancien Régime desservant Mont-le-Frânois, l'ouvrage de l'abbé Roussel, <i>Le diocèse de Langres, histoire et statistique</i> (1875), est sur Gallica. Sources encore inexploitées : listes nominatives 1836-1906, tables de successions et absences, cadastre napoléonien — le domicile PAUFARD est <b>rue d'Autrey</b> — et minutes notariales de la série E. Attention aussi aux bornes de mise en ligne : l'état civil des AD70 <b>s'arrête en 1922</b>. Tout ce qui suit — mariage RIBAUT de 1930, décès de Théolinde vers 1936, décès de 1963 et 1969 — passe par les <b>mairies</b>. Hors département : <b>Archives municipales de Lyon</b> pour l'acte de 1889 et la reconnaissance de 1892 ; <b>Archives départementales de la Côte-d'Or, série U</b>, pour le jugement du tribunal civil de Beaune du 14 mai 1897, non numérisé — passer par le secrétariat ; <b>mairie de Gray-la-Ville</b> pour le décès d'Yvonne en 1963 ; état civil de <b>Selongey</b> (Côte-d'Or) pour les VILLETTE.</p>
+    </div>
+  </div>
+
+  </section>
+
+  <!-- ================= ONGLET TRANSCRIPTIONS ================= -->
+  <section class="panel" id="panel-transcriptions" role="tabpanel" aria-labelledby="tab-transcriptions">
+
+    <p class="tr-intro">Transcriptions littérales des actes dépouillés, dans l'ordre chronologique. La ponctuation et les majuscules ont été modernisées pour la lisibilité ; les mots douteux sont entre crochets et suivis d'un point d'interrogation. Les actes proviennent du registre paroissial desservant <b>Mont-le-Frânois</b> et des registres d'état civil de <b>Vars</b>, d'<b>Oyrières</b>, de <b>Champlitte</b> et de <b>Fahy-lès-Autrey</b>, consultables en ligne aux Archives départementales de la Haute-Saône.</p>
+
+    <div class="tr-wrap">
+
+      <p class="tr-sep">I — Avant la Révolution, 1781</p>
+
+      <article class="tr">
+        <div class="tr-head">
+          <h3>Baptême où Françoise AMYOT est marraine</h3>
+          <span class="when">4 février 1781</span>
+        </div>
+        <p class="ref">Paroisse desservant Mont-le-Frânois — registre paroissial · <span class="tr-chips"><span class="chip c-n">Baptême</span><span class="chip">Filiation indirecte</span></span></p>
+        <blockquote>
+          <b>Baptême.</b> Françoise, fille née le quatre février mil sept cent quatre vingt un, de légitime mariage de Jean Baptiste [Denervaux ?], laboureur, et de Françoise [Mourot ?], a été baptisée le même jour en cette église par nous soussigné prêtre curé de cette paroisse, et a eu pour parrain Pierre Vernot son oncle, et pour marraine <b>Françoise Amyot, fille de Bernard Amyot et de Nicolle Bertaut, laboureur</b>. Le parrain et le père ont signé avec nous.
+          <span class="sign">Signé : [J. B. ?] Amiot — Vernot — [paraphe] — Carmouche, curé</span>
+        </blockquote>
+        <p class="gloss">L'acte n'est pas celui d'un ancêtre direct, et c'est pourtant l'un des plus utiles du dossier. Il révèle une <b>fille aînée, Françoise AMYOT</b>, assez âgée pour être marraine en février 1781 — donc née au plus tard vers 1768, et bien avant son frère François. Il donne au père son métier, <b>laboureur</b>, que nous ignorions, et sa forme courante : on l'appelait simplement <b>Bernard AMYOT</b>. <span class="warn">Il prouve surtout que le registre paroissial existe et qu'il est consultable pour 1781 : le baptême de François AMIOT, du 24 décembre 1780, se trouve quelques pages plus haut.</span> Reste à confirmer que la paroisse du curé Carmouche est bien celle qui dessert Mont-le-Frânois.</p>
+      </article>
+
+      <p class="tr-sep">II — Vars, 1803-1854</p>
+
+      <article class="tr">
+        <div class="tr-head">
+          <h3>Mariage de François AMIOT et de Barbe RENEVIER</h3>
+          <span class="when">26 avril 1803</span>
+        </div>
+        <p class="ref">Vars — mariages, 6 floréal an XI · <span class="tr-chips"><span class="chip c-m">Acte de mariage</span><span class="chip">Formulaire imprimé</span></span></p>
+        <blockquote>
+          Du sixième jour du mois de floréal l'an onze de la République française.<br><br>
+          <b>Acte de mariage de François Amiot</b>, âgé de vingt deux ans, né à <b>Mont-le-Frânois</b>, département de la Haute-Saône, le <b>vingt quatre du mois de décembre l'an mil sept cent quatre vingt</b>, profession de <b>cordonnier</b>, demeurant à Mont-le-Frânois, <b>fils majeur de feu François Bernard Amiot</b>, en son vivant demeurant à Mont-le-Frânois, <b>et de Nicolle Bertault son épouse, résidant présentement à Champlitte</b> ;<br><br>
+          <b>et de Barbe Renevier</b>, âgée de vingt huit ans, née à <b>Vars</b>, le <b>dix neuf du mois de juin l'an mil sept cent soixante et quatorze</b>, demeurant à Vars, <b>fille majeure de Claude Renevier, propriétaire cultivateur</b>, demeurant à Vars, <b>et de Cathrine Petitot son épouse, tous deux comparants</b>.<br><br>
+          Les actes préliminaires sont extraits des registres de publications de mariage faites à Vars et Mont-le-Frânois le <b>vingt sept germinal</b> dernier, sans opposition, ainsi qu'il en conste par le certificat du maire dudit Mont-le-Frânois ; et les actes de naissance des deux futurs, qui constatent que ledit Amiot est né audit <b>Mont-le-Frânois le vingt quatre décembre mil sept cent quatre vingt</b>, et ladite <b>Barbe Renevier née à Vars le dix neuf juin mil sept cent soixante et quatorze</b> ; le tout en forme.<br><br>
+          <b>En présence de Jean Baptiste Amiot</b>, demeurant à Mont-le-Frânois, cultivateur, âgé de vingt neuf ans ; <b>de François Bernard Amiot</b>, demeurant à Mont-le-Frânois, propriétaire, âgé de vingt sept ans ; <b>de Claude François Renevier</b>, demeurant à Vars, jardinier, âgé de cinquante quatre ans ; et <b>de Jean François Sorlin</b>, demeurant à Vars, tisserand, âgé de trente huit ans. <b>Lesdits Jean Baptiste et François Bernard Amiot, frères du futur époux ; et lesdits Claude François Renevier et Jean François Sorlin, oncle et ami de la future épouse.</b><br><br>
+          Après quoi, moi <b>Joseph Huot, maire de Vars</b>, ai prononcé qu'au nom de la loi lesdits époux sont unis en mariage. Et ont lesdits époux et témoins signé avec nous, ainsi que le père et la mère de la future, <b>à l'exception de ladite Barbe Renevier, épouse, illettrée</b>.
+          <span class="sign">Signé : François Renevier — F. Amiot — Nicolle Bertault — Amiot — Sorlin — Renevier — Huot maire</span>
+        </blockquote>
+        <p class="gloss">L'acte le plus riche du dossier. Sur formulaire imprimé de l'an XI, il cite les <b>actes de naissance des deux époux</b>, ce qui donne deux dates exactes qu'aucun autre document ne portait. Il ouvre la génération −1 des deux côtés, révèle deux frères AMIOT et un oncle RENEVIER. <span class="warn">Barbe, de six ans et demi l'aînée de son mari, ne sait pas signer.</span></p>
+      </article>
+
+      <article class="tr">
+        <div class="tr-head">
+          <h3>Décès de Catherine PETITOT</h3>
+          <span class="when">31 mars 1807</span>
+        </div>
+        <p class="ref">Vars — décès de 1807, acte n° 11 · <span class="tr-chips"><span class="chip c-d">Acte de décès</span></span></p>
+        <blockquote>
+          L'an dix huit cent sept, le trente un mars, à deux heures après midi, pardevant nous François Besancenot, maire officier de l'état civil de la commune de Vars, canton d'Autrey, département de la Haute-Saône, est comparu <b>Claude Renevier, propriétaire audit Vars</b>, lequel nous a déclaré que <b>Catherine Petitot sa femme est décédée ce présent jour à sept heures du matin, âgée de soixante seize ans</b>. Laquelle déclaration a été faite en présence de <b>Jean François Sorlin, tissier, âgé de quarante deux ans, [filleul ?] de la défunte</b>, et de François Borie, instituteur, âgé de trente deux ans, ami et voisin de la défunte, tous domiciliés audit Vars. Et ont les témoins et déclarant signé avec nous le présent acte de décès après lecture faite.
+          <span class="sign">Signé : Borie — J. F. Sorlin — Renevier — Besancenot maire</span>
+        </blockquote>
+        <p class="gloss">Claude RENEVIER déclare lui-même la mort de sa femme ; il lui survit quatre mois. <span class="warn">L'âge de soixante seize ans porte une correction dans le manuscrit : à 76 ans, Catherine aurait eu Barbe à 43 ans et serait de douze ans l'aînée de son mari. Une lecture « soixante six » reste possible.</span></p>
+      </article>
+
+      <article class="tr">
+        <div class="tr-head">
+          <h3>Décès de Claude RENEVIER</h3>
+          <span class="when">4 août 1807</span>
+        </div>
+        <p class="ref">Vars — décès de 1807, acte n° 23 · <span class="tr-chips"><span class="chip c-d">Acte de décès</span><span class="chip">Filiation</span></span></p>
+        <blockquote>
+          L'an dix huit cent sept, le cinq août, à une heure après midi, pardevant nous François Besancenot, maire officier de l'état civil de la commune de Vars, canton d'Autrey, département de la Haute-Saône, est comparu <b>François Amiot, cordonnier, domicilié audit Vars, âgé de vingt six ans</b>, lequel nous a déclaré que <b>Claude Renevier, son beau-père, fils de François Renevier et de Barbe Guignard</b>, est décédé le jour d'hier à cinq heures du soir, <b>âgé de soixante quatre ans</b>. Laquelle déclaration a été faite en présence de Jean François Sorlin, tissier, âgé de quarante trois ans, et de François Borie, instituteur, âgé de trente deux ans, tous domiciliés audit Vars. Et ont les témoins et déclarant signé avec nous le présent acte de décès après lecture faite.
+          <span class="sign">Signé : Borie — F. Amiot — J. F. Sorlin — Besancenot maire</span>
+        </blockquote>
+        <p class="gloss">L'acte qui ouvre la <b>génération −2</b> : Claude RENEVIER y est dit fils de <b>François RENEVIER et de Barbe GUIGNARD</b>. C'est de cette grand-mère que Barbe RENEVIER tient son prénom. Claude, mort à 64 ans, serait né vers 1743.</p>
+      </article>
+
+      <article class="tr">
+        <div class="tr-head">
+          <h3>Naissance de Françoise AMIOT</h3>
+          <span class="when">28 novembre 1810</span>
+        </div>
+        <p class="ref">Vars — naissances de 1810, acte n° 30 · <span class="tr-chips"><span class="chip c-n">Acte de naissance</span></span></p>
+        <blockquote>
+          L'an mil huit cent dix, le vingt huit novembre, à cinq heures du soir, pardevant nous François Besancenot, maire officier de l'état civil de la commune de Vars, canton d'Autrey, département de la Haute-Saône, est comparu <b>François Amiot, cordonnier, âgé de trente ans, domicilié audit Vars</b>, lequel nous a présenté un enfant du sexe féminin <b>né ce présent jour à trois heures après midi</b>, de lui déclarant et de <b>Barbe Renevier son épouse</b>, et auquel il a déclaré vouloir donner le prénom de <b>Françoise</b>. Lesdites déclaration et présentation faites en présence de Jean François Sorlin, tisserand, âgé de quarante cinq ans, et de Jean Morisot, instituteur, âgé de vingt six ans, tous domiciliés audit Vars, et ont les témoins signé avec nous le présent acte de naissance après lecture faite.
+          <span class="sign">Signé : Morisot — F. Amiot — J. F. Sorlin — Besancenot maire</span>
+        </blockquote>
+        <p class="gloss">Le point de jonction entre la branche de Vars et celle de Fahy-lès-Autrey. Sept ans et demi séparent le mariage de 1803 de cette naissance : <b>il y a très probablement des aînés à trouver</b> dans les tables décennales de Vars.</p>
+      </article>
+
+      <article class="tr">
+        <div class="tr-head">
+          <h3>Décès de Barbe RENEVIER</h3>
+          <span class="when">5 mars 1818</span>
+        </div>
+        <p class="ref">Vars — décès de 1818, acte n° 9 · <span class="tr-chips"><span class="chip c-d">Acte de décès</span><span class="chip">Filiation</span></span></p>
+        <blockquote>
+          L'an mil huit cent dix huit, le cinq mars, à neuf heures du matin, pardevant nous Antoine Besancenot, maire officier de l'état civil de la commune de Vars, canton d'Autrey, département de la Haute-Saône, sont comparus <b>François Amiot, propriétaire, âgé de quarante deux ans</b>, qui a dit être <b>époux de la décédée</b>, et <b>Joseph Boront, instituteur, âgé de vingt six ans</b>, qui a dit être ami et voisin de la défunte, les deux domiciliés audit Vars ; lesquels nous ont déclaré que <b>Barbe Renevier</b>, épouse dudit Amiot, et <b>fille du défunt Claude Renevier et [de] Catherine Petitot, qui étaient en leur vivant propriétaires audit Vars</b>, est décédée au domicile de son dit mari, ce présent jour à quatre heures du matin, <b>âgée de quarante trois ans huit mois et quatorze jours</b> ; et ont les déclarants signé avec nous le présent acte de décès après lecture faite.
+          <span class="sign">Signé : J. Boront — F. Amiot — Besancenot</span>
+        </blockquote>
+        <p class="gloss">Premier acte de la série retrouvé, et celui qui a ouvert la piste de Vars. L'âge donné à la journée près reconduit exactement au <b>19 juin 1774</b>. <span class="warn">François, en revanche, se vieillit de cinq ans : il n'a que 37 ans, pas 42.</span></p>
+      </article>
+
+
+      <article class="tr">
+        <div class="tr-head">
+          <h3>Décès de François AMIOT</h3>
+          <span class="when">18 mars 1839</span>
+        </div>
+        <p class="ref">Vars — décès de 1839, acte n° 5 · <span class="tr-chips"><span class="chip c-d">Acte de décès</span><span class="chip">Filiation</span><span class="chip">Remariage</span></span></p>
+        <blockquote>
+          L'an mil huit cent trente-neuf, le dix-huit mars, à sept heures du matin, par-devant nous <b>Antoine Huot, maire</b> officier de l'état civil de la commune de Vars, canton d'Autrey, département de la Haute-Saône, sont comparus les sieurs <b>Claude Alexis Paufard, âgé de vingt-cinq ans, propriétaire, tailleur de pierre, demeurant au Fahy-lès-Autrey</b>, et <b>Charles Miel, âgé de quarante-deux ans, tisserand, demeurant à Vars</b>, <b>le premier gendre et le second ami du décédé</b> ci-après nommé ; lesquels nous ont déclaré que <b>ce jour, à six heures du matin, François Amiot, âgé de cinquante-huit ans, propriétaire, demeurant à Vars, fils des défunts François Bernard Amiot et de Nicolle Berthaud, de leur vivant propriétaires à Mont-le-Frânois, et époux de Françoise [Gueniffet ?], est décédé en son domicile à Vars</b> ; et après nous être assuré du décès nous avons dressé le présent acte, que les déclarants ont signé après lecture faite.
+          <span class="sign">Signé : Miel — Paufard — Huot, l'officier de l'état civil</span>
+        </blockquote>
+        <p class="gloss">La question la plus ancienne du dossier est close. François AMIOT meurt le <b>18 mars 1839 à Vars, à cinquante-huit ans</b> — l'âge exact d'un homme né le 24 décembre 1780. Et ce n'est pas un inconnu qui déclare : <b>c'est son gendre Claude PAUFARD, venu de Fahy</b>. Deux ans et demi après l'acte respectueux de 1836, la distance était comblée. Deux apports supplémentaires : <b>il s'était remarié</b> à une Françoise [Gueniffet], et <b>Nicolle BERTHAUD est morte propriétaire à Mont-le-Frânois</b> et non à Champlitte — le « présentement » de 1803 n'était bien qu'un séjour.</p>
+      </article>
+
+      <article class="tr">
+        <div class="tr-head">
+          <h3>Les AMIOT de Vars dans la table décennale</h3>
+          <span class="when">1803-1812</span>
+        </div>
+        <p class="ref">Vars — table décennale des naissances, an XI-1812 · <span class="tr-chips"><span class="chip">Table décennale</span><span class="chip c-warn">Deux familles</span></span></p>
+        <blockquote>
+          <b>Naissances relevées au nom AMIOT :</b><br>Étienne, 23 thermidor an XI <i>(11 août 1803)</i> · Jean, 14 nivôse an XII <i>(5 janvier 1804)</i> · Thérèse, 14 nivôse an XII <i>(5 janvier 1804)</i> · Jean-Baptiste, 13 pluviôse an XIII <i>(2 février 1805)</i> · Jeanne, 12 avril 1807 · Philippe, 21 mai 1807 · Élisabeth, 1<sup>er</sup> octobre 1808 · Jean-Baptiste, 8 septembre 1810 · <b>Françoise, 28 novembre 1810</b> · Charles, 31 janvier 1812.
+          <span class="sign">—</span>
+        </blockquote>
+        <p class="gloss">Deux paires sont impossibles pour une seule mère : <b>Jeanne le 12 avril et Philippe le 21 mai 1807</b>, trente-neuf jours d'écart ; <b>Jean-Baptiste le 8 septembre et Françoise le 28 novembre 1810</b>, quatre-vingt-un jours. Il y a donc <b>au moins deux foyers AMIOT à Vars</b> sur la même décennie. <span class="warn">Chaque acte doit être ouvert et le nom de la mère relevé : Barbe RENEVIER pour notre famille, une autre pour celle de Pierre AMIOT et Marguerite SAUVAGEOT.</span> À noter qu'Étienne naît le 11 août 1803, trois mois et demi après le mariage du 26 avril — si sa mère est Barbe, cela éclaire la rapidité de cette union.</p>
+      </article>
+
+      <article class="tr">
+        <div class="tr-head">
+          <h3>Décès de Christine AMIOT, veuve POIROT</h3>
+          <span class="when">3 août 1854</span>
+        </div>
+        <p class="ref">Vars — décès de 1854, acte n° 15 · <span class="tr-chips"><span class="chip c-d">Acte de décès</span><span class="chip c-warn">Homonyme à écarter</span></span></p>
+        <blockquote>
+          L'an mil huit cent cinquante-quatre, le quatre août, à sept heures du matin, devant nous <b>Joseph [Boront], maire</b> et officier de l'état civil de la commune de Vars, canton d'Autrey (Haute-Saône), sont comparus en la maison commune <b>Pierre Poirot, âgé de cinquante ans, garde-champêtre, fils de la défunte</b> ci-après nommée, et <b>Simon Poirot, âgé de quarante et un ans, tisserand, aussi fils de la même défunte</b>, les deux domiciliés à Vars ; lesquels nous ont déclaré que <b>Christine Amiot, âgée de soixante-douze ans dix-huit jours, manouvrière domiciliée à Vars, veuve de Claude Poirot, était décédée le jour d'hier à dix heures du soir en son domicile audit Vars</b> ; ajoutant que la défunte <b>était née en ce dernier lieu le dix-sept juillet mil sept cent quatre-vingt-deux</b>, et était <b>fille des défunts Pierre Amiot et Marguerite Sauvageot, qui étaient en leur vivant cultivateurs audit Vars, où ils sont décédés</b>.
+          <span class="sign">Signé : les déclarants et le maire</span>
+        </blockquote>
+        <p class="gloss"><span class="warn">Ce n'est pas notre famille.</span> Il existait à Vars une <b>seconde lignée AMIOT</b>, celle de <b>Pierre AMIOT et Marguerite SAUVAGEOT</b>, cultivateurs, installée là bien avant l'arrivée de François en 1803. C'est elle qui explique la moitié des naissances de la table décennale. La coïncidence mérite néanmoins d'être creusée : pourquoi un cordonnier de Mont-le-Frânois vient-il épouser une fille de Vars, à trente kilomètres ? Peut-être parce qu'il y avait déjà de la parenté. <b>Hypothèse, à ne pas porter à l'arbre.</b></p>
+      </article>
+
+      <p class="tr-sep">III — Oyrières, 1813</p>
+
+      <article class="tr">
+        <div class="tr-head">
+          <h3>Naissance de Claude PAUFARD</h3>
+          <span class="when">7 juin 1813</span>
+        </div>
+        <p class="ref">Oyrières — naissances de 1813 · <span class="tr-chips"><span class="chip c-n">Acte de naissance</span><span class="chip">Filiation</span><span class="chip c-warn">Cliché pâle</span></span></p>
+        <blockquote>
+          L'an mil huit cent treize, le sept juin, à dix heures du matin, pardevant nous [Guiraud ?], maire officier de l'état civil de la commune d'<b>Oyrières</b>, canton d'Autrey, département de la Haute-Saône, est comparu <b>Jean Baptiste Paufard, âgé de vingt cinq ans, tailleur de [pierre ?] à Oyrières</b>, lequel nous a présenté un enfant du sexe masculin <b>né le sept juin courant à six heures du matin</b> en son domicile, de lui déclarant et de <b>Denise Redoutet son épouse en légitime mariage</b>, auquel il a déclaré vouloir donner le prénom de <b>Claude</b>. Laquelle déclaration faite en présence des sieurs <b>Nicolas Guignard, instituteur audit lieu, âgé de quarante [cinq ?] ans</b>, et de Jean [Janvier ?] Guirot, cultivateur audit lieu ; les deux témoins ont signé avec nous le présent acte après lecture.
+          <span class="sign">Signé : Paufard — Guignard — [Guiraud ?] maire</span>
+        </blockquote>
+        <p class="gloss">Trois questions réglées d'un coup : <b>Oyrières est la bonne commune</b>, <b>juin 1813 la bonne date</b>, et <b>Jean-Baptiste PAUFARD et Denise REDOUTET sont bien les parents</b>. La formule « son épouse en légitime mariage » borne leur union avant juin 1813.</p>
+      </article>
+
+      <p class="tr-sep">IV — Fahy-lès-Autrey, 1836-1852</p>
+
+      <article class="tr">
+        <div class="tr-head">
+          <h3>Mariage de Claude PAUFARD et de Françoise AMIOT</h3>
+          <span class="when">25 octobre 1836</span>
+        </div>
+        <p class="ref">Fahy-lès-Autrey — mariages de 1836, acte n° 16 · <span class="tr-chips"><span class="chip c-m">Acte de mariage</span><span class="chip">Acte respectueux</span></span></p>
+        <blockquote>
+          L'an mil huit cent trente six, le vingt cinq octobre, à sept heures du matin, pardevant nous Léon Charles François Boisset, maire et officier de l'état civil de la commune de Fahy-lès-Autrey, canton d'Autrey, arrondissement de Gray, département de la Haute-Saône,<br><br>
+          <b>est comparu Claude Paufard, dit Alexis, âgé de vingt trois ans, tailleur de pierre</b>, demeurant dans cette commune, <b>mineur</b>, fils de <b>Jean-Baptiste Paufard, propriétaire, âgé de quarante huit ans</b>, et de <b>Denise Redoutet, âgée de quarante sept ans, ses père et mère, présents et consentants</b> en ce jour ; dont les trois domiciliés [en cette commune] ;<br><br>
+          <b>et demoiselle Françoise Amiot, âgée de vingt cinq ans, sans profession, majeure</b>, fille de <b>François Amiot, âgé de cinquante [cinq] ans, propriétaire</b>, <i>demeurant à Vars</i>, <b>et de défunte Barbe Renevier, décédée le cinq mars mil huit cent dix huit</b>, ainsi que le constate son acte de décès dont la copie est ci-jointe ; <b>ladite Françoise Amiot née à Vars, où elle réside, le vingt huit novembre mil huit cent dix</b>, comme l'affirme la copie de son acte de naissance qu'elle nous a exhibée, d'une part ; et <b>[l'acte] respectueux adressé à son père, le vingt trois septembre mil huit cent trente six</b>, d'autre part ;<br><br>
+          lesquels nous ont requis de procéder à la célébration du mariage projeté entre eux, et dont les publications ont été faites, savoir : en cette commune les <b>dimanches neuf et seize octobre</b> courant à dix heures du matin, <b>et dans la commune de Vars les mêmes dimanches</b> à [l'heure] de midi, comme l'atteste M. le Maire dans le certificat ci-joint. Nous, maire et officier de l'état civil de la commune de Fahy-lès-Autrey, après avoir donné lecture aux parties intéressées et aux quatre témoins ci-après dénommés des actes ci-dessus relatés et du chapitre VI du titre du code civil intitulé du mariage, avons demandé au futur époux et à la future épouse s'ils veulent se prendre pour mari et femme ; chacun d'eux ayant répondu séparément et affirmativement, déclarons au nom de la loi que <b>Claude Paufard dit Alexis et Françoise Amiot sont unis par le mariage</b>.<br><br>
+          Ce dont nous avons dressé acte en présence des sieurs <b>François Paufard, âgé de vingt deux ans, instituteur primaire, frère de l'époux</b> ; <b>[Joseph] Chateau, âgé de trente ans, meunier de sa profession</b> ; <b>Jean-Baptiste Roy, âgé de vingt quatre ans, instituteur communal</b> ; et <b>Jean-Baptiste Muret, âgé de vingt neuf ans, cultivateur</b>, domicilié à [?] ; les trois premiers à Fahy-lès-Autrey, <b>le second beau-frère de l'époux</b>, et les deux derniers amis des époux ; qui ont signé avec nous, ainsi que l'époux et l'épouse, <b>et non la mère de l'époux, illettrée</b>, de ce enquise, après lecture faite.
+          <span class="sign">En marge : « demeurant à Vars, renvoi approuvé »<br>Signé : Françoise Amiot — Paufard — Paufard — Paufard dit Alexis — J. B. Chateau — Roy — Le Maire L. Boisset</span>
+        </blockquote>
+        <p class="gloss">La pièce qui rouvre la piste maternelle. <b>François AMIOT est vivant</b> en octobre 1836, il a cinquante-cinq ans — exact pour un homme né le 24 décembre 1780 —, il est <b>propriétaire</b> et il <b>demeure toujours à Vars</b>, où sa fille réside encore. La borne « mort avant 1878 » devient « mort après octobre 1836 », et l'on sait enfin où le chercher. <span class="warn">Il n'était pas au mariage : sa fille lui a fait signifier un acte respectueux le 23 septembre 1836, la procédure permettant de passer outre le silence ou le refus d'un père.</span> L'acte donne aussi les âges de Jean-Baptiste PAUFARD et de Denise REDOUTET, tous deux vivants, installés à Fahy et non plus à Oyrières — et il révèle un <b>beau-frère CHATEAU, meunier</b>, donc une sœur PAUFARD jusqu'ici inconnue.</p>
+      </article>
+
+      <article class="tr">
+        <div class="tr-head">
+          <h3>Naissance de Françoise Firmine PAUFARD</h3>
+          <span class="when">26 septembre 1837</span>
+        </div>
+        <p class="ref">Fahy-lès-Autrey — naissances de 1837, acte n° 14 · <span class="tr-chips"><span class="chip c-n">Acte de naissance</span></span></p>
+        <blockquote>
+          L'an mil huit cent trente sept, le vingt six septembre, à quatre heures du soir, pardevant nous <b>Léon Charles François Boisset</b>, maire, officier de l'état civil de la commune de Fahy-lès-Autrey, canton d'Autrey, arrondissement de Gray, département de la Haute-Saône, a comparu <b>le sieur Claude Paufard, âgé de vingt quatre ans, maréchal[-ferrant], demeurant au Fahy</b>, lequel nous a présenté un enfant du sexe féminin, <b>né en son domicile le jour d'hier</b>, à [une ?] heure de midi, de lui déclarant et de <b>françoise Amiot, âgée de vingt sept ans, son épouse</b>, et auquel il a déclaré vouloir donner le prénom de <b>françoise-firmine</b>. Lesdites déclaration et présentation faites en présence des sieurs Jean Gonget, âgé de trente six ans, cultivateur, et <b>Jean-Baptiste Roy, âgé de vingt cinq ans, instituteur communal</b>, tous les deux demeurant audit Fahy ; et ont le déclarant et les témoins signé avec nous le présent acte de naissance, après lecture faite.
+          <span class="sign">Signé : Roy — J. Gonget — Paufard — Le Maire L. Boisset</span>
+        </blockquote>
+        <p class="gloss">Premier enfant du couple, onze mois après le mariage. Claude y est <b>maréchal-ferrant</b> alors qu'il était tailleur de pierre un an plus tôt et sera dit propriétaire dès l'année suivante : trois métiers en trois ans, ce qui invite à relire la mention de 1837.</p>
+      </article>
+
+      <article class="tr">
+        <div class="tr-head">
+          <h3>Décès de Firmine PAUFARD</h3>
+          <span class="when">4 octobre 1838</span>
+        </div>
+        <p class="ref">Fahy-lès-Autrey — décès de 1838, acte n° 12 · <span class="tr-chips"><span class="chip c-d">Acte de décès</span></span></p>
+        <blockquote>
+          L'an mil huit cent trente huit, le quatre du mois d'octobre, à cinq heures du soir, pardevant nous Léon Charles François Boisset, maire et officier de l'état civil de la commune du Fahy-lès-Autrey, canton d'Autrey, arrondissement de Gray, département de la Haute-Saône, ont comparu les sieurs <b>Claude Paufard, âgé de vingt quatre ans, propriétaire</b>, et Jean-Baptiste Roy, âgé de vingt six ans, instituteur primaire, <b>le premier père et le second voisin de la décédée</b> ci-après nommée, demeurant au Fahy-lès-Autrey ; lesquels nous ont déclaré que <b>le jour d'hier, à six heures du soir, Firmine Paufard, âgée de [onze ?] mois, fille dudit Paufard et de françoise Amiot, âgée de vingt six ans, son épouse, est décédée au domicile de sesdits père et mère</b>, ainsi que nous nous en sommes assuré. Et ont lesdits déclarants signé avec nous le présent acte de décès, après lecture faite.
+          <span class="sign">Signé : Roy — Paufard — Le Maire L. Boisset</span>
+        </blockquote>
+        <p class="gloss">Premier deuil du foyer. <span class="warn">L'âge transcrit « onze mois » ne colle pas : née le 25 septembre 1837, Firmine avait douze mois et huit jours. La lecture « treize mois » est probablement la bonne.</span></p>
+      </article>
+
+      <article class="tr">
+        <div class="tr-head">
+          <h3>Naissance de Clotilde Hortense PAUFARD</h3>
+          <span class="when">2 janvier 1839</span>
+        </div>
+        <p class="ref">Fahy-lès-Autrey — naissances de 1839, acte n° 2 · <span class="tr-chips"><span class="chip c-n">Acte de naissance</span><span class="chip">Adresse</span></span></p>
+        <blockquote>
+          L'an mil huit cent trente neuf, le deux janvier, à neuf heures du matin, en la maison commune, pardevant nous Léon Charles François Boisset, maire et officier de l'état civil de la commune du Fahy-lès-Autrey, canton d'Autrey, arrondissement de Gray, département de la Haute-Saône, a comparu <b>le sieur Claude Paufard, âgé de vingt six ans, propriétaire</b>, demeurant en cette commune, lequel nous a déclaré et présenté un enfant du sexe féminin, <b>né le jour d'hier, en son domicile, rue d'Autrey, à trois heures du matin</b>, de lui déclarant et de <b>françoise Amiot, âgée de vingt six ans, son épouse</b>, et auquel il a déclaré vouloir donner les prénoms de <b>Clotilde-Hortense</b>. Lesdites déclaration et présentation faites en présence des sieurs Jean-Baptiste Roy, âgé de vingt six ans, instituteur primaire, et <b>Pierre Joseph Chevillot, âgé de vingt cinq ans, tailleur de pierre</b>, demeurant tous deux audit lieu ; et ont le père et les témoins signé avec nous le présent acte de naissance, après lecture faite.
+          <span class="sign">Signé : Roy — Pierre Chevillot — Paufard — Le Maire L. Boisset</span>
+        </blockquote>
+        <p class="gloss">Le seul acte qui donne l'<b>adresse du foyer : rue d'Autrey</b>, directement reportable sur le cadastre napoléonien de Fahy.</p>
+      </article>
+
+      <article class="tr">
+        <div class="tr-head">
+          <h3>Naissance de Marie-Louise PAUFARD</h3>
+          <span class="when">30 janvier 1840</span>
+        </div>
+        <p class="ref">Fahy-lès-Autrey — naissances de 1840, acte n° 2 · <span class="tr-chips"><span class="chip c-n">Acte de naissance</span></span></p>
+        <blockquote>
+          L'an mil huit cent quarante, le trente janvier, à dix heures du matin, pardevant nous Léon Charles François Boisset, maire et officier de l'état civil de la commune du Fahy-lès-Autrey, canton d'Autrey, arrondissement de Gray, département de la Haute-Saône, a comparu <b>le sieur Claude Paufard, âgé de vingt six ans, propriétaire</b>, demeurant en cette commune, lequel nous a présenté un enfant du sexe féminin, <b>né le jour d'hier à trois heures du soir</b>, de lui déclarant et de <b>françoise Amiot son épouse</b>, et auquel il a déclaré vouloir donner les prénoms de <b>Marie-Louise-Léocadie-[Nivida ?]</b>. Lesdites déclaration et présentation faites en présence du sieur Jean-Baptiste Roy, instituteur primaire, âgé de vingt huit ans, et de <b>Nicolas Bertrand, âgé de trente cinq ans, garde champêtre</b>, demeurant audit lieu ; et ont le déclarant et les témoins signé avec nous le présent acte de naissance, après lecture.
+          <span class="sign">Signé : Roy — N. Bertrand — Paufard — Le Maire L. Boisset</span>
+        </blockquote>
+        <p class="gloss">Quatre prénoms, ce qui est inhabituel dans cette famille et signale peut-être plusieurs parrainages. <span class="warn">Le quatrième, lu « Nivida », mérite un second regard sur l'original.</span></p>
+      </article>
+
+      <article class="tr">
+        <div class="tr-head">
+          <h3>Décès de Bazille Théophile Alphonse PAUFARD</h3>
+          <span class="when">16 octobre 1841</span>
+        </div>
+        <p class="ref">Fahy-lès-Autrey — décès de 1841, acte n° 28 · <span class="tr-chips"><span class="chip c-d">Acte de décès</span><span class="chip c-warn">Naissance manquante</span></span></p>
+        <blockquote>
+          L'an mil huit cent quarante un, le seize du mois d'octobre, à neuf heures du matin, pardevant nous, <b>Joseph Gonget, maire</b> et officier de l'état civil de la commune du Fahy-lès-Autrey, canton d'Autrey, arrondissement de Gray, département de la Haute-Saône, ont comparu les sieurs <b>Claude Paufard, âgé de vingt sept ans, propriétaire</b>, et Jean-Baptiste Roy, âgé de vingt neuf ans, instituteur communal, demeurant tous les deux audit Fahy, le premier père et le second voisin du décédé ci-après nommé ; lesquels nous ont déclaré qu'<b>hier à dix heures du soir, Bazille-Théophile-Alphonse Paufard, âgé d'environ sept mois, fils dudit sieur Paufard déclarant et de françoise Amiot son épouse, est décédé au domicile de ces derniers</b>, ainsi que nous nous en sommes assuré. Et ont lesdits déclarants signé avec nous le présent acte de décès, après que lecture en a été faite.
+          <span class="sign">Signé : Roy — Paufard — Le Maire Gonget</span>
+        </blockquote>
+        <p class="gloss">Un fils jusqu'ici totalement inconnu, mort à sept mois, ce qui place sa <b>naissance vers mars 1841</b> — l'acte reste à retrouver. C'est le seul enfant de la fratrie dont nous n'ayons que le décès.</p>
+      </article>
+
+      <article class="tr">
+        <div class="tr-head">
+          <h3>Naissance de Claude Alexis PAUFARD</h3>
+          <span class="when">11 juillet 1842</span>
+        </div>
+        <p class="ref">Fahy-lès-Autrey — naissances de 1842, acte n° 15 · <span class="tr-chips"><span class="chip c-n">Acte de naissance</span></span></p>
+        <blockquote>
+          L'an mil huit cent quarante deux, le onze du mois de juillet, à neuf heures du matin, pardevant nous, Joseph Gonget, maire et officier de l'état civil de la commune du Fahy-lès-Autrey, arrondissement de Gray, département de la Haute-Saône, a comparu <b>le sieur Claude Alexis Paufard, âgé de vingt neuf ans, propriétaire</b>, demeurant en cette commune, lequel nous a présenté un enfant du sexe masculin, <b>né le jour d'hier à quatre heures du soir, en son domicile</b>, de lui déclarant et de <b>françoise Amiot, âgée de trente et un ans, son épouse</b>, et auquel enfant il a déclaré vouloir donner les prénoms de <b>Claude-Alexis</b>. Lesdites déclaration et présentation faites en présence des sieurs <b>Jean-Baptiste Barbier fils, âgé de vingt quatre ans, menuisier</b>, et Jean-Baptiste Roy, âgé de trente ans, instituteur primaire, demeurant tous deux audit Fahy, témoins qui ont signé le présent acte de naissance avec nous et le déclarant, après lecture faite.
+          <span class="sign">Signé : Roy — Paufard — Barbier — Le Maire Gonget</span>
+        </blockquote>
+        <p class="gloss">Le père signe ici <b>Claude Alexis</b> — il était déjà « dit Alexis » à son mariage de 1836, mais simplement « Claude » à Oyrières en 1813. <span class="warn">Ce Claude-Alexis né en 1842 aurait 64 ans en 1906, alors que l'Alexis PAUFARD témoin au mariage d'Yvonne s'y déclare 53 ans.</span></p>
+      </article>
+
+
+      <article class="tr">
+        <div class="tr-head">
+          <h3>Décès de Barbe AMIOT, veuve VANNEY</h3>
+          <span class="when">4 juin 1839</span>
+        </div>
+        <p class="ref">Fahy-lès-Autrey — décès de 1839, acte n° 13 · <span class="tr-chips"><span class="chip c-d">Acte de décès</span><span class="chip">Filiation</span><span class="chip">Collatérale</span></span></p>
+        <blockquote>
+          L'an mil huit cent trente-neuf, le cinq du mois de juin, à huit heures du matin, par devant nous Léon Charles F<sup>s</sup> Boisset, maire et officier de l'état civil de la commune du Fahy-lès-Autrey, canton d'Autrey, arrondissement de Gray, département de la Haute-Saône, ont comparu les sieurs Nicolas Bertrand, âgé de trente-quatre ans, garde champêtre, et Jean-Baptiste Roy, âgé de vingt-six ans, instituteur primaire, <b>voisins de la décédée</b> ci-après nommée, tous deux demeurant en cette commune ; lesquels nous ont déclaré que le jour d'hier, à trois heures du soir, <b>Barbe Amiot, âgée de soixante et dix-neuf ans, veuve de Nicolas Vanney, est décédée en son domicile, rue d'Autrey</b>, ainsi que nous nous en sommes assuré ; ladite décédée <b>fille de défunts Nicolas Amiot et Jeanne André</b>. Lesdites déclarations faites par lesdits sieurs Roy et Bertrand, qui ont signé avec nous le présent acte de décès, après que lecture leur en a été faite.
+          <span class="sign">Signé : Roy — N. Bertrand — Le Maire L. Boisset</span>
+        </blockquote>
+        <p class="gloss">L'acte le plus intrigant du lot. Une <b>AMIOT née vers 1760</b> meurt <b>rue d'Autrey</b>, la rue même où vivent Claude PAUFARD et Françoise AMIOT — dans un village de cette taille, la coïncidence est improbable. Ses parents, <b>Nicolas AMIOT et Jeanne ANDRÉ</b>, sont un couple entièrement nouveau. L'hypothèse la plus économique fait de Barbe la <b>sœur de Bernard AMYOT</b>, donc la grand-tante de Françoise, et de Nicolas et Jeanne des ancêtres de génération −2. <span class="warn">Hypothèse non prouvée : à tester par la succession de Barbe (tables du bureau de Gray, 1839) et par son mariage avec Nicolas VANNEY, vers 1780-1790, qui donnera son lieu de naissance.</span> Elle suggère aussi pourquoi Françoise, née à Vars, s'est installée à Fahy en 1836 : une grand-tante y vivait déjà.</p>
+      </article>
+
+      <article class="tr">
+        <div class="tr-head">
+          <h3>Décès de Gustave François PAUFARD</h3>
+          <span class="when">18 octobre 1844</span>
+        </div>
+        <p class="ref">Fahy-lès-Autrey — décès de 1844, acte n° 21 · <span class="tr-chips"><span class="chip c-d">Acte de décès</span><span class="chip c-warn">Naissance manquante</span></span></p>
+        <blockquote>
+          L'an mil huit cent quarante-quatre, le dix-huit du mois d'octobre, à neuf heures du matin, par devant nous Joseph Gonget, maire officier de l'état civil de la commune du Fahy-lès-Autrey, canton d'Autrey, arrondissement de Gray, département de la Haute-Saône, ont comparu les sieurs <b>Claude Alexis Paufard, âgé de trente et un ans, propriétaire</b>, et Jean-Baptiste Roy, âgé de trente-deux ans, instituteur, demeurant tous les deux en cette commune, le premier père et le second voisin du décédé ci-après nommé ; lesquels nous ont déclaré que le jour d'hier, à huit heures du soir, <b>Gustave François Paufard, âgé d'environ huit jours, fils dudit Paufard déclarant et de Françoise Amiot, épouse de ce dernier, est décédé au domicile de sesdits père et mère</b>, ainsi que nous nous en sommes assuré.
+          <span class="sign">Signé : Roy — [Bertrand] — Le Maire Gonget</span>
+        </blockquote>
+        <p class="gloss">Premier des six enfants nés après 1843 à mourir dans son premier trimestre. Sa <b>naissance, vers le 10 octobre 1844</b>, reste à retrouver dans le registre de Fahy.</p>
+      </article>
+
+      <article class="tr">
+        <div class="tr-head">
+          <h3>Naissance de Clotilde Stéphanie Émérite PAUFARD</h3>
+          <span class="when">5 mai 1846</span>
+        </div>
+        <p class="ref">Fahy-lès-Autrey — naissances de 1846, acte n° 7 · <span class="tr-chips"><span class="chip c-n">Acte de naissance</span></span></p>
+        <blockquote>
+          L'an mil huit cent quarante-six, le cinq mai, à trois heures du soir, par devant nous Joseph Gonget, maire et officier de l'état civil de la commune du Fahy-lès-Autrey, arrondissement de Gray, département de la Haute-Saône, a comparu le sieur <b>Claude Alexis Paufard, âgé de trente et un ans, propriétaire</b>, domicilié en cette commune, lequel nous a présenté un enfant du sexe féminin, <b>né ce présent jour, en sa maison, à cinq heures du matin</b>, de lui déclarant et de <b>Françoise Amiot, âgée de trente-six ans, son épouse</b>, et auquel enfant il a déclaré vouloir donner les prénoms de <b>Clotilde-Stéphanie-Émérite</b>. Lesdites déclaration et présentation faites en présence des sieurs Jean-Baptiste Roy, âgé de trente-quatre ans, instituteur communal, et Nicolas Bertrand, âgé de quarante et un ans, garde champêtre, demeurant tous deux audit Fahy.
+          <span class="sign">Signé : Roy — N. Bertrand — Paufard — Le Maire Gonget</span>
+        </blockquote>
+        <p class="gloss">Le prénom <b>Clotilde est repris</b> alors qu'une Clotilde Hortense née en 1839 est censée vivre. C'est inhabituel et laisse penser que l'aînée était morte, peut-être hors de Fahy — piste à vérifier.</p>
+      </article>
+
+      <article class="tr">
+        <div class="tr-head">
+          <h3>Décès de Clotilde Stéphanie Émérite PAUFARD</h3>
+          <span class="when">17 août 1846</span>
+        </div>
+        <p class="ref">Fahy-lès-Autrey — décès de 1846, acte n° 12 · <span class="tr-chips"><span class="chip c-d">Acte de décès</span></span></p>
+        <blockquote>
+          L'an mil huit cent quarante-six, le dix-huit août, à huit heures du matin, devant nous Joseph Gonget, maire, officier de l'état civil de la commune du Fahy-lès-Autrey, département de la Haute-Saône, sont comparus en la maison commune <b>Claude Alexis Paufard, âgé de trente et un ans, propriétaire</b>, domicilié au Fahy-lès-Autrey, et Jean-Baptiste Roy, âgé de trente-quatre ans, instituteur communal, demeurant au dit lieu ; lesquels nous ont déclaré que <b>Clotilde-Stéphanie-Émérite Paufard, âgée de trois mois, fille dudit Paufard déclarant et de Françoise Amiot son épouse</b>, ajoutant que la défunte est née à Fahy-lès-Autrey. Après nous être assuré du décès, nous avons aussitôt dressé le présent acte ; et après en avoir donné lecture aux déclarants, ils l'ont immédiatement signé avec nous. <b>Est décédée le dix-sept août mil huit cent quarante-six, à sept heures du soir, en la maison du premier déclarant</b> ; ce renvoi faisant suite à la [cinquième] ligne ci-dessus a été approuvé et signé après lecture.
+          <span class="sign">Signé : Roy — Paufard — Le Maire Gonget</span>
+        </blockquote>
+        <p class="gloss">Trois mois et douze jours. L'acte porte un <b>renvoi en fin de texte</b> — l'officier avait oublié la date et l'heure du décès et les a rajoutées.</p>
+      </article>
+
+      <article class="tr">
+        <div class="tr-head">
+          <h3>Naissance d'Élise Célestine PAUFARD</h3>
+          <span class="when">24 juillet 1847</span>
+        </div>
+        <p class="ref">Fahy-lès-Autrey — naissances de 1847, acte n° 19 · <span class="tr-chips"><span class="chip c-n">Acte de naissance</span></span></p>
+        <blockquote>
+          L'an mil huit cent quarante-sept, le vingt-cinq du mois de juillet, à huit heures du matin, devant nous <b>Jean-François Boisset, maire</b>, officier de l'état civil de la commune du Fahy-lès-Autrey, département de la Haute-Saône, est comparu en la maison commune le sieur <b>Claude Alexis Paufard, âgé de trente-deux ans, propriétaire</b> domicilié audit Fahy-lès-Autrey, lequel nous a présenté un enfant du sexe féminin, <b>né en son domicile le vingt-quatre du présent mois, à cinq heures du matin</b>, de lui déclarant et de <b>Françoise Amiot, âgée de trente-sept ans, son épouse, sans profession</b>, auquel enfant il a donné les prénoms d'<b>Élise-Célestine</b>. Lesdites déclarations et présentation ont été faites en présence des sieurs Jean-Baptiste Roy, âgé de trente-cinq ans, instituteur communal, premier témoin, et Nicolas Bertrand, âgé de quarante ans, garde champêtre, second témoin, tous les deux domiciliés au Fahy-lès-Autrey.
+          <span class="sign">Signé : Roy — N. Bertrand — Paufard — Le Maire [Boisset]</span>
+        </blockquote>
+        <p class="gloss">La mairie change de main : <b>Jean-François Boisset</b> succède à Joseph Gonget. Françoise AMIOT est désormais systématiquement dite <b>sans profession</b>.</p>
+      </article>
+
+      <article class="tr">
+        <div class="tr-head">
+          <h3>Décès d'Élise Célestine PAUFARD</h3>
+          <span class="when">25 septembre 1847</span>
+        </div>
+        <p class="ref">Fahy-lès-Autrey — décès de 1847, acte n° 23 · <span class="tr-chips"><span class="chip c-d">Acte de décès</span></span></p>
+        <blockquote>
+          L'an mil huit cent quarante-sept, le vingt-six septembre, à sept heures du matin, devant nous Jean-François Boisset, maire, officier de l'état civil de la commune du Fahy-lès-Autrey, arrondissement de Gray, département de la Haute-Saône, sont comparus en la maison commune les sieurs <b>Claude Alexis Paufard, âgé de trente-deux ans, propriétaire</b>, domicilié au Fahy-lès-Autrey, et Jean-Baptiste Roy, âgé de trente-cinq ans, instituteur communal, domicilié au même lieu, le premier père du défunt ci-après désigné ; lesquels nous ont déclaré qu'<b>Élise-Célestine Paufard, âgée de deux mois, est décédée en la maison de son père le vingt-cinq du présent mois, à dix heures du matin</b> ; ajoutant que ledit défunt est né au Fahy-lès-Autrey, [enfant] du sieur Paufard, premier déclarant, et de <b>Françoise Amiot, âgée de trente-sept ans, sans profession</b>, domiciliés en cette commune.
+          <span class="sign">Signé : Roy — Paufard — Le Maire F<sup>s</sup> Boisset</span>
+        </blockquote>
+        <p class="gloss">Deux mois et un jour. Troisième deuil consécutif en quatre ans.</p>
+      </article>
+
+      <article class="tr">
+        <div class="tr-head">
+          <h3>Naissance de Nicolas Claude Alexis PAUFARD</h3>
+          <span class="when">19 février 1849</span>
+        </div>
+        <p class="ref">Fahy-lès-Autrey — naissances de 1849, acte n° 1<sup>er</sup> · <span class="tr-chips"><span class="chip c-n">Acte de naissance</span></span></p>
+        <blockquote>
+          L'an mil huit cent quarante-neuf, le dix-neuf février, à quatre heures du soir, devant nous Jean-François Boisset, maire, officier de l'état civil de la commune du Fahy-lès-Autrey, arrondissement de Gray, département de la Haute-Saône, a comparu en la maison commune le sieur <b>Claude Paufard, âgé de trente-quatre ans, propriétaire</b> audit Fahy, lequel nous a présenté un enfant du sexe masculin, <b>né ce présent jour, en son domicile, à onze heures du matin</b>, de lui déclarant et de <b>Françoise Amiot, âgée de trente-huit ans, son épouse, sans profession</b> audit lieu ; et auquel enfant il a donné les prénoms de <b>Nicolas-Claude-Alexis</b>. Lesdites déclarations et présentation faites en présence de Jean-Baptiste Roy, âgé de trente-six ans, instituteur communal, premier témoin, et de <b>Jean-Baptiste Boisset, âgé de vingt-quatre ans, maréchal-ferrant</b>, second témoin, tous les deux domiciliés au Fahy-lès-Autrey.
+          <span class="sign">Signé : Paufard — Roy — J<sup>n</sup> B<sup>te</sup> Boisset — Le Maire F<sup>s</sup> Boisset</span>
+        </blockquote>
+        <p class="gloss">Le prénom <b>Nicolas</b> apparaît pour la première fois dans la descendance — dix ans après la mort de Barbe AMIOT, fille de <b>Nicolas</b> AMIOT, rue d'Autrey. Indice ténu mais cohérent avec l'hypothèse de parenté.</p>
+      </article>
+
+      <article class="tr">
+        <div class="tr-head">
+          <h3>Décès de Nicolas Claude Alexis PAUFARD</h3>
+          <span class="when">7 avril 1849</span>
+        </div>
+        <p class="ref">Fahy-lès-Autrey — décès de 1849, acte n° 2 · <span class="tr-chips"><span class="chip c-d">Acte de décès</span><span class="chip c-warn">Vue tronquée</span></span></p>
+        <blockquote>
+          L'an mil huit cent quarante-neuf, le sept avril, à deux heures du soir, devant nous Jean-François Boisset, maire, officier de l'état civil de la commune du Fahy-lès-Autrey, arrondissement de Gray, département de la Haute-Saône, sont comparus en la maison commune les sieurs Jean-Baptiste Boisset, âgé de vingt-quatre ans, maréchal-ferrant, et <b>Claude Paufard, âgé de trente-quatre ans, propriétaire</b>, domiciliés tous deux au Fahy-lès-Autrey, le premier voisin et le second père du défunt ci-après nommé ; lesquels nous ont déclaré que <b>Nicolas-Claude-Alexis Paufard, âgé d'environ un mois</b>, demeurant en cette commune, <b>est décédé en la maison de ses père et mère audit lieu, ce présent jour à huit heures du matin</b> ; ajoutant que le décédé est né audit Fahy, [enfant] de Claude Paufard, l'un des déclarants, et de <b>Françoise Amiot, âgée de trente-huit ans</b>, épouse domiciliée en ce lieu. […]
+          <span class="sign">Signé : [fin de l'acte coupée sur la vue]</span>
+        </blockquote>
+        <p class="gloss">Un mois et dix-neuf jours. <span class="warn">Le bas de l'acte est coupé sur la capture : signatures non relevées.</span></p>
+      </article>
+
+      <article class="tr">
+        <div class="tr-head">
+          <h3>Naissance de Maria PAUFARD</h3>
+          <span class="when">≈ 17 septembre 1850</span>
+        </div>
+        <p class="ref">Fahy-lès-Autrey — naissances de 1850, acte n° 9 · <span class="tr-chips"><span class="chip c-n">Acte de naissance</span><span class="chip c-warn">Vue tronquée</span></span></p>
+        <blockquote>
+          L'an mil huit cent cinquante, le dix-huit septembre, à sept heures du matin, devant nous Jean-François Boisset, maire, officier de l'état civil de la commune du Fahy-lès-Autrey, département de la Haute-Saône, a comparu en la maison commune le sieur <b>Claude Alexis Paufard, âgé de trente-sept ans, entrepreneur de travaux publics</b>, demeurant audit Fahy-lès-Autrey, lequel nous a présenté un enfant du sexe féminin […]
+          <span class="sign">Signé : [non relevé]</span>
+        </blockquote>
+        <p class="gloss">La capture s'arrête à la quatrième ligne, mais elle suffit pour l'essentiel : Claude PAUFARD est désormais <b>entrepreneur de travaux publics</b>. Le fils du tailleur de pierre d'Oyrières a monté son entreprise. <span class="warn">Le prénom Maria vient de la mention marginale ; la date de naissance est déduite de l'acte de décès, qui donne douze jours au 29 septembre.</span></p>
+      </article>
+
+      <article class="tr">
+        <div class="tr-head">
+          <h3>Décès de Maria PAUFARD</h3>
+          <span class="when">29 septembre 1850</span>
+        </div>
+        <p class="ref">Fahy-lès-Autrey — décès de 1850, acte n° 6 · <span class="tr-chips"><span class="chip c-d">Acte de décès</span></span></p>
+        <blockquote>
+          L'an mil huit cent cinquante, le vingt-neuf septembre, à quatre heures après midi, devant nous Jean-François Boisset, maire, officier de l'état civil de la commune du Fahy-lès-Autrey, arrondissement de Gray, département de la Haute-Saône, sont comparus en la maison commune les sieurs <b>Claude Alexis Paufard, âgé de trente-sept ans, entrepreneur de travaux publics</b>, et Jean-Baptiste Roy, âgé de trente-huit ans, instituteur communal, tous les deux domiciliés au Fahy-lès-Autrey, le premier père et le second voisin de la décédée ci-après nommée ; lesquels nous ont déclaré que <b>Maria Paufard, âgée de douze jours, est décédée en cette commune au domicile de son dit père, le vingt-neuf septembre, à deux heures du soir</b> ; ajoutant que la défunte était fille de Claude-Alexis Paufard et de <b>Françoise Amiot, âgée de quarante ans</b>, tous les deux domiciliés au Fahy-lès-Autrey.
+          <span class="sign">Signé : Roy — Paufard — Le Maire F<sup>s</sup> Boisset</span>
+        </blockquote>
+        <p class="gloss">Douze jours. Le père déclare le décès le jour même, deux heures après.</p>
+      </article>
+
+      <article class="tr">
+        <div class="tr-head">
+          <h3>Décès de Napoléon Victorin François PAUFARD</h3>
+          <span class="when">5 juillet 1852</span>
+        </div>
+        <p class="ref">Fahy-lès-Autrey — décès de 1852, acte n° 2 · <span class="tr-chips"><span class="chip c-d">Acte de décès</span><span class="chip c-warn">Naissance manquante</span></span></p>
+        <blockquote>
+          L'an mil huit cent cinquante-deux, le six juillet, à neuf heures du matin, par devant nous <b>Antoine Redoutet, adjoint, faisant les fonctions de maire</b> et d'officier de l'état civil de la commune du Fahy-lès-Autrey, arrondissement de Gray, département de la Haute-Saône, sont comparus en la maison commune les sieurs <b>Claude Paufard, âgé de trente-huit ans, entrepreneur de travaux publics</b>, et Nicolas Bertrand, âgé de quarante-sept ans, garde champêtre, demeurant tous les deux au Fahy-lès-Autrey, le premier père et le second voisin du décédé ci-après nommé ; lesquels nous ont déclaré que <b>Napoléon-Victorin-François Paufard, âgé de deux mois et demi, est décédé hier à dix heures du soir, au domicile de ses père et mère</b> situé audit lieu ; ajoutant que <b>le défunt est né au Fahy-lès-Autrey le premier mai, présente année</b>, fils dudit Paufard déclarant et de <b>Françoise Amiot, sans profession</b>, épouse domiciliée en cette commune.
+          <span class="sign">Signé : Paufard — N. Bertrand — L'adjoint faisant fonctions de maire, Redoutet</span>
+        </blockquote>
+        <p class="gloss">Le dernier enfant connu du couple, et le huitième à mourir. Françoise a quarante et un ans. Il porte le prénom <b>Napoléon</b> que sa sœur Théolinde retrouvera quatorze ans plus tard en épousant Napoléon GRILLOT. À noter enfin qu'<b>Antoine REDOUTET est adjoint au maire de Fahy</b> : le patronyme de la grand-mère paternelle est solidement installé dans la commune.</p>
+      </article>
+
+
+      <article class="tr">
+        <div class="tr-head">
+          <h3>Naissance d'Adélaïde Théolinde PAUFARD</h3>
+          <span class="when">23 septembre 1843</span>
+        </div>
+        <p class="ref">Fahy-lès-Autrey — naissances de 1843, acte n° 16 · <span class="tr-chips"><span class="chip c-n">Acte de naissance</span><span class="chip c-warn">Âge du père erroné</span></span></p>
+        <blockquote>
+          L'an mil huit cent quarante-trois, le vingt-trois du mois de septembre, à huit heures du matin, par-devant nous <b>François Boisset, adjoint au maire</b> de la commune de Fahy-lès-Autrey, remplissant en l'absence de ce dernier les fonctions d'officier de l'état civil, a comparu le sieur <b>Claude Alexis Paufard, âgé de trente-neuf ans, propriétaire</b> demeurant en cette commune, lequel nous a présenté un enfant du sexe féminin, <b>né le jour d'hui à deux heures du matin en son domicile</b> audit lieu, de lui déclarant et de <b>Françoise Amiot, âgée de trente-trois ans, son épouse</b>, et auquel il a déclaré vouloir donner les prénoms d'<b>Adélaïde Théolinde</b>. Lesdites déclaration et présentation faites en présence des sieurs Nicolas Bertrand, âgé de trente-sept ans, garde champêtre, et Jean-Baptiste Roy, âgé de trente et un ans, instituteur primaire, demeurant tous les deux en cette commune.
+          <span class="sign">Signé : Roy — N. Bertrand — C. A. Paufard — F. Boisset, l'adjoint</span>
+        </blockquote>
+        <p class="gloss"><span class="warn">L'âge du père est faux : « trente-neuf ans » alors que Claude, né le 7 juin 1813, en a trente. L'écart de neuf ans est une erreur isolée — dans les onze autres actes de la même série il se déclare entre 23 et 38 ans, toujours à un ou deux ans près.</span> Cette anomalie a longtemps fait croire à une naissance vers 1804 ; l'acte d'Oyrières l'a définitivement écartée.</p>
+      </article>
+
+      <p class="tr-sep">V — Fahy-lès-Autrey, 1865-1906</p>
+      <article class="tr">
+        <div class="tr-head">
+          <h3>Décès de Claude PAUFARD</h3>
+          <span class="when">12 mai 1865</span>
+        </div>
+        <p class="ref">Fahy-lès-Autrey — décès de 1865, acte n° 1 · <span class="tr-chips"><span class="chip c-d">Acte de décès</span><span class="chip">Filiation</span></span></p>
+        <blockquote>
+          L'an mil huit cent soixante-cinq, le treize mai à huit heures du matin, devant nous <b>Boisset Jean-François, maire</b> officier de l'état civil de la commune de Fahy-lès-Autrey, canton d'Autrey (Haute-Saône), ont comparu en la maison commune : <b>Paufard François, âgé de quarante-six ans, tailleur de pierre domicilié à Autrey, frère du défunt</b> ci-après désigné, et <b>Redoutet Joseph, âgé de quarante-six ans, cultivateur domicilié à Fahy-lès-Autrey, voisin</b> du même décédé ; lesquels nous ont déclaré que <b>Paufard Claude, âgé de cinquante et un ans, propriétaire et [cabaretier ?], domicilié à Fahy-lès-Autrey, né à Oyrières le [jour] juin mil huit cent treize, fils des défunts Paufard Jean-Baptiste et Redoutet Denise, en leur vivant époux, propriétaires domiciliés à Fahy-lès-Autrey</b>, et époux d'<b>Amiot Françoise, âgée de cinquante-quatre ans, propriétaire</b> domiciliée audit Fahy, <b>est décédé le jour d'hier à cinq heures du soir, en son domicile</b>. Ce renvoi approuvé.
+          <span class="sign">Signé : Paufard — J. Redoutet — J. Boisset, le maire</span>
+        </blockquote>
+        <p class="gloss">L'acte qui a lancé toute l'enquête : c'est lui qui nommait Oyrières et juin 1813, lectures depuis confirmées sur pièce. Il apporte une précision qu'on n'avait pas relevée : <b>Jean-Baptiste PAUFARD et Denise REDOUTET sont morts à Fahy-lès-Autrey</b>, et non à Oyrières — leurs actes sont donc à chercher dans les registres de Fahy entre octobre 1836 et mai 1865. <span class="warn">La profession « cabaretier » reste douteuse : Claude était entrepreneur de travaux publics en 1850 et 1852.</span></p>
+      </article>
+
+      <article class="tr">
+        <div class="tr-head">
+          <h3>Mariage de Napoléon GRILLOT et d'Adélaïde Théolinde PAUFARD</h3>
+          <span class="when">6 juin 1866</span>
+        </div>
+        <p class="ref">Fahy-lès-Autrey — mariages de 1866, acte n° 1 · <span class="tr-chips"><span class="chip c-m">Acte de mariage</span><span class="chip">Contrat de mariage</span></span></p>
+        <blockquote>
+          L'an mil huit cent soixante-six, le six juin, à onze heures du matin, devant nous <b>Jacquin Abel, maire</b> officier de l'état civil de la commune de Fahy-lès-Autrey, canton d'Autrey (Haute-Saône), ont comparu publiquement en la maison commune :<br><br><b>Grillot François-André-Napoléon, âgé de vingt-sept ans, boucher domicilié à Gray, né audit Gray le vingt-sept janvier mil huit cent trente-huit</b>, ainsi qu'il résulte de l'extrait délivré par le maire de la commune de Gray et légalisé par le président du tribunal du même lieu ; <b>fils majeur de Grillot Thomas, âgé de cinquante-quatre ans, marchand boucher domicilié à Gray, non présent mais consentant</b> au mariage projeté, ainsi qu'il résulte de l'acte passé devant le notaire [Tonin ?] exerçant à Autrey, assisté de deux témoins, ledit acte enregistré et légalisé par le juge de paix du canton d'Autrey ; <b>et d'Écarnot Jeanne, âgée de cinquante-trois ans, sans profession</b>, domiciliée au même lieu, ici présente et consentante — d'une part ;<br><br>et demoiselle <b>Paufard Théolinde-Adélaïde, âgée de vingt-deux ans, sans profession, domiciliée à Fahy-lès-Autrey, née en cette commune le vingt-trois septembre mil huit cent quarante-trois, fille majeure de Paufard Claude, en son vivant propriétaire à Fahy-lès-Autrey, décédé le douze mai mil huit cent soixante-cinq, et d'Amiot Françoise, âgée de cinquante-cinq ans, propriétaire</b> domiciliée à Fahy-lès-Autrey, ici présente et consentante — d'autre part.<br><br>Publications faites à Fahy-lès-Autrey et à Gray les dimanches 27 mai et 3 juin 1866. <b>Un contrat de mariage a été passé devant maître [Tonin ?], notaire à la résidence d'Autrey, arrondissement de Gray, le deux juin mil huit cent soixante-six.</b> Aucune opposition signifiée.<br><br>Témoins : <b>Grillot Joseph, 30 ans, maréchal des logis chef au 1<sup>er</sup> chasseurs, en garnison à Provins (Seine-et-Marne), frère du futur</b> ; Gardot Jean-Baptiste, 32 ans, tanneur domicilié à Gray, ami du futur à défaut de parent ; <b>Gaconnet Joseph, 30 ans, instituteur domicilié à Montarlot-lès-Champlitte, cousin germain de la future du côté paternel par alliance</b> ; <b>Paufard François, 49 ans, tailleur de pierre domicilié à Autrey, oncle paternel de la future</b>.
+          <span class="sign">Signé : Napoléon Grillot — Théolinde Paufard — Jeanne Écarnot — Françoise Amiot — Gardot — Paufard — Gaconnet — Jacquin, le maire</span>
+        </blockquote>
+        <p class="gloss">L'acte charnière entre les deux moitiés de l'arbre. Napoléon est <b>boucher à Gray</b> et y est domicilié : c'est la raison pour laquelle les recensements de Fahy ne donnent rien avant 1876. Deux collatéraux nouveaux : le frère <b>Joseph GRILLOT</b>, sous-officier de carrière, qu'on retrouve propriétaire à Gray en 1874 ; et <b>Joseph GACONNET</b>, instituteur à Montarlot-lès-Champlitte, cousin germain par alliance du côté paternel — donc rattaché à une sœur PAUFARD, peut-être celle qui épousa le meunier CHATEAU. <b>Le contrat de mariage du 2 juin 1866</b> existe et attend en série E.</p>
+      </article>
+
+      <article class="tr">
+        <div class="tr-head">
+          <h3>Naissance de Françoise Léonie Joséphine GRILLOT</h3>
+          <span class="when">2 mars 1869</span>
+        </div>
+        <p class="ref">Fahy-lès-Autrey — naissances de 1869, acte n° 2 · <span class="tr-chips"><span class="chip c-n">Acte de naissance</span><span class="chip">Domicile décisif</span></span></p>
+        <blockquote>
+          L'an mil huit cent soixante-neuf, le trois mars, à huit heures du matin, devant nous <b>Barbier Francis, maire</b> et officier de l'état civil de la commune de Fahy-lès-Autrey, canton d'Autrey (Haute-Saône), a comparu en la maison commune <b>Grillot François-André-Napoléon, âgé de trente et un ans, propriétaire, domicilié à Fahy-lès-Autrey</b>, lequel nous a présenté un enfant du sexe féminin, <b>né en son domicile le deux mars mil huit cent soixante-neuf à huit heures du soir</b>, de lui déclarant et de <b>Paufard Théolinde-Adélaïde, âgée de vingt-cinq ans, sans profession, son épouse</b> ; auquel enfant il a donné les prénoms de <b>Françoise-Léonie-Joséphine</b>. Lesdites déclaration et présentation ont été faites en présence de Vaney Clavis-Auguste, âgé de trente-sept ans, instituteur public domicilié à Fahy-lès-Autrey, premier témoin, et de Boisset François, âgé de quarante-trois ans, cultivateur domicilié au même lieu, second témoin.
+          <span class="sign">Signé : Vaney — Napoléon Grillot — F<sup>s</sup> Boisset — F. Barbier, le maire</span>
+        </blockquote>
+        <blockquote style="margin-top:16px">
+          <b>Mention marginale.</b> — Grillot Françoise-Léonie-Joséphine a contracté mariage à Fahy-lès-Autrey le <b>30 X<sup>bre</sup> 1899</b> avec <b>Bourdeau Maxime</b>. Pour mention conforme, apposée le 29 janvier 19[..]. Le greffier, <i>E. Grosse</i>.
+        </blockquote>
+        <p class="gloss">Un mot change tout : Napoléon est <b>domicilié à Fahy-lès-Autrey</b> dès mars 1869, et non plus à Gray. Le déménagement s'est donc fait entre juin 1866 et mars 1869, et il a changé de métier — boucher à Gray, <b>propriétaire</b> à Fahy. <span class="warn">Conséquence pour la recherche : d'éventuels frères et sœurs de Joséphine nés après 1869 seraient à Fahy, où l'on n'a rien trouvé. Seule la fenêtre 1867-1868, à Gray, reste ouverte.</span> La marge ne porte que le mariage BOURDEAU de 1899 : rien sur CARPENTIER, ce qui place ce premier mariage <b>avant la loi du 17 août 1897</b> qui a rendu ces mentions obligatoires. L'instituteur se lit <b>Claude-Auguste VANEY</b> et le maire <b>François BARBIER</b>.</p>
+      </article>
+
+      <article class="tr">
+        <div class="tr-head">
+          <h3>Décès de Françoise AMIOT</h3>
+          <span class="when">30 avril 1878</span>
+        </div>
+        <p class="ref">Fahy-lès-Autrey — décès de 1878, acte n° 1 · <span class="tr-chips"><span class="chip c-d">Acte de décès</span><span class="chip">Filiation</span></span></p>
+        <blockquote>
+          L'an mil huit cent soixante-dix-huit, le premier mai à sept heures du matin, devant nous <b>Gradelet Joseph, maire</b> officier de l'état civil de Fahy-lès-Autrey, canton d'Autrey (Haute-Saône), sont comparus en la maison commune : <b>Grillot François-André-Napoléon, âgé de quarante ans, marchand de bestiaux domicilié à Fahy-lès-Autrey, gendre de la décédée</b>, et <b>Redoutet Joseph, âgé de cinquante-six ans, propriétaire-cultivateur</b> domicilié au même lieu, <b>cousin germain par alliance de la décédée</b> ; lesquels nous ont déclaré qu'<b>Amiot Françoise, âgée de soixante-sept ans, propriétaire domiciliée à Fahy-lès-Autrey, est décédée dans cette commune le trente avril mil huit cent soixante-dix-huit à minuit</b> ; ajoutant que la défunte était <b>née à Vars (Haute-Saône) le vingt-huit novembre mil huit cent dix, fille des défunts Amiot François et Renevier Barbe, ses père et mère, décédés audit Vars</b>, veuve de Paufard Claude, décédé à Fahy-lès-Autrey.
+          <span class="sign">Signé : Grillot — J. Redoutet — J. Gradelet, le maire</span>
+        </blockquote>
+        <p class="gloss">L'acte d'où tout est parti, et qui livre encore un détail décisif : <b>François AMIOT et Barbe RENEVIER sont dits « décédés audit Vars »</b>. La mort de François, qu'on savait postérieure à octobre 1836, a donc bien eu lieu à Vars — les tables décennales des décès de Vars 1833-1842 et 1843-1852 sont le bon endroit, et le seul. Napoléon est ici <b>marchand de bestiaux</b>, son troisième métier en douze ans.</p>
+      </article>
+
+      <article class="tr">
+        <div class="tr-head">
+          <h3>Décès de Françoise Léonie Joséphine GRILLOT</h3>
+          <span class="when">8 septembre 1905</span>
+        </div>
+        <p class="ref">Fahy-lès-Autrey — décès de 1905, acte n° 5 · <span class="tr-chips"><span class="chip c-d">Acte de décès</span><span class="chip">Mariage BOUDEAU prouvé</span></span></p>
+        <blockquote>
+          L'an mil neuf cent cinq, le huit septembre, à midi, devant nous <b>Charnotet Jean-Baptiste, maire</b> et officier de l'état civil de la commune de Fahy-lès-Autrey, canton d'Autrey (Haute-Saône), sont comparus en la maison commune : <b>Boudeau Maxime, âgé de quarante et un ans, propriétaire-vigneron, domicilié à Fahy-lès-Autrey, époux de la décédée</b> ci-après nommée ; et <b>Paufard Adélaïde Théolinde, âgée de soixante et un ans, épicière</b> domiciliée au même lieu, <b>mère</b> de la même décédée ; lesquels nous ont déclaré que <b>Grillot Françoise Léonie Joséphine, âgée de trente-six ans, sans profession, domiciliée à Fahy-lès-Autrey, est décédée dans cette commune le huit septembre mil neuf cent cinq, à dix heures du matin</b> ; ajoutant que la défunte était née à Fahy-lès-Autrey le deux mars mil huit cent soixante-neuf, <b>fille de Grillot François-André-Napoléon, décédé à Fahy-lès-Autrey, et de Paufard Adélaïde-Théolinde, deuxième déclarante</b>, épouse de Boudeau Maxime, premier déclarant.
+          <span class="sign">Signé : Boudeau — Charnotet, le maire</span>
+        </blockquote>
+        <p class="gloss"><b>Le mariage avec Maxime BOUDEAU est prouvé</b> : il déclare lui-même le décès en qualité d'« époux de la décédée ». Joséphine était donc mariée à sa mort, et la mention marginale de son acte de naissance en donnera la date exacte. Théolinde, 61 ans, est <b>épicière</b> au village et enterre sa fille — un an avant de marier sa petite-fille.</p>
+      </article>
+
+      <article class="tr">
+        <div class="tr-head">
+          <h3>Mariage de Camille Jean VILLETTE et d'Yvonne Marguerite GRILLOT</h3>
+          <span class="when">22 septembre 1906</span>
+        </div>
+        <p class="ref">Fahy-lès-Autrey — mariages de 1906, acte n° 3 · <span class="tr-chips"><span class="chip c-m">Acte de mariage</span><span class="chip">Tutelle</span></span></p>
+        <blockquote>
+          L'an mil neuf cent six, le vingt-deux septembre, à dix heures du matin, devant nous <b>Chassenet Jean-Baptiste, maire</b> officier de l'état civil de la commune de Fahy-lès-Autrey, canton d'Autrey (Haute-Saône), sont comparus publiquement en la maison commune :<br><br><b>Villette Camille Jean, âgé de vingt-neuf ans, domicilié à Autrey, né à Selongey (Côte-d'Or) le vingt-quatre juillet mil huit cent soixante-dix-sept, fils majeur de Villette Émile Adolphe, décédé à Selongey le vingt mars mil huit cent quatre-vingt-douze, et de Verney Joséphine, âgée de cinquante-six ans, sans profession, domiciliée à Selongey, ici présente et consentante</b> — d'une part ;<br><br>et demoiselle <b>Grillot Yvonne Marguerite, âgée de seize ans, sans profession, domiciliée à Fahy-lès-Autrey, née à Lyon le premier octobre mil huit cent quatre-vingt-neuf, fille mineure naturelle reconnue de Grillot Françoise Léonie Joséphine, décédée à Fahy-lès-Autrey le huit septembre mil neuf cent cinq</b> ; la naissance constatée par l'extrait délivré par le maire de la ville de Lyon et légalisé par le président du tribunal de ladite ville, et le décès par les registres de l'état civil de cette commune ; <b>assistée de monsieur Grillot Émile, âgé de trente-trois ans, greffier de paix demeurant à Gray, tuteur ad hoc nommé conformément à l'article 159 du Code civil</b> — d'autre part.<br><br>Publications faites à Fahy-lès-Autrey et à Autrey les dimanches 9 et 16 septembre 1906. <b>Il n'a pas été fait de contrat de mariage.</b><br><br>Témoins : <b>Villette Félix, 32 ans, comptable à Toul, frère de l'époux</b> ; <b>Villette Ernest, 31 ans, employé de commerce à Lille, frère de l'époux</b> ; <b>Paufard Alexis, 53 ans, négociant à Gray, subrogé tuteur de l'épouse</b> ; <b>Paufard Adélaïde Théolinde, 62 ans, épicière à Fahy-lès-Autrey, aïeule maternelle de l'épouse</b>.
+          <span class="sign">Signé : les époux, les témoins et le maire</span>
+        </blockquote>
+        <p class="gloss">Yvonne se marie à <b>seize ans</b>, sous tutelle, sa mère morte un an plus tôt et son père juridiquement inexistant depuis le jugement de Beaune de 1897. Le dispositif est complet : tuteur ad hoc, subrogé tuteur, et l'aïeule comme quatrième témoin. <span class="warn">Aucune mention du père : la reconnaissance CARPENTIER de 1892, annulée, ne laisse aucune trace ici — les deux actes sont cohérents une fois le jugement connu.</span></p>
+      </article>
+
+
+      <article class="tr">
+        <div class="tr-head">
+          <h3>Mariage de Maxime BOURDEAU et de Joséphine GRILLOT</h3>
+          <span class="when">30 décembre 1899</span>
+        </div>
+        <p class="ref">Fahy-lès-Autrey — mariages de 1899, acte n° 3 · <span class="tr-chips"><span class="chip c-m">Acte de mariage</span><span class="chip">Veuvage</span><span class="chip">Contrat de mariage</span></span></p>
+        <blockquote>
+          L'an mil huit cent quatre-vingt-dix-neuf, le trente décembre, à dix heures du matin, devant nous <b>Charnotet Jean-Baptiste, maire</b>, officier de l'état civil de la commune de Fahy-lès-Autrey, canton d'Autrey (Haute-Saône), sont comparus publiquement en la maison commune :<br><br><b>Bourdeau Maxime, âgé de trente-six ans, propriétaire, domicilié à Fahy-lès-Autrey, né dans cette commune le vingt-sept octobre mil huit cent soixante-trois, fils majeur de Bourdeau Urbain, ancien gendarme retraité, décédé à Fahy-lès-Autrey le vingt août mil huit cent quatre-vingt-dix-huit, et de Chateau Angélique, âgée de cinquante-six ans, sans profession</b>, domiciliée à Fahy-lès-Autrey, ici présente et consentante — d'une part ;<br><br>et dame <b>Grillot Françoise-Léonie-Joséphine, âgée de trente ans, sans profession, domiciliée à Fahy-lès-Autrey, née en cette commune le deux mars mil huit cent soixante-neuf</b>, <b>veuve en premières noces de CARPENTIER Victor-Jean-Baptiste, décédé lieutenant d'infanterie territoriale à Bourges (Cher) le vingt-neuf octobre mil huit cent quatre-vingt-dix-huit</b>, ainsi qu'il résulte de l'extrait délivré par le greffier du tribunal civil de Bourges et légalisé par le président dudit tribunal ; <b>fille majeure de Grillot François-André-Napoléon, âgé de soixante et un ans, et de Paufard Théolinde-Adélaïde, âgée de cinquante-six ans, tous deux propriétaires domiciliés à Fahy-lès-Autrey, non présents mais consentants ainsi qu'il résulte de leur procuration passée à Fahy-lès-Autrey le vingt-quatre décembre mil huit cent quatre-vingt-dix-neuf devant le maire de cette commune</b> — d'autre part ;<br><br>publications faites à Fahy-lès-Autrey, devant la principale porte de la maison commune, les dimanches dix-sept et vingt-quatre décembre. Les futurs époux ainsi que la mère du futur nous ont déclaré <b>qu'il a été fait un contrat de mariage</b>, et nous ont remis un certificat délivré par <b>M<sup>e</sup> Gérard Prosper-Denis, notaire à la résidence d'Autrey</b>, constatant que ce contrat a été passé devant lui le <b>vingt-neuf décembre mil huit cent quatre-vingt-dix-neuf</b>. […] Déclarons au nom de la loi que Bourdeau Maxime et Grillot Françoise-Léonie-Joséphine sont unis en mariage.<br><br>En présence de <b>Bourdeau Joseph, 69 ans, propriétaire à Fahy, oncle paternel de l'époux</b> ; <b>Viot François, 62 ans, cultivateur, oncle paternel par alliance de l'époux</b> ; <b>Paufard Auguste, 48 ans, tailleur de pierres à Autrey, cousin de l'épouse du côté maternel</b> ; et <b>[Rascenet ?] Émile, 47 ans, propriétaire à Fahy, ami de la famille de l'épouse</b>.
+          <span class="sign">Signé : Joséphine Grillot — Bourdeau — A. Chateau — Bourdeau — Viot — Paufard — [Rascenet] — Charnotet, le maire</span>
+        </blockquote>
+        <p class="gloss"><b>Le renversement du dossier.</b> Joséphine n'était pas la compagne délaissée de Carpentier : elle en était la <b>veuve</b>. Il y a donc eu un mariage, entre 1892 et 1897, dont nous n'avions aucune trace, et l'annulation de la reconnaissance en mai 1897 l'a <i>suivi</i> et non précédé. L'hypothèse la plus économique reste celle d'un enfant adultérin — Carpentier encore marié ailleurs en 1889 —, mais seul le jugement de Beaune le dira. L'acte apporte aussi : la graphie <b>BOURDEAU</b> tranchée, les parents de Maxime, un <b>contrat de mariage</b> chez M<sup>e</sup> Gérard à Autrey, et un cousin nouveau, <b>Auguste PAUFARD</b>. <span class="warn">Napoléon et Théolinde consentent par procuration : Napoléon meurt treize jours plus tard, le 12 janvier 1900. On mariait la fille avant qu'il ne soit trop tard.</span></p>
+      </article>
+
+      <p class="tr-sep">VI — Gray, 1833-1882</p>
+      <article class="tr">
+        <div class="tr-head">
+          <h3>Naissance d'Albert Thomas GRILLOT</h3>
+          <span class="when">14 septembre 1874</span>
+        </div>
+        <p class="ref">Gray — naissances de 1874, acte n° 123 · <span class="tr-chips"><span class="chip c-n">Acte de naissance</span><span class="chip">Frère probable de Napoléon</span></span></p>
+        <blockquote>
+          L'an mil huit cent soixante-quatorze et le seize du mois de septembre à dix heures du [soir], devant nous Michel Pichot, adjoint délégué par arrêté du maire en date du dix mars mil huit cent soixante-neuf pour remplir les fonctions d'officier de l'état civil de la ville de Gray, département de la Haute-Saône, a comparu en l'hôtel de ville <b>Nicolas Grillot, marchand de bétail, père de l'enfant, domicilié à Gray, âgé de trente-cinq ans</b>, lequel nous a présenté un enfant légitime du sexe masculin, <b>né en son domicile le quatorze du courant à neuf heures du matin</b>, de lui déclarant et de <b>Thérèse [Doursolet ?], sa femme, âgée de vingt-neuf ans, sans profession</b>, domiciliée à Gray, auquel enfant il a donné les prénoms <b>Albert Thomas</b>. Lesdites déclaration et présentation ont été faites en présence de MM. <b>Joseph Grillot, propriétaire, domicilié à Gray, âgé de trente-huit ans</b>, premier témoin, et Gabriel [Crougeot ?], marchand de bois, domicilié à Gray, âgé de cinquante et un ans, second témoin.<br><br><i>Mention marginale :</i> Albert Thomas Grillot a contracté mariage à <b>Fouvent-le-Bas le 30 avril 1901</b> avec Bolillet Jeanne Marie Agathe. Gray, le 22 juillet 1901.
+          <span class="sign">Signé : Grillot Nicolas — J. Grillot — G. Gabriel — Pichot</span>
+        </blockquote>
+        <p class="gloss">Trois indices convergent pour faire de <b>Nicolas GRILLOT</b> un frère cadet de Napoléon : il est <b>marchand de bétail à Gray</b>, exactement le métier que Napoléon exercera à Fahy ; il est né vers 1839, un an après lui ; et il donne à son fils le second prénom <b>Thomas</b>, celui du grand-père paternel présumé. Le premier témoin, <b>Joseph GRILLOT, 38 ans, propriétaire à Gray</b>, correspond au frère sous-officier du mariage de 1866, revenu à la vie civile. <span class="warn">Rattachement très probable, non prouvé : l'acte de naissance de Nicolas vers 1839 à Gray le confirmerait.</span></p>
+      </article>
+
+      <article class="tr">
+        <div class="tr-head">
+          <h3>Les quatre fils de Joseph Émile GRILLOT</h3>
+          <span class="when">1877-1882</span>
+        </div>
+        <p class="ref">Gray — naissances, actes n° 124 (1877), 25 (1879), 68 (1880) et 39 (1882) · <span class="tr-chips"><span class="chip c-n">Acte de naissance</span><span class="chip c-warn">Rattachement à trancher</span></span></p>
+        <blockquote>
+          Quatre actes sur le même formulaire imprimé, même déclarant : <b>Joseph Émile Grillot, marchand boucher, domicilié à Gray</b>, et <b>Thérèse Joséphine Décombe, son épouse, sans profession</b> puis <b>cuisinière</b> en 1880.<br><br><b>Henri Louis Émile</b>, né le 10 novembre 1877 à deux heures du matin ; père 23 ans, mère 22 ans ; témoins Constant Grandgirard, sculpteur, 47 ans, et Charles Claude Marie [Corrot ?], secrétaire de la mairie, 51 ans. <i>Mentions : mariage à <b>Nancy le 19 mai 1909</b> avec [Schidmann ?] Alice ; <b>décédé à Nancy le 21 mars 1956</b>.</i><br><br><b>Ernest Victor</b>, né le 4 mars 1879 à minuit vingt ; père 24 ans, mère 24 ans ; témoins Claude François Henri Morel, agent de police, 49 ans, et Jean-Baptiste Jules Gilles, coiffeur, 27 ans. <i>Mention : mariage à <b>Paris 9<sup>e</sup> le 17 [août] 1912</b> avec Gervaise Suzanne Hortense Blanche.</i><br><br><b>Charles Eugène Léon</b>, né le 9 juillet 1880 à trois heures du matin ; père 26 ans, mère 25 ans, cuisinière ; témoins Charles Degy, agent d'assurance, 25 ans, et Louis Roux, cabaretier, 33 ans.<br><br><b>Joseph Camille</b>, né le 20 avril 1882 à onze heures du soir ; père 28 ans, mère 27 ans ; témoins Joseph Federspiel, 40 ans, et Jean-François [Alizot ?], employé de mairie. <i>Mentions : mariage à <b>Paris 16<sup>e</sup> le 11 [septembre] 1911</b> avec Mallet Reine Julia ; remarié à <b>Paris 10<sup>e</sup> le 27 [octobre] 1926</b> avec Maudint Germaine ; <b>décédé à Gray le 11 février 1971</b>.</i>
+          <span class="sign">Signé : Grillot Émile et les témoins, devant Antoine Bresard puis Marcel [Siguard], adjoints délégués</span>
+        </blockquote>
+        <p class="gloss"><b>Joseph Émile GRILLOT, né vers 1854, marchand boucher à Gray</b> : le métier est celui de Thomas GRILLOT et de Napoléon avant 1878, et le prénom Joseph revient dans la famille. Tout invite au rattachement, <span class="warn">mais rien ne le prouve, et deux Joseph dans une même fratrie serait surprenant. Fils tardif de Thomas, neveu ou cousin : son acte de naissance à Gray vers 1854 tranchera en une vue.</span> Ses quatre fils essaiment vers Nancy et Paris, ce qui explique qu'on n'en trouve plus trace localement.</p>
+      </article>
+
+      <article class="tr">
+        <div class="tr-head">
+          <h3>Décès d'Anne Marie GRILLOT</h3>
+          <span class="when">17 février 1874</span>
+        </div>
+        <p class="ref">Gray — décès de 1874, acte n° 17 · <span class="tr-chips"><span class="chip c-d">Acte de décès</span><span class="chip c-warn">Homonyme à écarter</span></span></p>
+        <blockquote>
+          L'an mil huit cent soixante-quatorze et le [dix-huit] du mois de février à trois heures du soir, par-devant nous Michel Pichot, adjoint délégué, officier de l'état civil de la ville de Gray, sont comparus en l'hôtel de ville MM. <b>Jean-Baptiste Bertrand, architecte, domicilié à Gray, âgé de soixante-neuf ans, beau-frère de la défunte</b>, et Jean-François Berger, employé à la mairie, domicilié à Gray, âgé de [cinquante] ans, voisin de la défunte ; lesquels nous ont déclaré que <b>Anne Marie Grillot, sans profession, veuve de Jean-Baptiste [Vendeur ?], âgée de soixante-quinze ans, domiciliée à Gray, née à Gray des défunts [Nicolas ?] Grillot et Jeanne Baptiste [Frelot ?] (mariés), est décédée le dix-sept du mois de février de la présente année, à une heure du soir, en son domicile rue de la Charité à Gray</b>.
+          <span class="sign">Signé : Bertrand — Berger — Pichot</span>
+        </blockquote>
+        <p class="gloss">Née vers 1799, <b>une génération au-dessus de Thomas GRILLOT</b> : elle pourrait être sa sœur aînée ou sa tante, mais aucun lien n'est démontré. Ses parents, [Nicolas ?] GRILLOT et Jeanne Baptiste [Frelot ?], sont notés ici <b>à titre de piste et non d'ascendance</b>. À écarter de l'arbre tant que le mariage de Thomas et Jeanne ÉCARNOT n'aura pas nommé les siens.</p>
+      </article>
+
+      <article class="tr">
+        <div class="tr-head">
+          <h3>Décès de Joséphine GRILLOT</h3>
+          <span class="when">12 décembre 1879</span>
+        </div>
+        <p class="ref">Gray — décès de 1879, acte n° 149 · <span class="tr-chips"><span class="chip c-d">Acte de décès</span><span class="chip c-warn">Homonyme à écarter</span></span></p>
+        <blockquote>
+          L'an mil huit cent soixante-dix-neuf et le treize du mois de décembre à onze heures du matin, par-devant nous Antoine Bresard, adjoint délégué, officier de l'état civil de la ville de Gray, sont comparus en l'hôtel de ville MM. Paul Alexis Mariotte, économe des hospices, domicilié à Gray, âgé de vingt-sept ans, et Jean-François Berger, employé à la mairie, domicilié à Gray, âgé de cinquante-neuf ans ; lesquels nous ont déclaré que <b>Joséphine Grillot, journalière, veuve d'Étienne Dariot, âgée de soixante-six ans, domiciliée à Gray, née à Gray des mariés François Grillot et Anne Page, est décédée le douze du mois de décembre de la présente année à quatre heures du soir, à l'hôpital de Gray</b>.
+          <span class="sign">Signé : Mariotte — Berger — Bresard</span>
+        </blockquote>
+        <p class="gloss"><b>Ce n'est pas notre Joséphine.</b> Celle-ci naît vers 1813, fille de François GRILLOT et Anne PAGE, journalière, veuve d'Étienne Dariot, morte à l'hôpital. La nôtre naît en 1869 et meurt à Fahy en 1905. <span class="warn">Même patronyme, même prénom, même ville, six ans d'écart entre les deux décès : c'est exactement le genre de coïncidence qui contamine un arbre. À écarter fermement.</span> On note toutefois que, née vers 1813, elle pourrait être une <b>sœur de Thomas</b> — hypothèse, rien de plus.</p>
+      </article>
+
+
+      <article class="tr">
+        <div class="tr-head">
+          <h3>Naissance de Joseph GRILLOT</h3>
+          <span class="when">2 décembre 1835</span>
+        </div>
+        <p class="ref">Gray — naissances de 1835, acte n° 173 <i>(extrait délivré pour le service militaire)</i> · <span class="tr-chips"><span class="chip c-n">Acte de naissance</span><span class="chip">Génération I prouvée</span></span></p>
+        <blockquote>
+          <b>Extrait des registres de naissances de la ville de Gray (Haute-Saône).</b><br><br>L'an mil huit cent trente-cinq, le quatre du mois de décembre, à onze heures du matin, par-devant nous maire de la ville de Gray soussigné, officier de l'état civil, est comparu <b>Toussaine Cardinet, femme de Victor Bruno Cassin, accoucheuse à Gray, âgée de trente-cinq ans</b>, laquelle nous a présenté un enfant du sexe masculin <b>né le deux du mois de décembre de la présente année, à six heures du soir, à Gray</b>, qu'elle nous a déclaré être <b>fils légitime de Thomas GRILLOT, marchand boucher, âgé de vingt-cinq ans, et de Jeanne ESCARNOT son épouse, âgée de vingt-cinq ans, les deux domiciliés à Gray</b>, et auquel enfant elle a déclaré donner les prénoms et nom de <b>Joseph GRILLOT</b>. Lesdites déclaration et présentation faites en présence de M. Jean-Baptiste Bertrand, voyer de la ville, âgé de vingt-neuf ans, et [Ferdinand] Jacquinot, secrétaire adjoint, âgé de trente-deux ans, domiciliés à Gray.<br><br><i>Pour extrait conforme, délivré sur papier libre pour servir au service militaire.</i>
+          <span class="sign">Signé au registre : femme Cassin née Cardinet — Bertrand — Jacquinot — [Huguier], maire</span>
+        </blockquote>
+        <p class="gloss"><b>La génération I des GRILLOT est verrouillée sur pièce.</b> Thomas GRILLOT et Jeanne ESCARNOT ne reposaient jusqu'ici que sur les déclarations du mariage de 1866 ; les voici nommés dans un acte de naissance, avec leurs âges et leur domicile. Ces âges corrigent les précédents : <b>vingt-cinq ans tous les deux en décembre 1835, donc nés vers 1810</b>, et non 1812 et 1813. Leur mariage se place en <b>1833-1835</b>, et la fratrie se dessine : Joseph 1835, Napoléon janvier 1838, Nicolas vers 1839. <span class="warn">L'extrait porte « pour servir au service militaire » : il provient d'un dossier militaire, très probablement celui du légionnaire.</span> À noter que la déclarante est la sage-femme, non le père.</p>
+      </article>
+
+      <article class="tr">
+        <div class="tr-head">
+          <h3>Décès d'Ernest Jean Antoine GRILLOT</h3>
+          <span class="when">3 janvier 1879</span>
+        </div>
+        <p class="ref">Gray — décès de 1879, acte n° 1 · <span class="tr-chips"><span class="chip c-d">Acte de décès</span><span class="chip">Parenté prouvée</span><span class="chip c-warn">Anomalie</span></span></p>
+        <blockquote>
+          L'an mil huit cent soixante-dix-neuf et le trois du mois de janvier à deux heures du soir, par-devant nous Antoine Bresard, adjoint délégué, officier de l'état civil de la ville de Gray, sont comparus en l'hôtel de ville MM. <b>Joseph Grillot, militaire retraité, chevalier de la Légion d'honneur, domicilié à Gray, âgé de quarante-trois ans, oncle du défunt</b>, et <b>Nicolas François Simonin, militaire en retraite, chevalier de la Légion d'honneur</b>, domicilié à Gray, âgé de soixante-quinze ans, voisin du défunt ; lesquels nous ont déclaré que <b>Ernest Jean Antoine Grillot, enfant, âgé de [un an et demi], domicilié à Gray, né à Gray des mariés Joseph Émile Grillot, marchand boucher, et Valentine [Beuray ?] (vivants), est décédé le trois du mois de janvier de la présente année à dix heures du matin, au domicile de son père, rue du Marché à Gray</b>.
+          <span class="sign">Signé : J. Grillot — Simonin — Bresard</span>
+        </blockquote>
+        <p class="gloss">Trois apports. <b>Joseph GRILLOT se déclare oncle de l'enfant</b> : Joseph Émile est donc son frère, et par conséquent frère de Napoléon — l'hypothèse devient acquise. <b>Joseph est chevalier de la Légion d'honneur</b>, ce qui ouvre son dossier dans la base Léonore. <span class="warn">Une anomalie subsiste : la mère est ici <b>Valentine [Beuray]</b>, alors que les quatre fils de 1877 à 1882 sont de Thérèse Joséphine DÉCOMBE — et la table décennale place la naissance d'Ernest Jean Antoine au 1<sup>er</sup> septembre 1877, soixante-dix jours avant celle d'Henri Louis Émile. Deux enfants du même père à dix semaines d'écart de deux mères différentes est impossible : remariage trop rapide, deux Joseph Émile homonymes, ou erreur de lecture.</span> La table corrige au passage la déclaration d'Albert Thomas : <b>16 novembre 1874</b>, et non septembre.</p>
+      </article>
+
+
+      <article class="tr">
+        <div class="tr-head">
+          <h3>Naissance de Françoise Adélaïde GRILLOT</h3>
+          <span class="when">28 septembre 1833</span>
+        </div>
+        <p class="ref">Gray — naissances de 1833, acte n° 127 · <span class="tr-chips"><span class="chip c-n">Acte de naissance</span><span class="chip c-warn">Homonyme à écarter</span></span></p>
+        <blockquote>
+          L'an mil huit cent trente-trois, le trente du mois de septembre, à onze heures du matin, par-devant nous maire de la ville de Gray soussigné, officier de l'état civil, est comparu <b>M. François Grillot, manouvrier, âgé de quarante-deux ans</b>, lequel nous a présenté un enfant du sexe féminin, <b>né le vingt-huit du mois de septembre de la présente année, à une heure du soir, à Gray</b>, de lui présentant et de dame <b>Françoise Thévenin, son épouse, âgée de trente-quatre ans</b>, les deux domiciliés à Gray ; et auquel enfant il a déclaré donner les prénoms et nom de <b>Françoise Adélaïde Grillot</b>. Lesdites déclaration et présentation faites en présence de M. Jean-Baptiste [Mouriou], musicien, âgé de soixante-sept ans, et Toussaint Fournerot, [serrurier] public, âgé de cinquante-sept ans, domiciliés à Gray ; et ont les témoins signé avec nous le présent acte après lecture. <b>Et non ledit François Grillot, illettré.</b>
+          <span class="sign">Signé : [Mouriou] — Fournerot — [Huguier]</span>
+        </blockquote>
+        <p class="gloss"><span class="warn">Pas notre famille.</span> Un <b>troisième foyer GRILLOT</b> à Gray : François GRILLOT, manouvrier illettré né vers 1791, et Françoise THÉVENIN. À noter tout de même : ce François pourrait être le père de Thomas, et l'homonyme de 1879 était fille d'un François GRILLOT et d'Anne PAGE. Trois François, aucune preuve — <b>à garder en note, pas dans l'arbre</b>.</p>
+      </article>
+
+      <article class="tr">
+        <div class="tr-head">
+          <h3>Naissance d'Anne Baptiste GRILLOT</h3>
+          <span class="when">8 décembre 1835</span>
+        </div>
+        <p class="ref">Gray — naissances de 1835, acte n° 177 · <span class="tr-chips"><span class="chip c-n">Acte de naissance</span><span class="chip c-warn">Homonyme à écarter</span></span></p>
+        <blockquote>
+          L'an mil huit cent trente-cinq, le dix du mois de décembre, à onze heures du matin, par-devant nous maire de la ville de Gray soussigné, officier de l'état civil, est comparu <b>Jean Grillot, paveur, domicilié en cette ville, âgé de trente-deux ans</b>, lequel nous a présenté un enfant du sexe féminin <b>né le huit du mois de décembre de la présente année, à neuf heures du matin, à Gray</b>, qu'il nous a déclaré être <b>fille naturelle d'Anne Baptiste Léonard, couturière, âgée de trente-neuf ans, domiciliée en cette ville, née à Arc</b> ; <b>lequel enfant ledit Jean Grillot a déclaré reconnaître pour le sien</b>, et auquel il a déclaré donner les prénoms et nom d'<b>Anne Baptiste Grillot</b>. […] en présence de Pierre Denerveaux, manouvrier, âgé de quarante-cinq ans, et Jacques [Rouyer], manouvrier, âgé de trente-huit ans, domiciliés à Gray. <b>Et non ledit Grillot, présentant, illettré.</b>
+          <span class="sign">Signé : Denerveaux — Pierre Denerveaux — [Rouyer] — [Huguier]</span>
+        </blockquote>
+        <p class="gloss"><span class="warn">Pas notre famille non plus.</span> Un <b>quatrième foyer</b> : Jean GRILLOT, paveur, et Anne Baptiste LÉONARD, couturière née à Arc. Cet acte est ce qui rendait la table décennale trompeuse — Anne Baptiste naît le 8 décembre 1835, six jours après Joseph, ce qui est impossible pour une même mère et signalait donc deux familles distinctes.</p>
+      </article>
+
+      <article class="tr">
+        <div class="tr-head">
+          <h3>Naissance de François GRILLOT</h3>
+          <span class="when">14 février 1837</span>
+        </div>
+        <p class="ref">Gray — naissances de 1837, acte n° 23 · <span class="tr-chips"><span class="chip c-n">Acte de naissance</span><span class="chip">Frère de Napoléon</span></span></p>
+        <blockquote>
+          L'an mil huit cent trente-sept, le quatorze du mois de février, à onze heures du matin, par-devant nous <b>[Durvieux], adjoint délégué</b> de la ville de Gray soussigné, officier de l'état civil, est comparu <b>M. Thomas Grillot, marchand boucher, âgé de vingt-six ans</b>, lequel nous a présenté un enfant du sexe masculin, <b>né le quatorze du mois de février de la présente année, à six heures du matin, à Gray</b>, de lui présentant et de <b>dame Jeanne Écarnot, son épouse, âgée de vingt-six ans</b>, les deux domiciliés à Gray ; et auquel enfant il a déclaré donner les prénoms et nom de <b>François Grillot</b>. Lesdites déclaration et présentation faites en présence de M. Antoine [Ormancey], fabricant de chandelle, âgé de trente-sept ans, et [Charles] Lavocat, peintre en bâtiment, âgé de trente-cinq ans, domiciliés à Gray.
+          <span class="sign">Signé : Th. Grillot — [Ormancey] — Lavocat — [Devon]</span>
+        </blockquote>
+        <p class="gloss"><b>Un frère de Napoléon jusqu'ici inconnu.</b> Il naît <b>onze mois avant lui</b> — serré mais possible, sauf s'il est mort avant janvier 1838, ce qui est l'hypothèse la plus probable. Son décès est à chercher à Gray en 1837. L'acte confirme au passage les âges : Thomas et Jeanne ont tous deux vingt-six ans, donc nés en 1810 ou 1811, et l'orthographe se fixe en <b>ÉCARNOT</b>.</p>
+      </article>
+
+      <article class="tr">
+        <div class="tr-head">
+          <h3>Naissance de Joseph Émile GRILLOT</h3>
+          <span class="when">6 avril 1854</span>
+        </div>
+        <p class="ref">Gray — naissances de 1854, acte n° 46 · <span class="tr-chips"><span class="chip c-n">Acte de naissance</span><span class="chip">Filiation prouvée</span></span></p>
+        <blockquote>
+          L'an mil huit cent cinquante-quatre, le neuf du mois d'avril, à dix heures du matin, par-devant nous <b>adjoint délégué</b> de la ville de Gray soussigné, officier de l'état civil, est comparue <b>dame Toussaine Cardinet, épouse de Victor Brutus Cassin, accoucheuse à Gray, âgée de cinquante-quatre ans</b>, laquelle nous a présenté un enfant du sexe masculin <b>né le six du mois d'avril de la présente année, à neuf heures du soir</b>, qu'elle nous a déclaré être <b>fils légitime de Thomas Grillot, marchand boucher, âgé de quarante-trois ans, et de Jeanne Écarnot son épouse, âgée de quarante-trois ans, les deux domiciliés à Gray</b>, et auquel enfant elle a déclaré donner les prénoms de <b>Joseph-Émile</b>. Lesdites déclaration et présentation faites en présence de MM. Jean-François Clerget, caissier de la Caisse d'épargne, âgé de trente-trois ans, et Jean-Baptiste Bernard, concierge de la mairie, âgé de trente-sept ans, domiciliés à Gray.
+          <span class="sign">Signé : femme Cassin née Cardinet — Clerget — Bernard — [Fournier]</span>
+        </blockquote>
+        <p class="gloss"><b>Le rattachement de Joseph Émile est prouvé</b> : fils légitime de Thomas et Jeanne, dix-neuf ans après Joseph. Jeanne a quarante-trois ans. L'oncle déclarant de 1879 disait donc vrai, et il n'existe pas d'autre Joseph Émile. Détail plaisant : la même sage-femme, <b>Toussaine Cardinet épouse Cassin</b>, présente Joseph en 1835 et Joseph Émile en 1854 — dix-neuf ans d'écart, elle exerce toujours. <span class="warn">Il reste un trou de quinze ans, de 1839 à 1854, où d'autres enfants doivent se trouver.</span></p>
+      </article>
+
+      <p class="tr-sep">VII — Baume-les-Dames et Serrigny, 1856-1896</p>
+      <article class="tr">
+        <div class="tr-head">
+          <h3>Naissance de Victor Jean-Baptiste CARPENTIER</h3>
+          <span class="when">9 octobre 1856</span>
+        </div>
+        <p class="ref">Baume-les-Dames (Doubs) — naissances de 1856, acte n° 67 · <span class="tr-chips"><span class="chip c-n">Acte de naissance</span><span class="chip">Filiation</span></span></p>
+        <blockquote>
+          L'an mil huit cent cinquante-six, le dix octobre, à neuf heures du matin, en l'hôtel de la mairie, par-devant nous <b>Antoine Carpentier, chevalier de la Légion d'honneur, maire et officier de l'état civil de la ville de Baume</b>, est comparu <b>monsieur Carpentier Louis, âgé de quarante ans, huissier, demeurant en cette ville, place de la Loi</b>, lequel nous a présenté un enfant du sexe masculin, <b>né le jour d'hier à huit heures du matin en son domicile</b>, de lui déclarant et de <b>Thuriet Marie Edwige, âgée de trente-deux ans, son épouse, sans profession</b>, demeurant audit Baume, auquel enfant il a déclaré vouloir donner les prénoms de <b>Victor Jean Baptiste</b>. Lesdites déclaration et présentation faites en présence de messieurs Jean Simon Bernard, âgé de cinquante et un ans, secrétaire de la mairie, et Bory Silvère, âgé aussi de cinquante et un ans, concierge de cette mairie, les deux demeurant à Baume.
+          <span class="sign">Signé : L. Carpentier — Carpentier — Bory — Bernard</span>
+        </blockquote>
+        <p class="gloss">Une lignée d'hommes de loi : <b>Louis CARPENTIER est huissier</b>, place de la Loi à Baume-les-Dames, marié à <b>Marie Edwige THURIET</b>, née vers 1824. Et l'officier qui reçoit l'acte est <b>Antoine CARPENTIER, maire de Baume et chevalier de la Légion d'honneur</b> : dans une petite ville, un maire homonyme du déclarant est presque toujours un parent — frère ou cousin de Louis, à vérifier. <span class="warn">L'acte ne porte aucune mention marginale, et la vue complète le confirme. C'est normal : l'obligation date de la loi du 17 août 1897, et personne n'a fait la démarche pour un homme mort en 1898 dans un hôpital militaire à l'autre bout de la France.</span> À noter la symétrie : le grand-père paternel d'Yvonne était huissier, comme le mari qu'elle épousera en 1906.</p>
+      </article>
+
+      <article class="tr">
+        <div class="tr-head">
+          <h3>Le ménage CARPENTIER au recensement de Serrigny</h3>
+          <span class="when">≈ 1896</span>
+        </div>
+        <p class="ref">Serrigny (Côte-d'Or) — liste nominative, maison 16, ménage 21, lignes 68-69 · <span class="tr-chips"><span class="chip">Recensement</span><span class="chip">Tradition orale élucidée</span></span></p>
+        <blockquote>
+          <b>Carpentier, Victor</b>, 37 ans, français, <b>pharmacien</b>, <b>chef de ménage</b>.<br><b>Grillot, Léonie</b>, 26 ans, française, néant, <b>sa femme</b>.
+          <span class="sign">—</span>
+        </blockquote>
+        <p class="gloss">Deux lignes qui règlent une énigme de famille. La tradition orale plaçait un <b>pharmacien</b> dans la vie de Joséphine, sans qu'on puisse jamais l'ancrer ; c'était Carpentier. Pharmacien dans le civil et lieutenant de la territoriale — une réserve où l'on sert par périodes —, ce qui explique sa mort à l'hôpital militaire de Bourges. <b>Ils sont mariés au moment du recensement</b>, ce qui borne l'union avant celui-ci. Elle est appelée <b>Léonie</b>, son deuxième prénom : c'est peut-être ce qui a égaré les infirmiers de Bourges, qui écriront « Marguerite ». <span class="warn">Le ménage ne compte que deux personnes : Yvonne, six ou sept ans, n'y est pas — elle était déjà chez sa grand-mère en Haute-Saône, du vivant même de sa mère.</span></p>
+      </article>
+
+      <p class="tr-sep">VIII — Lyon, 1889-1897</p>
+
+      <article class="tr">
+        <div class="tr-head">
+          <h3>Naissance d'Yvonne Marguerite GRILLOT</h3>
+          <span class="when">1<sup>er</sup> octobre 1889</span>
+        </div>
+        <p class="ref">Lyon, 1<sup>er</sup> arrondissement — naissances de 1889, acte n° 595 · <span class="tr-chips"><span class="chip c-n">Acte de naissance</span><span class="chip">Trois mentions marginales</span></span></p>
+        <blockquote>
+          Le deux octobre mil huit cent quatre-vingt-neuf, à dix heures et quart, pardevant nous adjoint délégué au premier arrondissement de Lyon, a comparu <b>Joseph Branche, âgé de quarante-deux ans, docteur en médecine, demeurant à Lyon, boulevard de la Croix-Rousse 117</b>, lequel nous a présenté un enfant du sexe féminin <b>né hier soir à [une ?] heure, dans le domicile de sa mère, Côte des Carmélites 1</b> ; <b>fille naturelle de père inconnu et de Françoise Léonie Joséphine Grillot, âgée de vingt ans, native de Fahy-lès-Autrey (Haute-Saône), fille de Léon et de Théolinde Adélaïde Paufard, célibataire, sans profession</b>, demeurant au domicile ci-dessus indiqué ; auquel enfant on a donné les prénoms <b>Yvonne Marguerite</b>. Étaient présents : <b>Georges Adam, âgé de cinquante-cinq ans, officier en retraite, place Morel 2</b>, et <b>Benoît Machet, âgé de quarante-cinq ans, pharmacien, place Morel 9</b> ; témoins qui, ainsi que le déclarant, ont signé avec nous le présent acte après lecture.
+          <span class="sign">Signé : Branche — Joanny Miro — G. Adam — M. B. Machet</span>
+        </blockquote>
+        <blockquote style="margin-top:16px">
+          <b>Mention marginale, 1892.</b> — L'enfant dénommée dans l'acte ci-contre a été <b>reconnue par Carpentier Victor Jean-Baptiste et Françoise Léonie-Joséphine Grillot, ses père et mère, suivant acte reçu en notre mairie le premier septembre mil huit cent quatre-vingt-douze</b>. Lyon, le 2 7<sup>bre</sup> 1892. L'adjoint délégué, <i>Joanny Miro</i>.
+        </blockquote>
+        <blockquote style="margin-top:16px">
+          <b>Mention au folio 145, fin du registre.</b> — Mention s'appliquant à l'acte n° 595. Suivant <b>jugement rendu par le Tribunal civil de Beaune, Côte-d'Or, le quatorze mai mil huit cent quatre-vingt-dix-sept</b>, et transcrit en cette mairie le vingt-huit septembre suivant, ledit jugement <b>déclare nulle et de nul effet la reconnaissance faite</b> suivant acte passé à la mairie du premier arrondissement de Lyon le premier septembre mil huit cent quatre-vingt-douze <b>par Victor Jean-Baptiste Carpentier</b>, de l'enfant prénommée Yvonne Marguerite, née à Lyon le premier octobre mil huit cent quatre-vingt-neuf de Françoise Léonie Joséphine Grillot, et dont l'acte a été dressé le lendemain. Lyon, le 28 septembre 1897, l'adjoint délégué.
+        </blockquote>
+        <blockquote style="margin-top:16px">
+          <b>Seconde mention au folio 145.</b> — Mention se rapportant à l'acte n° 595. <b>Adoptée par Adélaïde Théolinde Paufard, veuve de André François Napoléon Grillot, en vertu d'un arrêt rendu le</b> […] <i>(suite coupée en bas de vue)</i>.
+        </blockquote>
+        <blockquote style="margin-top:16px">
+          <b>Mention en pied d'acte.</b> — <b>Décédé[e] le 11/2/63 à Gray-la-Ville (H<sup>te</sup>-Saône)</b>.
+        </blockquote>
+        <p class="gloss">La pièce maîtresse du versant lyonnais. Elle <b>fixe la naissance au 1<sup>er</sup> octobre 1889</b> et clôt l'hésitation avec le 11 octobre. Elle nomme surtout le père : <b>Victor Jean-Baptiste CARPENTIER</b>, qui reconnaît l'enfant en 1892 — puis voit cette reconnaissance <b>annulée en 1897 par le tribunal de Beaune</b>. Juridiquement effacée, elle explique pourquoi Yvonne est mariée en 1906 comme fille de père inconnu, avec conseil de famille : les deux actes disent vrai, chacun à sa date. Le choix de <b>Beaune</b> comme juridiction est en soi une information — la compétence suit le domicile du défendeur, donc l'un des deux vivait en Côte-d'Or en 1897. <span class="warn">Le déclarant est le médecin accoucheur et les témoins sont deux voisins de la place Morel : Joséphine était seule à Lyon, à vingt ans.</span> À noter enfin que l'acte appelle Napoléon GRILLOT simplement « Léon », et qu'il donne son état civil complet dans l'ordre <b>André François Napoléon</b>.</p>
+      </article>
+
+      <p class="tr-sep">IX — Bourges, 1898</p>
+      <article class="tr">
+        <div class="tr-head">
+          <h3>Décès de Victor Jean-Baptiste CARPENTIER</h3>
+          <span class="when">29 octobre 1898</span>
+        </div>
+        <p class="ref">Bourges (Cher) — décès de 1898, acte n° 863 · <span class="tr-chips"><span class="chip c-d">Acte de décès</span><span class="chip">Père d'Yvonne</span><span class="chip">Filiation</span></span></p>
+        <blockquote>
+          L'an mil huit cent quatre-vingt-dix-huit, le vingt-neuf octobre à une heure et demie du soir, par-devant nous <b>Louis Henri [Mizieu]</b>, maire de Bourges, département du Cher, officier de l'état civil de cette ville, ont comparu en l'hôtel de ville : 1° <b>Raoul Jalaguier, soldat à la huitième section des infirmiers</b>, âgé de vingt-trois ans, demeurant à Bourges à l'hôpital militaire ; et 2° <b>Hippolyte [Priseux], soldat à ladite section</b>, âgé de vingt-trois ans, demeurant au même lieu ; lesquels nous ont déclaré que le même jour, à quatre heures du matin, <b>Victor Jean-Baptiste CARPENTIER, lieutenant au 62<sup>e</sup> régiment territorial d'infanterie, époux de [Marguerite] GRILLOT, né à Baume-les-Dames (Doubs) le 9 octobre 1856, domicilié à Serrigny (Côte-d'Or), âgé de quarante-deux ans, fils de feu Louis et de Marie Edwig THURIET, est décédé à Bourges, à l'hôpital militaire</b> ; duquel décès nous nous sommes assuré par notre transport.
+          <span class="sign">Signé : [Priseux] — R. Jalaguier — [Mizieu]</span>
+        </blockquote>
+        <p class="gloss">Le père d'Yvonne, qui n'était qu'un nom dans une mention marginale, a désormais un état civil complet : <b>né le 9 octobre 1856 à Baume-les-Dames (Doubs)</b>, fils de <b>feu Louis CARPENTIER et de Marie Edwige THURIET</b>, domicilié à <b>Serrigny en Côte-d'Or</b>. Ce domicile explique rétrospectivement le choix du <b>tribunal de Beaune</b> en 1897 : Serrigny en est à sept kilomètres, et la compétence suit le domicile du défendeur. <span class="warn">Il meurt seul : les deux déclarants sont des infirmiers militaires de vingt-trois ans, et ils se trompent sur le prénom de l'épouse — « Marguerite » au lieu de Joséphine, peut-être par confusion avec le second prénom de la fille. L'acte de 1899, fondé sur un extrait légalisé, lève l'ambiguïté.</span></p>
+      </article>
+
+      <p class="tr-sep">X — Autrey-lès-Gray, 1911</p>
+
+      <article class="tr">
+        <div class="tr-head">
+          <h3>Le ménage VILLETTE au recensement</h3>
+          <span class="when">1911</span>
+        </div>
+        <p class="ref">Autrey-lès-Gray — liste nominative de 1911, ménage 26, lignes 70 à 73 · <span class="tr-chips"><span class="chip">Recensement</span><span class="chip">Profession</span></span></p>
+        <blockquote>
+          <b>Villette Camille</b>, 1877, Selongey, français, <b>chef</b>, <b>huissier</b>, patron.<br>
+          <b>Grillot Yvonne</b>, [1880], Lyon, française, sa femme, sans profession.<br>
+          <b>Villette Renée Jeanne</b>, 1908, Autrey, française, sa fille, sans profession.<br>
+          <b>Villette Jean</b>, 1911, Autrey, français, son fils, sans profession.
+        </blockquote>
+        <p class="gloss">Quatre lignes qui valent un acte. Elles donnent enfin le <b>métier de Camille Jean VILLETTE : huissier</b>, et « patron » à la colonne du statut — il exerce à son compte, ce qui ancre la famille dans le monde judiciaire de Gray. Le ménage est complet et resserré : le couple et les deux enfants, sans domestique ni ascendant. <span class="warn">L'année de naissance d'Yvonne est portée 1880 au lieu de 1889 — erreur de l'agent recenseur ; l'acte de Lyon fait foi, et le lieu de naissance confirme qu'il s'agit bien d'elle.</span> À noter : <b>Théolinde n'est pas dans ce ménage</b> en 1911, elle tenait encore son épicerie à Fahy.</p>
+      </article>
+
+      <p class="tr-sep">XI — Pièce en cours de lecture</p>
+
+      <article class="tr is-partial">
+        <div class="tr-head">
+          <h3>Naissance d'Agathe BERTAUT</h3>
+          <span class="when">date inconnue</span>
+        </div>
+        <p class="ref">Champlitte — naissances, acte n° 69 · <span class="tr-chips"><span class="chip c-n">Acte de naissance</span><span class="chip c-warn">Vue incomplète</span></span></p>
+        <blockquote>
+          […] du sexe féminin, né ce présent jour à […] heures du matin […] de lui déclarant et de […] son épouse en légitime mariage, et auquel il a déclaré vouloir donner le prénom d'<b>Agathe</b>. Lesdites déclaration et présentation faites en présence de <b>Nicolas Viard, marchand, âgé de cinquante quatre ans</b>, et de <b>Pierre [Moine ?], garde champêtre</b>, âgé de […] ans, <b>les deux demeurant audit Champlitte</b> ; et ont […] les témoins signé avec nous le présent acte de naissance, après qu'il leur en a été donné lecture.
+          <span class="sign">Signé : Bertaut — Viard — [Dompré ?] — [le maire]</span>
+        </blockquote>
+        <p class="gloss">Le haut de la vue manque : ni le millésime, ni la date, ni le nom du père déclarant ne sont lisibles. En l'état, l'acte confirme seulement que <b>les BERTAUT sont une famille de Champlitte</b> — ce qui n'était jusqu'ici qu'une déduction tirée du mot « présentement » employé en 1803 au sujet de Nicolle. <span class="warn">Rattachement à Nicolle BERTAUT impossible à établir tant que la vue complète n'a pas été relevée.</span></p>
+      </article>
+
+    </div>
+  </section>
+
+</div>
+
+<script>
+(function(){
+  var stage=document.getElementById('stage'), wrap=document.getElementById('wrap'),
+      vp=document.getElementById('viewport'), W=1760, H=3150, user=null;
+  function fitScale(){ return Math.min(1, (vp.clientWidth||W) / W); }
+  function render(){
+    var s = user || fitScale();
+    stage.style.transform='scale('+s+')';
+    wrap.style.height=(H*s)+'px';
+    vp.style.overflowX = (W*s > vp.clientWidth) ? 'auto' : 'hidden';
+  }
+  document.getElementById('zoomFit').onclick=function(){ user=null; render(); };
+  document.getElementById('zoomIn').onclick=function(){ user=Math.min(2.2,(user||fitScale())*1.25); render(); };
+  document.getElementById('zoomOut').onclick=function(){ user=Math.max(.25,(user||fitScale())/1.25); render(); };
+  document.getElementById('printBtn').onclick=function(){ window.print(); };
+  window.addEventListener('resize', function(){ if(!user) render(); });
+
+  var tabs=[].slice.call(document.querySelectorAll('.tab'));
+  tabs.forEach(function(t){
+    t.addEventListener('click', function(){
+      tabs.forEach(function(o){
+        var on = (o===t);
+        o.classList.toggle('is-active', on);
+        o.setAttribute('aria-selected', on ? 'true' : 'false');
+        document.getElementById(o.dataset.panel).classList.toggle('is-active', on);
+      });
+      if(t.dataset.panel==='panel-arbre'){ render(); }
+      window.scrollTo(0,0);
+    });
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
