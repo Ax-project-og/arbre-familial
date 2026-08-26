@@ -7,3 +7,9 @@ outils/
 # Copie du document d'avant conversion, gardée comme référence de
 # comparaison jusqu'à validation finale (CONVERSION.md § 5, étape 0).
 arbre-branche-maternelle-v1.html
+
+# Documents de travail : consignes de séance, captures d'écran. Ils servent à
+# préparer le document, ils n'ont pas à être publiés avec lui.
+MAJ*.txt
+MODIF-*.docx
+*.png

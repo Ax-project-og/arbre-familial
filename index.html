@@ -207,6 +207,10 @@ h1 em{font-style:italic;color:var(--ink-2);font-weight:400}
 .todo h6 .rk{font-family:var(--serif);font-size:12px;letter-spacing:0;text-transform:none;color:var(--ink-3);margin-left:6px;font-weight:400;font-style:italic}
 .todo ol{margin:0;padding-left:18px;font-family:var(--serif);font-size:13px;line-height:1.5;color:var(--ink)}
 .todo ol li{margin-bottom:7px;padding-left:2px}
+/* Le raisonnement qui ouvre un front de recherche, avant la liste des pièces
+   à demander : ce n'est pas une piste, c'est ce qui les commande. */
+.todo .piste-note{font-family:var(--serif);font-size:12.8px;line-height:1.55;color:var(--ink-2);
+  margin:0 0 9px;padding-left:14px;border-left:2px solid var(--rule)}
 .todo ol li::marker{color:var(--doubt);font-size:11px}
 .sources{list-style:none;margin:0;padding:0;font-family:var(--serif);font-size:12.6px;line-height:1.45;color:var(--ink-2)}
 .sources li{padding:5px 0;border-top:1px solid var(--rule)}
@@ -390,6 +394,9 @@ body.drawer-open .drawer{transform:none}
 .drawer .acts .s-d{background:var(--act-d)}
 .drawer .acts .s-m{background:var(--act-m)}
 .drawer .acts .s-x{background:transparent;border:1px dashed var(--doubt-soft)}
+/* Pièce hors état civil — militaire, recensement, enregistrement. Elle est en
+   main : elle ne doit pas porter le pointillé rouge du « non retrouvé ». */
+.drawer .acts .s-p{background:var(--ink-3)}
 .drawer .acts .lb{font-family:var(--serif);font-size:13.2px;line-height:1.4;color:var(--ink);flex:1}
 .drawer .acts .lb .role{display:block;font-family:var(--sans);font-size:8.4px;letter-spacing:.13em;
   text-transform:uppercase;color:var(--ink-3);margin-top:3px}
@@ -518,16 +525,16 @@ select{max-width:250px}
 <div class="sheet">
 
   <header class="masthead">
-    <div class="eyebrow"><span>Document de travail</span><span>Recherches en cours</span><span>Mise à jour : 25 août 2026, douzième séance</span></div>
+    <div class="eyebrow"><span>Document de travail</span><span>Recherches en cours</span><span>Mise à jour : 26 août 2026, treizième séance</span></div>
     <h1>Arbre généalogique <em>— branche maternelle</em></h1>
-    <p class="deck">Synthèse provisoire, de 1743 à aujourd'hui. Quinze actes dépouillés. Ceux de <b>Vars</b> donnent <b>Barbe RENEVIER née le 19 juin 1774</b>, <b>François AMIOT né le 24 décembre 1780 à Mont-le-Frânois</b>, et Claude RENEVIER <b>fils de François RENEVIER et de Barbe GUIGNARD</b>. Le <b>mariage du 25 octobre 1836 à Fahy-lès-Autrey</b> vient de rouvrir la piste décisive : François AMIOT y est dit <b>vivant, cinquante-cinq ans, propriétaire, demeurant à Vars</b> — il n'a pas assisté au mariage de sa fille, qui lui a fait signifier un acte respectueux. Un <b>baptême de février 1781</b> révèle une fille aînée, <b>Françoise AMYOT</b>, et donne au père son métier : <b>laboureur</b>. Enfin, l'<b>acte de naissance lyonnais d'Yvonne</b> et ses mentions marginales dénouent l'énigme de son père : reconnue en 1892 par <b>Victor Jean-Baptiste CARPENTIER</b>, elle voit cette reconnaissance <b>annulée en 1897 par le tribunal de Beaune</b>, puis se fait <b>adopter par sa propre grand-mère Théolinde</b>. Le dépouillement de <b>Fahy-lès-Autrey</b> porte la fratrie de Théolinde à <b>douze enfants, dont huit morts avant leur premier trimestre</b>. Enfin, deux actes referment les deux plus vieilles questions du dossier : <b>François AMIOT meurt à Vars le 18 mars 1839</b>, remarié, son gendre venant le déclarer ; et le mariage BOURDEAU de 1899 révèle que Joséphine était <b>veuve en premières noces de Victor Jean-Baptiste CARPENTIER</b>, lieutenant d'infanterie territoriale mort à Bourges en 1898 — le père d'Yvonne, qu'elle avait donc épousé. Le recensement de <b>Serrigny</b> les montre enfin sous le même toit, lui <b>pharmacien</b> : le pharmacien de la tradition orale familiale, longtemps invérifiable, c'était lui. Le <b>mariage du 27 août 1892 à Fahy</b>, enfin retrouvé, livre la clef de toute l'affaire : Carpentier est <b>veuf de Julie-Lucie GÉNIN, morte le 25 juin 1889</b>, alors qu'Yvonne, née le 1<sup>er</sup> octobre suivant, a été conçue de son vivant. <b>Si Carpentier est bien son père</b>, elle est enfant adultérine et ne pouvait légalement être reconnue, ce qui expliquerait l'annulation de 1897 — mais le jugement de Beaune reste à lire, et une tradition familiale attribue la paternité à un palefrenier du village. La douzième séance ajoute quatre pièces : le <b>baptême de François AMIOT du 24 décembre 1780</b>, qui donne ses parrain et marraine et une signature du père ; deux <b>tables de décès</b> qui datent enfin la mort de <b>François Bernard AMIOT au 25 janvier 1803</b> ; et, du côté VILLETTE, la <b>naissance de Camille Jean à Selongey en 1877</b> et le <b>décès de son père Émile Adolphe en 1892</b>, qui font remonter cette branche de deux générations — jusqu'à un cordonnier <b>né à Paris en 1840</b>.</p>
+    <p class="deck">Synthèse provisoire, de 1743 à aujourd'hui. Quinze actes dépouillés. Ceux de <b>Vars</b> donnent <b>Barbe RENEVIER née le 19 juin 1774</b>, <b>François AMIOT né le 24 décembre 1780 à Mont-le-Frânois</b>, et Claude RENEVIER <b>fils de François RENEVIER et de Barbe GUIGNARD</b>. Le <b>mariage du 25 octobre 1836 à Fahy-lès-Autrey</b> vient de rouvrir la piste décisive : François AMIOT y est dit <b>vivant, cinquante-cinq ans, propriétaire, demeurant à Vars</b> — il n'a pas assisté au mariage de sa fille, qui lui a fait signifier un acte respectueux. Un <b>baptême de février 1781</b> révèle une fille aînée, <b>Françoise AMYOT</b>, et donne au père son métier : <b>laboureur</b>. Enfin, l'<b>acte de naissance lyonnais d'Yvonne</b> et ses mentions marginales dénouent l'énigme de son père : reconnue en 1892 par <b>Victor Jean-Baptiste CARPENTIER</b>, elle voit cette reconnaissance <b>annulée en 1897 par le tribunal de Beaune</b>, puis se fait <b>adopter par sa propre grand-mère Théolinde</b>. Le dépouillement de <b>Fahy-lès-Autrey</b> porte la fratrie de Théolinde à <b>douze enfants, dont huit morts avant leur premier trimestre</b>. Enfin, deux actes referment les deux plus vieilles questions du dossier : <b>François AMIOT meurt à Vars le 18 mars 1839</b>, remarié, son gendre venant le déclarer ; et le mariage BOURDEAU de 1899 révèle que Joséphine était <b>veuve en premières noces de Victor Jean-Baptiste CARPENTIER</b>, lieutenant d'infanterie territoriale mort à Bourges en 1898 — le père d'Yvonne, qu'elle avait donc épousé. Le recensement de <b>Serrigny</b> les montre enfin sous le même toit, lui <b>pharmacien</b> : le pharmacien de la tradition orale familiale, longtemps invérifiable, c'était lui. Le <b>mariage du 27 août 1892 à Fahy</b>, enfin retrouvé, livre la clef de toute l'affaire : Carpentier est <b>veuf de Julie-Lucie GÉNIN, morte le 25 juin 1889</b>, alors qu'Yvonne, née le 1<sup>er</sup> octobre suivant, a été conçue de son vivant. <b>Si Carpentier est bien son père</b>, elle est enfant adultérine et ne pouvait légalement être reconnue, ce qui expliquerait l'annulation de 1897 — mais le jugement de Beaune reste à lire, et une tradition familiale attribue la paternité à un palefrenier du village. La douzième séance ajoute quatre pièces : le <b>baptême de François AMIOT du 24 décembre 1780</b>, qui donne ses parrain et marraine et une signature du père ; deux <b>tables de décès</b> qui datent enfin la mort de <b>François Bernard AMIOT au 25 janvier 1803</b> ; et, du côté VILLETTE, la <b>naissance de Camille Jean à Selongey en 1877</b> et le <b>décès de son père Émile Adolphe en 1892</b>, qui font remonter cette branche de deux générations — jusqu'à un cordonnier <b>né à Paris en 1840</b>. La <b>treizième séance</b> referme la plus vieille question du versant récent. Le dossier militaire de <b>Joseph Alexandre MONJEAN</b>, l'homme dit « beau-frère de l'épouse » en 1892, montre qu'il avait épousé en 1880 une <b>CARPENTIER de Trouvans</b> — le village des parents de Victor. Il était beau-frère de l'<i>époux</i> : <b>Joséphine était bien fille unique</b>. Le <b>contrat de mariage du 25 août 1892</b>, retrouvé à l'enregistrement, se signale par un montant de droits sans commune mesure avec les actes voisins du registre ; la minute reste à commander.</p>
   </header>
 
   <nav class="tabs" role="tablist" aria-label="Sections du document">
     <button type="button" class="tab is-active" id="tab-arbre" role="tab" aria-selected="true" aria-controls="panel-arbre" data-panel="panel-arbre">Arbre</button>
     <button type="button" class="tab" id="tab-frise" role="tab" aria-selected="false"
             aria-controls="panel-frise" data-panel="panel-frise">Frise <span class="count">essai</span></button>
-    <button type="button" class="tab" id="tab-transcriptions" role="tab" aria-selected="false" aria-controls="panel-transcriptions" data-panel="panel-transcriptions">Transcriptions <span class="count">62</span></button>
+    <button type="button" class="tab" id="tab-transcriptions" role="tab" aria-selected="false" aria-controls="panel-transcriptions" data-panel="panel-transcriptions">Transcriptions <span class="count">65</span></button>
   </nav>
 
   <!-- ================= ONGLET ARBRE ================= -->
@@ -550,7 +557,7 @@ select{max-width:250px}
         <div class="leg"><span class="dot dot-d"></span>Acte de décès<br>confirmé</div>
         <div class="leg"><span class="dot dot-m"></span>Acte de mariage<br>confirmé</div>
         <div class="leg"><span class="dot-x"></span>Acte non retrouvé<br>ou non renseigné</div>
-        <div class="leg"><span class="tag-new">23-25 août 2026</span>Apport des dernières<br>séances de dépouillement</div>
+        <div class="leg"><span class="tag-new">23-26 août 2026</span>Apport des dernières<br>séances de dépouillement</div>
       </div>
     </div>
     <div class="field">
@@ -631,7 +638,7 @@ select{max-width:250px}
           <li><span class="role">Frère cadet</span><span class="who"><b>Joseph Émile GRILLOT</b>, né le <b>6 avril 1854 à Gray, fils légitime de Thomas et Jeanne</b> — filiation prouvée sur acte ; marchand boucher rue du Marché. Quatre fils de 1877 à 1882, essaimés vers Nancy et Paris<span class="tag-new">Prouvé</span></span></li>
           <li><span class="role">Cousin germain</span><span class="who"><b>Pierre Émile GRILLOT</b>, né le <b>16 novembre 1872 à Gray</b>, fils de Nicolas Eugène — c'est l'« Émile GRILLOT, 33 ans, greffier de paix » tuteur ad hoc d'Yvonne en 1906. Marié à Pressigny (Haute-Marne) le 27 octobre 1902<span class="tag-new">Identifié</span></span></li>
           <li><span class="role">Cousin de Joséphine</span><span class="who">Auguste <b>PAUFARD</b>, 41 ans en 1892 et 48 en 1899, cultivateur puis tailleur de pierres à Autrey, <i>cousin du côté maternel</i> — probablement fils de François</span></li>
-          <li><span class="role">Énigme</span><span class="who">Joseph Alexandre <b>MONJEAN</b>, 47 ans, capitaine au 133<sup>e</sup> d'infanterie, chevalier de la Légion d'honneur, à Belley — dit <b>« beau-frère de l'épouse »</b> en 1892, ce qui est incompatible avec une fille unique. Son dossier Léonore tranchera<span class="tag-new">Nouveau</span></span></li>
+          <li><span class="role">Résolue</span><span class="who">Joseph Alexandre <b>MONJEAN</b>, né le <b>23 décembre 1844 à Peintre</b> <i>(Jura)</i>, fils de Jacques MONJEAN, vigneron, et de Françoise [VANAUD <span class="q">?</span>], blanchisseuse. Sorti du rang au 35<sup>e</sup> de ligne en 1865, sous-lieutenant puis lieutenant pendant la guerre de 1870, capitaine au 133<sup>e</sup> à Belley, chevalier de la Légion d'honneur, il finit à l'<b>État-Major de la Place de Langres</b>. Marié le <b>6 juin 1880</b> à <b>Anne Marie Augustine CARPENTIER, de Trouvans</b> — le village même des parents de Victor. Il était donc <b>beau-frère de l'époux</b>, non de l'épouse : la mention de 1892 est une erreur de plume. Trois filles.<span class="tag-new">Résolu</span></span></li>
           <li><span class="role">Oncle de Théolinde</span><span class="who"><b>François PAUFARD</b>, tailleur de pierre à Autrey, frère de Claude — 22 ans en 1836, 46 en 1865, 49 en 1866</span></li>
           <li><span class="role">Oncle par alliance</span><span class="who">[Joseph] <b>CHATEAU</b>, meunier, beau-frère de Claude en 1836 — <i>preuve d'une sœur PAUFARD</i></span></li>
           <li><span class="role">Cousin germain</span><span class="who">Joseph <b>GACONNET</b>, instituteur à Montarlot-lès-Champlitte, <i>cousin germain de Théolinde du côté paternel par alliance</i><span class="tag-new">Nouveau</span></span></li>
@@ -687,25 +694,44 @@ select{max-width:250px}
     <div class="todo">
       <h5>Pistes de recherche — par ordre de priorité</h5>
 
-      <h6>Rang 1 — les quatre fils qui restent <span class="rk">priorité du moment</span></h6>
+      <h6>Front A — prouver la parenté CARPENTIER <span class="rk">une seule pièce suffit</span></h6>
       <ol>
-        <li><b>Dossier Léonore de Joseph Alexandre MONJEAN</b>, capitaine au 133<sup>e</sup> d'infanterie, né vers 1845, à Belley. Il donnera le nom de sa femme — et dira s'il était beau-frère de Joséphine, ce qui impliquerait une sœur inconnue, ou beau-frère de Carpentier. <b>C'est la dernière ombre sur la fille unique.</b></li>
-        <li><b>Décès de Julie-Lucie GÉNIN à Besançon, le 25 juin 1889</b>, et son <b>mariage avec Carpentier</b> avant 1889 : depuis quand était-il marié, et dans quelles circonstances Joséphine est-elle entrée dans sa vie ?</li>
-        <li><b>Jugement du Tribunal civil de Beaune, 14 mai 1897</b> — série U, AD de la Côte-d'Or, non numérisé. Le motif juridique est désormais connu, mais le jugement dira <b>qui a saisi le tribunal</b> : un héritier Génin, la famille Carpentier, ou le ministère public.</li>
-        <li><b>Contrat de mariage du 25 août 1892, M<sup>e</sup> Moreau, notaire à Autrey</b> — série E, AD70. Passé deux jours avant la noce entre un pharmacien de Besançon et une fille de propriétaires, il détaillera les apports des deux côtés.</li>
-        <li><b>La branche CARPENTIER du Doubs</b> : mariage de Louis CARPENTIER et Marie Edwige THURIET avant 1856 ; leur installation à <b>Trouvans</b>, canton de Rougemont ; et <b>Antoine CARPENTIER</b>, maire de Baume-les-Dames et chevalier de la Légion d'honneur en 1856, parent probable.</li>
+        <li><b>Mariage MONJEAN × CARPENTIER, 6 juin 1880</b> — à chercher à <b>Trouvans</b> (Doubs), où l'épouse était domiciliée : canton de Rougemont, AD25, état civil numérisé. L'acte nommera ses parents. <b>S'il donne Louis CARPENTIER et Marie Edwige THURIET, la fratrie avec Victor est prouvée</b> et toute la belle-famille de Joséphine s'ouvre d'un coup. Si l'acte n'est pas à Trouvans, essayer Baume-les-Dames et la garnison de MONJEAN en 1880, à déterminer par les états de services.<span class="tag-new">Nouveau</span></li>
+        <li><b>Naissances CARPENTIER à Trouvans et à Baume-les-Dames, ≈ 1848-1868.</b> Victor naît à Baume-les-Dames en 1856, les parents sont rentiers à Trouvans en 1892 : la famille a bougé. Relever toute la fratrie aux deux endroits, en ne retenant que les actes où la mère est <b>THURIET</b>. Anne Marie Augustine, née vers 1855-1860, doit y figurer.<span class="tag-new">Nouveau</span></li>
+        <li><b>Mariage Louis CARPENTIER × Marie Edwige THURIET</b>, avant 1856 — la génération au-dessus, et la question de l'<b>Antoine CARPENTIER</b> maire de Baume-les-Dames et chevalier en 1856, dont la parenté reste supposée. Passe après les deux précédentes : elle sera plus facile une fois la fratrie relevée.</li>
       </ol>
 
-      <h6>Rang 1 <span class="rk">bis — ouvert par la douzième séance</span></h6>
-      <ol start="6">
-        <li><b>Acte de décès de François Bernard AMIOT, 5 pluviôse an XI (25 janvier 1803)</b> — la table donne la date, l'acte donnera l'âge, le domicile et, avec de la chance, <b>le nom de ses parents</b>. C'est désormais la voie la plus courte vers la génération −2 côté AMIOT.</li>
-        <li><b>Les deux Jean-Baptiste AMIOT</b> : ouvrir les actes du 22 novembre 1805 et du 10 janvier 1816 pour savoir lequel est le frère de François et qui est l'autre.</li>
+      <h6>Front B — qui a saisi le tribunal de Beaune ? <span class="rk">le motif de l'annulation</span></h6>
+      <p class="piste-note">C'est ici que se joue le motif de l'annulation de 1897, et donc la paternité d'Yvonne. <b>Hypothèse</b> : le tribunal compétent suit le domicile du défendeur. Beaune est en Côte-d'Or, et Carpentier est à Serrigny, en Côte-d'Or, vers 1896 — le défendeur, c'est donc lui, ou le ménage. Le demandeur était ailleurs, et il avait un <b>intérêt patrimonial</b> à faire tomber la reconnaissance. Les mieux placés pour cela sont les <b>héritiers de Julie-Lucie GÉNIN</b>, que la légitimation d'une enfant née en 1889 spoliait directement. La recherche doit donc se porter sur la famille GÉNIN, à Besançon.<span class="tag-new">Nouveau</span></p>
+      <ol start="4">
+        <li><b>Décès de Julie-Lucie GÉNIN à Besançon, 25 juin 1889</b> — AD25 / archives municipales de Besançon. L'acte donnera ses parents, son âge et l'adresse du ménage. <i>Son objet change : on ne cherche plus une date, on cherche une famille.</i></li>
+        <li><b>Mariage CARPENTIER × GÉNIN</b>, avant 1889, probablement à Besançon. Il donnera la date, les parents des deux côtés, et les témoins — c'est-à-dire les noms des <b>GÉNIN vivants</b>.</li>
+        <li><b>Y a-t-il eu des enfants du premier lit ?</b> Naissances CARPENTIER à Besançon entre le mariage et 1889. <b>C'est la question décisive.</b> Si Victor avait des enfants de Julie-Lucie, ce sont eux, ou leur tuteur, qui avaient tout à perdre à la reconnaissance de 1892 — et ils sont les demandeurs les plus probables devant Beaune en 1897. Une naissance retrouvée changerait la lecture de toute l'affaire.<span class="tag-new">Nouveau</span></li>
+        <li><b>Recensements de Besançon, 1886 et 1891.</b> Le premier montre le ménage CARPENTIER-GÉNIN complet, l'adresse et la composition ; le second dit où est Victor l'année suivant la naissance d'Yvonne. On ignore encore où il se trouve entre 1889 et 1896.<span class="tag-new">Nouveau</span></li>
+        <li><b>Jugement du Tribunal civil de Beaune, 14 mai 1897</b> — série U, AD21, non numérisé, passer par le secrétariat. Demander explicitement <b>le nom du demandeur et la qualité en laquelle il agit</b> : c'est le seul mot qui manque. Chercher aussi la transcription du jugement à <b>Serrigny</b>, où le couple résidait.</li>
+        <li><b>Où était Victor CARPENTIER en janvier 1889 ?</b> C'est le mois de la conception d'Yvonne, et sa femme mourra six mois plus tard. Voir les annuaires des pharmaciens et l'annuaire du Doubs pour situer son officine, et chercher ce qui pouvait relier Besançon à Fahy-lès-Autrey — soixante kilomètres, deux départements. Une fille de propriétaires de vingt ans ne croise pas un pharmacien de Besançon par hasard : il y a un intermédiaire, un placement, une parenté ou une villégiature, et il reste à trouver.<span class="tag-new">Nouveau</span></li>
+      </ol>
+
+      <h6>Front C — l'enregistrement <span class="rk">une veine entière jamais ouverte</span></h6>
+      <p class="piste-note">Le registre du bureau de Gray voit passer tous les actes notariés de Fahy, d'Autrey et des communes voisines, avec date et montant. Le dossier n'a jamais exploité cette source. Elle donne une prise sur tout ce que l'état civil ne dit pas : les biens, les dots, les héritages, donc les rapports de force.<span class="tag-new">Nouveau</span></p>
+      <ol start="10">
+        <li><b>Minute du contrat de mariage du 25 août 1892</b>, enregistré au bureau de Gray le 2 septembre. Le registre de l'enregistrement l'a localisé et en donne les droits — un montant sans commune mesure avec les actes voisins. Reste à <b>identifier le notaire</b> (M<sup>e</sup> Moreau à Autrey, à vérifier sur la vue complète du registre) et à commander la minute en <b>série E aux AD70</b>. Elle détaillera les apports des deux côtés, et c'est la seule pièce qui dise ce que Joséphine possédait avant le veuvage de 1898.<span class="tag-new">Réécrite</span></li>
+        <li><b>Succession de Joséphine GRILLOT, † 8 septembre 1905</b> — tables de successions et absences, bureau de Gray. Elle dira ce qu'Yvonne, seize ans, orpheline de mère et sans père légal, avait à hériter — et <b>qui l'administrait</b>. C'est probablement la vraie raison du conseil de famille de 1906, bien plus que la seule question de filiation.<span class="tag-new">Nouveau</span></li>
+        <li><b>Contrat de mariage du 29 décembre 1899</b>, M<sup>e</sup> Gérard Prosper-Denis à Autrey — pour la veuve de trente ans qui épouse Maxime BOURDEAU. Le comparer au contrat de 1892 dira ce qui a été conservé du patrimoine Carpentier après 1898. <i>Remonté du rang 4 : il forme paire avec la succession ci-dessus.</i></li>
+        <li><b>Successions de Claude PAUFARD (1865), de Françoise AMIOT (1878) et de Napoléon GRILLOT (1900)</b> — même bureau. Celle de Napoléon confirmera par une troisième voie que Joséphine était fille unique. Celle de <b>Françoise AMIOT</b> dira si elle avait des cohéritiers à Vars, donc si elle avait une fratrie — question ouverte depuis le début du dossier.<span class="tag-new">Nouveau</span></li>
+        <li><b>Contrat de mariage du 2 juin 1866</b>, M<sup>e</sup> [Tonin] à Autrey — le repérer d'abord dans le registre de l'enregistrement, ce qui donnera le nom exact du notaire, avant de commander la minute. <i>La méthode qui a marché en 1892 marchera en 1866.</i></li>
+        <li><b>Succession de Barbe AMIOT, veuve VANNEY, † Fahy le 4 juin 1839</b> — inchangée. Si Françoise AMIOT figure parmi les héritiers, la génération −2 s'ouvre côté AMIOT. Même source que les précédentes : autant tout demander au bureau de Gray dans le même mouvement.</li>
+      </ol>
+
+      <h6>Front D — la ligne maternelle et les VILLETTE <span class="rk">maintenu, sans changement de fond</span></h6>
+      <ol start="16">
+        <li><b>Acte de décès de François Bernard AMIOT, 5 pluviôse an XI (25 janvier 1803)</b>, à Mont-le-Frânois — la table donne la date, l'acte donnera l'âge, le domicile et, avec de la chance, <b>le nom de ses parents</b>. Toujours la voie la plus courte vers la génération −2 côté AMIOT.</li>
+        <li><b>Les deux Jean-Baptiste AMIOT</b> — désormais à chercher à <b>Mont-le-Frânois</b> pour l'an XIV, et à <b>Champlitte</b> pour 1816. La recherche menée à Champlitte pour 1805 est restée vide : les deux premières lignes du relevé de tables viennent de la même source que le décès du père à Mont-le-Frânois. Relever d'abord la cote exacte de la table.<span class="tag-new">Réorientée</span></li>
         <li><b>Les DENERVAUX de Mont-le-Frânois</b> — Jean-Baptiste DENERVAUX et Françoise MOUROT, laboureurs, parrainent et sont parrainés par les AMYOT en 1780 et 1781. Leur mariage et leurs baptêmes sont dans le même registre, et le voisinage éclairera la parenté AMYOT.</li>
         <li><b>Naissance d'Émile Adolphe VILLETTE à Paris, le 20 octobre 1840</b>. <span class="rk">Attention : l'état civil parisien antérieur à 1860 a brûlé en mai 1871</span> — passer par les <b>actes reconstitués</b> des Archives de Paris (fichier alphabétique, série V2E/V3E), qui ne couvrent qu'une partie des actes, puis par les tables de l'enregistrement.</li>
         <li><b>Mariage VILLETTE × VERNEY, Selongey, 19 juin 1871</b> — il donnera le domicile d'Émile Adolphe avant son installation, ses parents, et peut-être leur commune parisienne.</li>
         <li><b>Décès de Marie Joséphine VERNEY à Selongey, 1931 ou 1932</b>, et les actes des quatre autres enfants VILLETTE : Marie Berthe (1872-1875), Félix Jean-Baptiste (1874, marié à Toul en 1901 et à Nancy en 1924), Ernest (1875), Marie (1880, épouse CHEVOLOT).</li>
       </ol>
-
       <h6>Rang 2 — refermer les GRILLOT de Gray</h6>
       <ol start="12">
         <li><b>Dossier Léonore de Joseph GRILLOT</b> — états de service, campagnes, décès, parfois un mariage. Gratuit et intégralement numérisé ; c'est de là que vient l'extrait de naissance de 1835.</li>
@@ -713,7 +739,6 @@ select{max-width:250px}
         <li><b>Naissances GRILLOT à Gray, 1839-1854</b> : quinze ans séparent Nicolas de Joseph Émile, d'autres enfants s'y trouvent presque certainement. Ne retenir que les actes où la mère est <b>Jeanne ÉCARNOT</b> — trois autres foyers GRILLOT vivent à Gray à la même époque.</li>
         <li><b>Décès de François GRILLOT à Gray en 1837</b> : né le 14 février, onze mois avant Napoléon, il est probablement mort en bas âge.</li>
         <li><b>Naissance du 1<sup>er</sup> septembre 1877</b>, pour résoudre l'affaire des deux mères d'Ernest Jean Antoine.</li>
-        <li><b>Naissances GRILLOT à Gray, 1867-1868</b> — la seule fenêtre encore ouverte pour une fratrie de Joséphine, le couple étant domicilié à Fahy dès mars 1869.</li>
         <li><b>Décès de Thomas et de Jeanne</b> à Gray, après juin 1866.</li>
       </ol>
 
@@ -766,6 +791,12 @@ select{max-width:250px}
         <li><b>Fratrie de Françoise AMIOT</b> : tables décennales de Vars 1803-1812.</li>
         <li><b>Nicolle BERTAUT à Champlitte</b> : chercher sous Champlitte-et-le-Prélot, puis sous les cinq communes associées ; compléter l'acte n° 69, naissance d'Agathe BERTAUT.</li>
         <li>La <b>sœur de Claude PAUFARD</b> mariée à un CHATEAU, meunier ; décès de <b>Jean-Baptiste PAUFARD</b> et de <b>Denise REDOUTET</b> entre 1836 et 1865 ; <b>naissance de Bazille Théophile</b>, Fahy, vers mars 1841 ; branche <b>VILLETTE</b> à Selongey ; actes <b>FONTANA</b>.</li>
+      </ol>
+
+      <h6>Rang 4 <span class="rk">nouveau — à ranger sans urgence</span></h6>
+      <ol start="30">
+        <li><b>Les trois filles MONJEAN</b>, nées après 1880, cousines par alliance d'Yvonne. Sans effet sur la ligne, mais elles complètent la belle-famille et pourraient avoir laissé une descendance qui <b>détient des papiers</b>.<span class="tag-new">Nouveau</span></li>
+        <li><b>Mariage Jacques MONJEAN × Françoise VANAUD à Peintre</b>, vers 1840-1844, et la parenté VANAUD du village — collatéral pur, à ne faire que si la piste CARPENTIER de Trouvans échoue et qu'il faut passer par MONJEAN pour l'atteindre.<span class="tag-new">Nouveau</span></li>
       </ol>
     </div>
 
@@ -849,7 +880,8 @@ select{max-width:250px}
         <p><b>Anciennes recherches négatives, conservées pour mémoire :</b> Le couple n'arrive donc à Serrigny qu'<b>entre 1891 et 1896, déjà marié</b> : l'union n'a été célébrée ni à Serrigny ni à Lyon. <b>Fiche matricule de la classe 1876, bureau de Besançon : Carpentier n'y figure pas</b> — piste close, la recherche ayant abouti par une autre voie.</p>
         <p><b>Mentions marginales de l'acte de 1856 :</b> aucune, vue complète vérifiée. Normal — l'obligation date du 17 août 1897 et nul n'a fait la démarche après la mort de Carpentier.</p>
         <p><b>Mariage GRILLOT × CARPENTIER, bornes :</b> L'acte de naissance de Joséphine ne porte en marge que le mariage BOURDEAU de 1899 — or l'obligation de mentionner les mariages date de la <b>loi du 17 août 1897</b>. Le premier mariage est donc <b>antérieur à août 1897</b>, ce qui resserre la fenêtre à 1892-1897.</p>
-        <p><b>Fratrie de Joséphine — quasi close :</b> le décès de Napoléon en 1900 est déclaré par son <b>gendre</b>, marié depuis treize jours, et par un voisin ; aucun fils n'apparaît. Joint à l'absence de naissances GRILLOT à Fahy entre 1869 et 1873, cela fait de Joséphine une <b>fille unique</b> selon toute vraisemblance. <span class="q">?</span> Seule ombre : Joseph Alexandre MONJEAN, dit « beau-frère de l'épouse » en 1892. <i>Détail des recherches antérieures :</i> aucun frère ni sœur retrouvé, ni à Fahy ni à Gray. L'acte de naissance de 1869 dit Napoléon <b>domicilié à Fahy</b> : la famille avait donc déjà quitté Gray. Seule reste ouverte la fenêtre <b>1867-1868, à Gray</b>. Au-delà, l'hypothèse d'une <b>fille unique</b> devient sérieuse — à confirmer par le déclarant du décès de Napoléon en 1900 et par celui de Théolinde.</p>
+        <p><b>Fratrie de Joséphine — close.</b><span class="tag-new">Clos</span> Le décès de Napoléon en 1900 est déclaré par son <b>gendre</b>, marié depuis treize jours, et par un voisin ; aucun fils n'apparaît. Aucune naissance GRILLOT à Fahy entre 1869 et 1873. Et la dernière ombre est levée : <b>Joseph Alexandre MONJEAN</b>, dit « beau-frère de l'épouse » en 1892, avait épousé une <b>CARPENTIER de Trouvans</b> — il était beau-frère de l'<i>époux</i>, et la qualité a glissé d'une ligne dans l'acte. <b>Joséphine était fille unique.</b> La fenêtre 1867-1868 à Gray n'a plus lieu d'être ouverte. <i>Détail des recherches antérieures :</i> aucun frère ni sœur retrouvé, ni à Fahy ni à Gray ; l'acte de naissance de 1869 dit Napoléon <b>domicilié à Fahy</b>, la famille avait donc déjà quitté Gray.</p>
+        <p><b>Décès de Jean-Baptiste AMIOT, 1<sup>er</sup> frimaire an XIV</b> <i>(22 novembre 1805)</i>.<span class="tag-new">Nouveau</span> Cherché dans <b>toutes les communes de Champlitte</b> : absent. Plusieurs registres y sont en mauvais état, la recherche n'est donc pas absolument concluante — mais elle est probablement <b>mal orientée</b>. Les deux premières lignes du relevé de tables viennent de la même source que le décès du père à Mont-le-Frânois ; seule la ligne de 1816 est notée « côté Champlitte ». Reporter la recherche sur <b>Mont-le-Frânois</b>, après avoir relevé la cote exacte de la table.</p>
         <p><b>GRILLOT dans les recensements de Fahy :</b> quasi absents, et aucune trace d'une fratrie de Joséphine ni du mariage BOUDEAU. Explication probable : <b>Napoléon GRILLOT est boucher à Gray en 1866</b> et ne s'installe à Fahy qu'entre 1869 et 1878. Les recensements de Fahy de 1866 et 1872 ne peuvent rien contenir — <b>la recherche doit se porter sur Gray</b>. Essayer aussi les variantes GRILLOZ, GRILLIOT, GRILLOD dans les index.</p>
         <p><b>Reconnaissance CARPENTIER du 01/09/1892 :</b> non retrouvée dans les naissances de Lyon 1<sup>er</sup> pour 1892. À Lyon les reconnaissances sont souvent <b>regroupées en fin de volume</b> plutôt qu'insérées à leur date : reprendre par la table alphabétique, à C comme CARPENTIER autant qu'à G comme GRILLOT.</p>
       </div>
@@ -866,6 +898,7 @@ select{max-width:250px}
       <p>Même situation à Gray, où <b>quatre foyers GRILLOT</b> coexistent dans les années 1830. Outre celui de Thomas et Jeanne ÉCARNOT, on relève <b>François GRILLOT, manouvrier illettré (né ≈ 1791), et Françoise THÉVENIN</b> ; <b>Jean GRILLOT, paveur (né ≈ 1803), et Anne Baptiste LÉONARD</b>, couturière née à Arc ; et le <b>François GRILLOT époux d'Anne PAGE</b>, parents de la Joséphine morte en 1879. Trois François GRILLOT, dont l'un pourrait être le père de Thomas — <b>aucune preuve, aucun rattachement</b>.</p>
       <h5>Réserves de lecture</h5>
       <p>L'âge de Catherine PETITOT en 1807 (« soixante seize », corrigé dans le manuscrit — 66 serait plus vraisemblable) ; le mot qualifiant SORLIN dans le même acte, peut-être « filleul de la défunte » ; l'âge de Firmine à son décès, transcrit « onze mois » alors qu'elle en avait douze ; le quatrième prénom de Marie-Louise, lu « Nivida » ; le métier de Jean-Baptiste PAUFARD en 1813 sur un cliché très pâle ; le patronyme des parents de la baptisée de 1781, lu <b>Denervaux et Mourot</b> — <b>confirmé</b> par l'acte de 1780, qui donne le même couple ; le prénom du beau-frère CHATEAU ; le patronyme de la seconde femme de François AMIOT, lu <b>Gueniffet</b> ; le nom de la rue où meurt Émile Adolphe VILLETTE en 1892, lu <b>Véroille</b> ; le patronyme du second témoin de 1877, lu <b>Drouhant</b> ; le prénom de la mère d'Ernest Jean Antoine GRILLOT, lu <b>Valentine Beuray</b> et contredit par les quatre autres actes ; la femme de Nicolas Eugène GRILLOT, lue « Doursolet » en 1874 et <b>corrigée en POURCELOT</b> sur l'acte de 1872 ; et le nom du quatrième témoin de 1899, lu <b>Rascenet</b>.</p>
+      <p><b>Treizième séance.</b><span class="tag-new">Nouveau</span> Le patronyme de la mère de MONJEAN, lu <b>VANAUD</b> ou <b>LANAUD</b> — l'initiale est ambiguë, et les deux témoins ainsi que le maire de Peintre portent le même nom ; le nom de la rue de Peintre où il naît, lu <b>rue de Monclay</b> ; les dates de la colonne « grades » de son état des services <b>à partir de 1873</b>, dont plusieurs millésimes se lisent mal (1877/1878, 1889, 1900) — <b>ne pas les figer</b> avant une seconde lecture sur la vue d'origine ; et, dans le registre de l'enregistrement de 1892, les patronymes <b>CAGNARD</b> (épouse GUILLEMIN), <b>DROPET</b> d'Oyrières et <b>CROISSARD</b> épouse FAVET.</p>
       <h5>Où chercher</h5>
       <p>État civil numérisé de la Haute-Saône jusqu'en 1922, registres paroissiaux depuis 1550. Attention au classement : le catalogue range les registres sous les <b>communes de 1972</b>. Mont-le-Frânois est à chercher aussi sous <b>Frânois</b> et sous <b>Framont</b> ; Champlitte sous <b>Champlitte-et-le-Prélot</b> et sous les cinq communes associées. L'<b>inventaire PDF de la sous-série 3 E</b> dit exactement ce qui existe et sous quelle cote. Pour identifier la paroisse d'Ancien Régime desservant Mont-le-Frânois, l'ouvrage de l'abbé Roussel, <i>Le diocèse de Langres, histoire et statistique</i> (1875), est sur Gallica. Sources encore inexploitées : listes nominatives 1836-1906, tables de successions et absences, cadastre napoléonien — le domicile PAUFARD est <b>rue d'Autrey</b> — et minutes notariales de la série E. Attention aussi aux bornes de mise en ligne : l'état civil des AD70 <b>s'arrête en 1922</b>. Tout ce qui suit — mariage RIBAUT de 1930, décès de Théolinde vers 1936, décès de 1963 et 1969 — passe par les <b>mairies</b>. Hors département : <b>Archives municipales de Lyon</b> pour l'acte de 1889 et la reconnaissance de 1892 ; <b>Archives départementales de la Côte-d'Or, série U</b>, pour le jugement du tribunal civil de Beaune du 14 mai 1897, non numérisé — passer par le secrétariat ; <b>mairie de Gray-la-Ville</b> pour le décès d'Yvonne en 1963 ; état civil de <b>Selongey</b> (Côte-d'Or) pour les VILLETTE.</p>
     </div>
@@ -1426,6 +1459,23 @@ select{max-width:250px}
         <p class="gloss">Ce sont ces bans qui ont fait tomber l'affaire. On les cherchait à Lyon, à Serrigny, dans le Doubs — ils étaient <b>à Fahy</b>, dans le registre des publications, à côté de ceux de 1866 et de 1899 déjà dépouillés. Ils annoncent déjà l'essentiel : Carpentier est <b>veuf</b>, il habite <b>Besançon</b>, et ses parents sont à <b>Trouvans</b>.</p>
       </article>
 
+      <article class="tr" id="t-1892-contrat-de-mariage-carpentier-grillot">
+        <div class="tr-head">
+          <h3>Le contrat de mariage CARPENTIER × GRILLOT à l'enregistrement</h3>
+          <span class="when">25 août 1892, enregistré le 2 septembre</span>
+        </div>
+        <p class="ref">Registre de l'enregistrement, bureau de Gray — relevé de cinq lignes · <span class="tr-chips"><span class="chip">Enregistrement</span><span class="chip c-warn">Minute à commander</span></span></p>
+        <blockquote>
+          <i>Les quatre lignes voisines servent d'échelle et sont conservées.</i><br>
+          — […]cagnier à M. Paul Jean-Baptiste Mugnier ; tous deux de Fahy. — le 26 — <b>12,38</b><br>
+          — Consentement à mariage par M. Étienne Guillemin et M<sup>me</sup> Anne Colette [Cagnard <span class="q">?</span>] son épouse, d'Autrey. — le 25 — <b>3,75</b><br>
+          — <b>Contrat de mariage entre M. Jean-Baptiste Victor Carpentier, de Besançon, et M<sup>lle</sup> Françoise Léonie Joséphine Grillot, de Fahy. — le 2 septembre — 944,38</b><br>
+          — Rente : moyennant […] (21,85) d'herbes de pré sur [Bley <span class="q">?</span>], commune d'Auvet, à requête de M. Pierre Étienne Alban [Dropet <span class="q">?</span>], d'Oyrières. — le 6 septembre — <b>12,50</b><br>
+          — Vente : moyennant 40 fr., d'une maison à Verfontaine, par M. Jean-Baptiste Favet et M<sup>me</sup> Marie Rose [Croissard <span class="q">?</span>] son épouse, de Champagne, ayant agi tant en leur nom qu'au nom et comme se portant fort de M<sup>me</sup> Marguerite Morizot, veuve Joseph Favet, leur mère et belle-mère, demeurant audit lieu ; à M. Joseph Gérard-Villemot, de Verfontaine. — le 2 septembre — <b>5,50</b>
+        </blockquote>
+        <p class="gloss"><b>Ce n'est pas le contrat, c'est sa trace au fisc</b> — et elle parle quand même. Elle date l'enregistrement au <b>2 septembre 1892</b>, cinq jours après la noce et le jour même où, à Lyon, la mairie du 1<sup>er</sup> arrondissement reçoit la reconnaissance d'Yvonne. Elle donne les deux qualités : lui de <b>Besançon</b>, elle de <b>Fahy</b>. Elle <b>inverse ses prénoms</b> en Jean-Baptiste Victor, ce qu'il faudra retenir pour les index. Et surtout, elle porte un chiffre. Les quatre affaires qui l'encadrent — un consentement, une rente de pré, la vente d'une maison entière à Verfontaine — acquittent <b>entre trois et treize francs</b>. Le contrat CARPENTIER × GRILLOT en acquitte <b>neuf cent quarante-quatre</b>. <span class="warn">Sous réserve de vérifier l'en-tête de la colonne — s'agit-il bien des droits de l'acte, et non d'un report ou d'un cumul ?</span> Si la lecture se confirme, l'écart est tel qu'il ne peut désigner qu'un acte portant sur un <b>patrimoine considérable</b>. Ce que Joséphine apportait, ou ce que le pharmacien lui reconnaissait, se lira dans la minute — et éclairera d'un coup le remariage de 1899 et l'héritage d'Yvonne en 1905.</p>
+      </article>
+
       <article class="tr" id="t-1892-mariage-de-victor-jean-baptiste-carpentier-e">
         <div class="tr-head">
           <h3>Mariage de Victor Jean-Baptiste CARPENTIER et de Joséphine GRILLOT</h3>
@@ -1625,7 +1675,37 @@ select{max-width:250px}
         <p class="gloss">Un personnage. Engagé volontaire à dix-neuf ans, dix-neuf mois de campagne en Algérie, quatorze ans sous les drapeaux, puis rappelé à trente-quatre ans dès la déclaration de guerre et capitaine en trois mois. Blessé et fait prisonnier le même jour à Grosmagny, dans les combats autour de Belfort, il ne rentre qu'en avril 1871. Il se bat ensuite quatre ans pour obtenir les <b>250 francs de traitement annuel</b> attachés à sa croix, et finit par toucher 1 229 francs d'arriérés en janvier 1877. <span class="warn">La ligne « marié le… » de son état de services est vide : il était encore célibataire à trente-sept ans.</span> C'est de ce dossier que provient l'extrait de naissance de 1835 qui a verrouillé la génération I.</p>
       </article>
 
-      <p class="tr-sep">VII — Baume-les-Dames et Serrigny, 1856-1896</p>
+      <p class="tr-sep">VII — Peintre, Baume-les-Dames et Serrigny, 1844-1896</p>
+      <article class="tr" id="t-1844-naissance-de-joseph-alexandre-monjean">
+        <div class="tr-head">
+          <h3>Naissance de Joseph Alexandre MONJEAN</h3>
+          <span class="when">24 décembre 1844</span>
+        </div>
+        <p class="ref">Peintre (Jura) — naissances de 1844 · Expédition délivrée le 6 avril 1887 · <span class="tr-chips"><span class="chip c-n">Acte de naissance</span><span class="chip">Copie conforme</span><span class="chip">Base Léonore</span></span></p>
+        <blockquote>
+          <b>Extrait des registres des actes de l'État civil de la commune de Peintre.</b> — <i>En marge :</i> Naissance de Monjean Joseph Alexandre.<br>
+          L'an mil huit cent quarante-quatre, le <b>vingt-quatre du mois de décembre</b>, à dix heures du matin, pardevant nous, maire, officier de la commune de <b>Peintre, canton de Montmirey, arrondissement de Dole, département du Jura</b>, est comparu <b>Jacques Monjean, âgé de trente ans, profession de vigneron</b>, domicilié à Peintre, lequel nous a présenté un enfant de sexe masculin, <b>né hier, vingt-trois du dit mois, à neuf heures du matin</b>, de lui déclarant, en sa maison, rue de [Monclay <span class="q">?</span>], et de <b>Françoise [Vanaud <span class="q">?</span>], âgée de vingt-neuf ans, profession de blanchisseuse</b>, domiciliée à Peintre, son épouse ; et auquel il a déclaré vouloir donner les prénoms de <b>Joseph Alexandre</b>. Lesdites déclarations et présentations faites en présence de <b>Jean [Vanaud <span class="q">?</span>]</b>, âgé de vingt-sept ans, cultivateur, domicilié à Peintre, premier témoin, et de <b>Jacques [Vanaud <span class="q">?</span>]</b>, âgé de vingt-quatre ans, cultivateur, domicilié à Peintre, second témoin ; et ont les père et témoins signé avec nous le présent acte de naissance, après qu'il leur en a été fait lecture.
+          <span class="sign">Signé : Monjean — [Vanaud] — [Vanaud] — [Vanaud], maire</span>
+          <i>Certification :</i> Pour copie conforme, en mairie à Peintre, le <b>6 avril 1887</b>. Le Maire, Étiévant. — <i>Légalisation :</i> Vu pour légalisation de la signature de M. Étiévant, maire de Peintre. Dole, le <b>9 mai 1887</b>. Le Sous-Préfet, [signature]. Deux mentions supplémentaires portées en travers de la marge gauche, portant d'autres visas <i>(Dole, 14 juillet 1887 <span class="q">?</span>)</i>, restent à lire.
+        </blockquote>
+        <p class="gloss"><b>La pièce qui ferme la fratrie de Joséphine.</b> On la cherchait pour savoir de qui MONJEAN était le beau-frère ; elle répond en donnant tout le reste. Il naît dans une famille de <b>vignerons du Jura</b>, sa mère est blanchisseuse, les deux témoins portent le nom de sa mère et le maire aussi — un village où l'on est tous cousins. Que cette expédition ait été demandée en <b>avril 1887</b>, à quarante-deux ans, et légalisée par le sous-préfet de Dole un mois plus tard, dit sa vraie destination : c'est une <b>pièce de dossier militaire</b>, réunie pour un avancement ou pour la Légion d'honneur. Le garçon de Peintre a fait son chemin.</p>
+      </article>
+
+      <article class="tr" id="t-1880-etats-de-services-de-joseph-alexandre-monjean">
+        <div class="tr-head">
+          <h3>Les états de services de Joseph Alexandre MONJEAN</h3>
+          <span class="when">1865-1910</span>
+        </div>
+        <p class="ref">Deux feuillets matriculaires — 133<sup>e</sup> Régiment d'Infanterie <i>(modèle du 11 septembre 1873, matricule 42)</i> et État-Major de la Place de Langres <i>(modèle n° 53, règlement du 20 mars 1906, matricule 443)</i> · <span class="tr-chips"><span class="chip">Dossier militaire</span><span class="chip">Le mariage de 1880</span></span></p>
+        <blockquote>
+          <b>État civil</b> <i>(les deux feuillets concordent).</i> MONJEAN, Joseph Alexandre. Né le <b>23 décembre 1844 à Peintre</b>, canton de Montmirey, département du Jura. Fils de <b>Jacques</b> et de dame <b>[Vanaud] Françoise</b>, domiciliés à Peintre. <b>Marié le 6 juin 1880 à demoiselle Anne Marie Augustine Carpentier, alors domiciliée à Trouvans, département du Doubs.</b> Autorisation ministérielle en date du <b>5 mai 1880</b>. Enfants : trois ; masculin : néant ; <b>féminin : trois</b>.<br>
+          <b>Signalement.</b> Cheveux et sourcils châtains, yeux gris, front haut, nez moyen, bouche moyenne, menton rond, visage ovale. Taille : 1 m 70.<br>
+          <b>Services et positions diverses.</b> <b>35<sup>e</sup> régiment d'infanterie de ligne</b> : soldat le <b>25 août 1865</b>, comme jeune soldat de la classe 1865 ; caporal le 1<sup>er</sup> octobre 1866 ; sergent-fourrier le 23 septembre 1867 ; sergent le 12 novembre 1867 ; sergent-fourrier le 19 janvier 1870 ; <b>sergent-major le 4 octobre 1870 ; sous-lieutenant le 1<sup>er</sup> novembre 1870 ; lieutenant le 8 décembre 1870</b> ; puis 16 septembre 1871. Passé au <b>133<sup>e</sup></b> le 18 octobre 1873, au 134<sup>e</sup> comme capitaine le 1<sup>er</sup> décembre 187[7 <span class="q">?</span>], de nouveau au 133<sup>e</sup> le 11 juillet 187[8 <span class="q">?</span>] ; capitaine adjudant-major le 13 janvier 188[9 <span class="q">?</span>] ; capitaine le 14 juin 190[0 <span class="q">?</span>]. <i>En observation :</i> une affectation à l'<b>État-Major de la Place de Langres</b>, entre le 2 janvier 1904 et le 11 août 1910. Le feuillet du 133<sup>e</sup> note son arrivée au corps « comme capitaine, venant du 134<sup>e</sup> régiment d'infanterie ».
+          <span class="sign">Réserve : les millésimes de la colonne des grades, à partir de 1873, se lisent mal et sont donnés sous réserve. Les deux numéros matricules différents (42 et 443) sont normaux : ce sont deux registres de corps distincts.</span>
+        </blockquote>
+        <p class="gloss"><b>Un mot suffisait, et c'est Trouvans.</b> Le fils du vigneron de Peintre épouse en 1880 une <b>Anne Marie Augustine CARPENTIER</b> domiciliée dans le village même où les parents de Victor Jean-Baptiste sont dits rentiers douze ans plus tard. Elle est sa <b>sœur</b> selon toute vraisemblance, et MONJEAN était donc <b>beau-frère de l'époux</b>. La mention « beau-frère de l'épouse », portée à Fahy en 1892, est une qualité qui a <b>glissé d'une ligne</b> — les témoins y étaient rangés deux par époux. Joséphine était fille unique, et l'on peut refermer la fenêtre de Gray. Le reste du feuillet raconte une autre histoire : engagé simple soldat à vingt ans, sergent-major en octobre 1870, sous-lieutenant en novembre, lieutenant en décembre — <b>la guerre a fait en six semaines ce que la paix aurait mis quinze ans à faire</b>. C'est cet homme-là, capitaine et chevalier, que la famille GRILLOT voit arriver à la noce de 1892.</p>
+      </article>
+
       <article class="tr" id="t-1856-naissance-de-victor-jean-baptiste-carpentier">
         <div class="tr-head">
           <h3>Naissance de Victor Jean-Baptiste CARPENTIER</h3>
@@ -1990,7 +2070,15 @@ const PERSONNES = [
  metiers:[{quoi:"<b>pharmacien</b>, à Besançon", an:1892}, {quoi:"pharmacien à Serrigny"}, {quoi:"lieutenant au 62<sup>e</sup> territorial"}],
  divers:[
    {dt:"1<sup>re</sup> union", dd:"veuf de <b>Julie-Lucie GÉNIN</b>, † Besançon le 25/06/1889<span class=\"tag-new\">Nouveau</span>"},
-   {dt:"Parents", dd:"Louis CARPENTIER et Marie Edwige THURIET, rentiers à <b>Trouvans</b> <i>(Doubs)</i>"}
+   {dt:"Parents", dd:"Louis CARPENTIER et Marie Edwige THURIET, rentiers à <b>Trouvans</b> <i>(Doubs)</i>"},
+   {dt:"Sœur <span class=\"q\">?</span>", dd:"<b>Anne Marie Augustine CARPENTIER</b>, de <b>Trouvans</b>, mariée le"
+     +" 6 juin 1880 à <b>Joseph Alexandre MONJEAN</b>, officier — trois filles. Sœur"
+     +" très probable : Trouvans est le domicile de ses parents<span class=\"tag-new\">Nouveau</span>"}
+ ],
+ notes:[
+   {b:"Son acte de naissance et son décès l'appellent <b>Victor Jean-Baptiste</b> ; le"
+     +" registre de l'enregistrement de 1892 écrit <b>Jean-Baptiste Victor</b>. Interroger"
+     +" les index dans les deux ordres.", ferme:true}
  ],
  dossier:[
    {type:"n", libelle:"Naissance"},
@@ -2004,7 +2092,8 @@ const PERSONNES = [
  divers:[
    {dt:"En 1889", dd:"à <b>Lyon</b>, 1 Côte des Carmélites, célibataire, 20 ans"},
    {dt:"À Serrigny", dd:"femme du pharmacien, dite <b>Léonie</b>, 26 ans<span class=\"tag-new\">Nouveau</span>"},
-   {dt:"Unions", dd:"mariée à Fahy le 27/08/1892 ; veuve en 1898, remariée en 1899"}
+   {dt:"Unions", dd:"mariée à Fahy le 27/08/1892 ; veuve en 1898, remariée en 1899"},
+   {dt:"Fratrie", dd:"<b>Fille unique</b> — établi<span class=\"tag-new\">Clos</span>"}
  ],
  notes:[
    {b:"<b>D'après la famille</b> — elle serait morte d'une <b>pneumonie</b> contractée lors "
@@ -2511,7 +2600,7 @@ const ACTES = [
  date:"16 novembre 1872", an:1872, tr:"t-1872-naissance-de-pierre-emile-grillot",
  mentions:[]},
 
-{id:"a-1872-le-dossier-de-legion-d-honneur-de-joseph-gri", type:null, titre:"Le dossier de Légion d'honneur de Joseph GRILLOT",
+{id:"a-1872-le-dossier-de-legion-d-honneur-de-joseph-gri", type:"p", titre:"Le dossier de Légion d'honneur de Joseph GRILLOT",
  date:"1872-1877", an:1872, tr:"t-1872-le-dossier-de-legion-d-honneur-de-joseph-gri",
  mentions:[]},
 
@@ -2519,7 +2608,7 @@ const ACTES = [
  date:"9 octobre 1856", an:1856, tr:"t-1856-naissance-de-victor-jean-baptiste-carpentier",
  mentions:[{qui:"victor-carpentier-1856", principal:1}]},
 
-{id:"a-1896-le-menage-carpentier-au-recensement-de-serri", type:null, titre:"Le ménage CARPENTIER au recensement de Serrigny",
+{id:"a-1896-le-menage-carpentier-au-recensement-de-serri", type:"p", titre:"Le ménage CARPENTIER au recensement de Serrigny",
  date:"≈ 1896", an:1896, tr:"t-1896-le-menage-carpentier-au-recensement-de-serri",
  mentions:[{qui:"victor-carpentier-1856", principal:1}, {qui:"josephine-grillot-1869", principal:1}]},
 
@@ -2531,7 +2620,7 @@ const ACTES = [
  date:"29 octobre 1898", an:1898, tr:"t-1898-deces-de-victor-jean-baptiste-carpentier",
  mentions:[{qui:"victor-carpentier-1856", principal:1}]},
 
-{id:"a-1911-le-menage-villette-au-recensement", type:null, titre:"Le ménage VILLETTE au recensement",
+{id:"a-1911-le-menage-villette-au-recensement", type:"p", titre:"Le ménage VILLETTE au recensement",
  date:"1911", an:1911, tr:"t-1911-le-menage-villette-au-recensement",
  mentions:[{qui:"camille-villette-1877", principal:1}, {qui:"yvonne-grillot-1889", principal:1}]},
 
@@ -2557,7 +2646,30 @@ const ACTES = [
  mentions:[{qui:"yvonne-grillot-1889", principal:1}]},
 
 {id:"x-edmond-ribaut-1906-actenonret", type:"x", manquant:true, titre:"Acte non retrouvé",
- mentions:[{qui:"edmond-ribaut-1906", principal:1}]}
+ mentions:[{qui:"edmond-ribaut-1906", principal:1}]},
+
+/* --- treizième séance, 26 août 2026 --- */
+
+{id:"a-1844-naissance-de-joseph-alexandre-monjean", type:"n",
+ titre:"Naissance de Joseph Alexandre MONJEAN",
+ date:"24 décembre 1844", an:1844,
+ tr:"t-1844-naissance-de-joseph-alexandre-monjean", neuf:true,
+ mentions:[]},
+
+/* Pièce militaire, pas acte d'état civil : type « p ». Surtout pas « x »,
+   qui dirait « non retrouvé » alors que nous l'avons sous les yeux. */
+{id:"a-1880-etats-de-services-de-joseph-alexandre-monjean", type:"p",
+ titre:"Les états de services de Joseph Alexandre MONJEAN",
+ date:"1865-1910", an:1880,
+ tr:"t-1880-etats-de-services-de-joseph-alexandre-monjean", neuf:true,
+ mentions:[{qui:"victor-carpentier-1856", role:"beau-frère, par Anne Marie Augustine"}]},
+
+{id:"a-1892-contrat-de-mariage-carpentier-grillot", type:"m",
+ titre:"Le contrat de mariage CARPENTIER × GRILLOT à l'enregistrement",
+ date:"25 août 1892, enregistré le 2 septembre", an:1892,
+ tr:"t-1892-contrat-de-mariage-carpentier-grillot", neuf:true,
+ mentions:[{qui:"victor-carpentier-1856", principal:1},
+           {qui:"josephine-grillot-1869", principal:1}]}
 ];
 
 /* Les transcriptions elles-mêmes sont le HTML de l'onglet « Transcriptions »,
