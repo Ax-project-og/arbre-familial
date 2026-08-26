@@ -1,0 +1,9 @@
+# GitHub Pages sert tout le dépôt : ce qui est ici serait publié.
+
+# Outils de la conversion — jetables, non publiés (CONVERSION.md § 5).
+# Ils restent sur le disque : ils ne sont simplement pas mis en ligne.
+outils/
+
+# Copie du document d'avant conversion, gardée comme référence de
+# comparaison jusqu'à validation finale (CONVERSION.md § 5, étape 0).
+arbre-branche-maternelle-v1.html

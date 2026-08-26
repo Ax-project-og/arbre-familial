@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prototype — arbre interactif (données fictives)</title>
+<style>
+:root{
+  --paper:#EEEDE6;
+  --paper-lite:#F8F7F2;
+  --ink:#1F3350;
+  --ink-2:#4B617F;
+  --ink-3:#8092AC;
+  --rule:#C3CBD8;
+  --doubt:#9B2D2D;
+  --doubt-soft:#C08682;
+  --act-n:#3C6E52;
+  --act-d:#6B4C7A;
+  --act-m:#2C6E8E;
+  --fresh:#2E6B4F;
+  --fresh-line:#9BBFA9;
+  --down:#A9762A;
+  --down-soft:#E6D3AE;
+  --up:#2F6F6A;
+  --up-soft:#B7D2CE;
+  --serif:"Iowan Old Style","Hoefler Text","Palatino Linotype","Book Antiqua",Georgia,serif;
+  --sans:ui-sans-serif,-apple-system,"Segoe UI","Helvetica Neue",Arial,sans-serif;
+  --drawer:440px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--paper);
+  background-image:
+    radial-gradient(circle at 12% 5%, rgba(255,255,255,.6), transparent 45%),
+    radial-gradient(circle at 90% 95%, rgba(31,51,80,.05), transparent 52%);
+  color:var(--ink);
+  font-family:var(--sans);
+  -webkit-font-smoothing:antialiased;
+}
+.sheet{max-width:1820px;margin:0 auto;padding:34px 24px 56px;transition:margin-right .28s ease}
+body.drawer-open .sheet{margin-right:var(--drawer)}
+@media (max-width:1100px){body.drawer-open .sheet{margin-right:0}}
+
+.masthead{border-bottom:1.5px solid var(--ink);padding-bottom:18px}
+.eyebrow{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:10.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--ink-2);margin-bottom:10px}
+.eyebrow span:not(:first-child)::before{content:"·";margin-right:14px;color:var(--ink-3)}
+h1{font-family:var(--serif);font-size:clamp(28px,3.4vw,42px);line-height:1.05;margin:0 0 10px;font-weight:600;letter-spacing:-.01em}
+h1 em{font-style:italic;color:var(--ink-2);font-weight:400}
+.deck{font-family:var(--serif);font-size:15.5px;line-height:1.5;color:var(--ink-2);max-width:960px;margin:0}
+
+.tabs{display:flex;border-bottom:1.5px solid var(--ink);margin:0 0 22px}
+.tab{font-family:var(--sans);font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+  background:transparent;border:0;border-bottom:2.5px solid transparent;margin-bottom:-1.5px;
+  color:var(--ink-3);padding:14px 22px;cursor:pointer}
+.tab:hover{color:var(--ink-2)}
+.tab.is-active{color:var(--ink);border-bottom-color:var(--ink)}
+.tab:focus-visible{outline:2px solid var(--ink);outline-offset:-4px}
+.tab .count{font-family:var(--serif);font-size:12px;letter-spacing:0;color:var(--ink-3);margin-left:8px}
+.panel{display:none}
+.panel.is-active{display:block}
+
+/* ---------- Barre d'outils ---------- */
+.bar{display:flex;flex-wrap:wrap;gap:18px 40px;align-items:flex-end;justify-content:space-between;
+     padding:0 0 16px;border-bottom:1px solid var(--rule);margin-bottom:14px}
+.field h6,.legend-group h6{margin:0 0 9px;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+.legend{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:center}
+.leg{display:flex;align-items:center;gap:9px;font-size:11.5px;color:var(--ink-2);line-height:1.3}
+.swatch{width:30px;height:19px;border-radius:2px;flex:none}
+.sw-solid{background:var(--paper-lite);border:1.5px solid var(--ink)}
+.sw-dash{background:var(--paper-lite);border:1.5px dashed var(--doubt-soft)}
+.sw-down{background:rgba(169,118,42,.10);border:1.5px solid var(--ink);box-shadow:0 0 0 2px var(--down)}
+.sw-up{background:rgba(47,111,106,.10);border:1.5px solid var(--ink);box-shadow:0 0 0 2px var(--up)}
+.tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.tools button{font-family:var(--sans);font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  background:transparent;border:1px solid var(--rule);color:var(--ink-2);padding:8px 12px;border-radius:2px;cursor:pointer}
+.tools button:hover{border-color:var(--ink);color:var(--ink)}
+.tools button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+input[type=search],select{font-family:var(--serif);font-size:13px;color:var(--ink);background:var(--paper-lite);
+  border:1px solid var(--rule);border-radius:2px;padding:8px 10px}
+input[type=search]{width:200px}
+input[type=search]::placeholder{color:var(--ink-3);font-style:italic}
+select{max-width:230px}
+.seg{display:flex;border:1px solid var(--rule);border-radius:2px;overflow:hidden}
+.seg button{font-family:var(--sans);font-size:9.4px;letter-spacing:.13em;text-transform:uppercase;
+  background:transparent;border:0;border-right:1px solid var(--rule);color:var(--ink-3);padding:9px 12px;cursor:pointer}
+.seg button:last-child{border-right:0}
+.seg button:hover{color:var(--ink-2)}
+.seg button.on{background:var(--paper);color:var(--ink);box-shadow:inset 0 -2.5px 0 var(--ink)}
+.seg button.on[data-mode="down"]{color:var(--down);box-shadow:inset 0 -2.5px 0 var(--down)}
+.seg button.on[data-mode="up"]{color:var(--up);box-shadow:inset 0 -2.5px 0 var(--up)}
+.seg button.on[data-view="preuve"]{color:var(--act-m);box-shadow:inset 0 -2.5px 0 var(--act-m)}
+.seg button.on[data-view="neuf"]{color:var(--fresh);box-shadow:inset 0 -2.5px 0 var(--fresh)}
+.viewnote{font-family:var(--serif);font-size:12.8px;font-style:italic;color:var(--ink-2);margin:0 0 14px;min-height:18px}
+.hint{display:none;font-size:11px;letter-spacing:.06em;color:var(--ink-3);margin:0 0 10px}
+.hint.is-on{display:block}
+
+/* ---------- Scène ---------- */
+#viewport{width:100%;overflow:hidden;cursor:grab}
+#viewport.is-panning{cursor:grabbing}
+#wrap{position:relative}
+#stage{position:relative;transform-origin:top left}
+.wires{position:absolute;inset:0;pointer-events:none}
+.wire{fill:none;stroke:var(--ink-2);stroke-width:1.6;transition:stroke .2s ease,stroke-width .2s ease,opacity .2s ease}
+.wire.is-doubt{stroke:var(--doubt-soft);stroke-dasharray:7 5}
+.band{fill:var(--ink)}
+.node{fill:var(--paper);stroke:var(--ink-2);stroke-width:1.6}
+
+.rail{position:absolute;left:6px;width:146px;transform:translateY(-50%);text-align:right}
+.rail .num{font-family:var(--serif);font-size:27px;line-height:1;color:var(--ink)}
+.rail .lbl{font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-3);margin-top:6px}
+.rail .yrs{font-family:var(--serif);font-size:12.5px;font-style:italic;color:var(--ink-2);margin-top:3px}
+
+/* ---------- Fiches ---------- */
+.card{position:absolute;left:var(--x);top:var(--y);width:var(--w);min-height:var(--h);
+  background:var(--paper-lite);border:1.5px solid var(--ink);border-radius:3px;
+  padding:13px 15px;display:flex;flex-direction:column;text-align:left;
+  box-shadow:0 1px 0 rgba(31,51,80,.14), 0 6px 14px -10px rgba(31,51,80,.5);
+  transition:transform .18s ease, box-shadow .18s ease, opacity .2s ease;
+  font:inherit;color:inherit;cursor:pointer}
+.card:hover{transform:translateY(-2px);box-shadow:0 1px 0 rgba(31,51,80,.2), 0 12px 22px -12px rgba(31,51,80,.65)}
+.card:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+.card.is-doubt{border-style:dashed;border-color:var(--doubt-soft);background:rgba(248,247,242,.7)}
+.card .rel{font-size:8.2px;letter-spacing:.14em;line-height:1.5;text-transform:uppercase;color:var(--ink-3);margin:0 0 7px}
+.card.is-root .rel{color:var(--ink);font-weight:600}
+.card .nm{font-family:var(--serif);font-size:15.5px;line-height:1.22;margin:0 0 9px;font-weight:400}
+.card .nm b{font-weight:600;letter-spacing:.04em}
+.card.is-small .nm{font-size:14px;margin-bottom:7px}
+.q{color:var(--doubt);font-weight:600}
+.meta{display:grid;grid-template-columns:64px 1fr;gap:5px 9px;align-items:baseline;margin:0}
+.meta dt{font-size:8.4px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);padding-top:2px}
+.meta dd{margin:0;font-family:var(--serif);font-size:12.6px;line-height:1.4;color:var(--ink)}
+.meta dd i{font-style:italic;color:var(--ink-2)}
+.more{margin-top:auto;padding-top:10px;font-size:8.4px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink-3);display:flex;align-items:center;gap:6px}
+.more::before{content:"";flex:1;height:1px;background:rgba(31,51,80,.14)}
+.card:hover .more,.card.is-open .more{color:var(--down)}
+.card.is-root{border-width:2.5px}
+
+/* jauge documentaire */
+.gauge{display:none;margin-top:10px;padding-top:9px;border-top:1px solid rgba(31,51,80,.14);
+  align-items:center;gap:7px;font-size:8.2px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+.gauge i{width:11px;height:11px;border-radius:2px;flex:none;border:1px dashed var(--doubt-soft);background:transparent}
+.gauge i.ok{border:0}
+.gauge i.ok.g-n{background:var(--act-n)} .gauge i.ok.g-m{background:var(--act-m)} .gauge i.ok.g-d{background:var(--act-d)}
+.gauge span{margin-left:auto}
+#stage.view-preuve .gauge{display:flex}
+#stage.view-preuve .card{opacity:1}
+#stage.view-preuve .card.pv-0{opacity:.5;border-style:dotted;background:transparent}
+#stage.view-preuve .card.pv-1{opacity:.78}
+#stage.view-preuve .card.pv-3{box-shadow:0 0 0 1.5px var(--ink), 0 6px 14px -10px rgba(31,51,80,.5)}
+#stage.view-neuf .card:not(.is-new),#stage.view-neuf .wire,#stage.view-neuf .union{opacity:.2}
+#stage.view-neuf .card.is-new{box-shadow:0 0 0 2px var(--fresh);background:rgba(46,107,79,.06)}
+
+.union{position:absolute;left:var(--x);top:var(--y);transform:translate(-50%,-50%);width:var(--w);
+  background:var(--paper);border:1.5px solid var(--act-m);border-radius:14px;padding:8px;text-align:center;
+  transition:opacity .2s ease,box-shadow .2s ease}
+.union.is-doubt{border:1.5px dashed var(--doubt-soft)}
+.union .k{font-size:8.4px;letter-spacing:.15em;text-transform:uppercase;color:var(--act-m);display:block}
+.union.is-doubt .k{color:var(--doubt)}
+.union .v{font-family:var(--serif);font-size:12.5px;color:var(--ink);display:block;margin-top:2px}
+.union .x{display:inline-block;margin-top:6px;font-size:7.6px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--act-m);border:1px solid var(--act-m);border-radius:2px;padding:2px 6px}
+.union.is-doubt .x{color:var(--doubt);border:1px dashed var(--doubt-soft)}
+
+/* ---------- Lumière de lignée ---------- */
+#stage.is-focused .card,#stage.is-focused .union,#stage.is-focused .wire{opacity:.24}
+#stage.is-focused .card.lit-down,#stage.is-focused .card.lit-up,#stage.is-focused .card.lit-ally,
+#stage.is-focused .card.is-open,#stage.is-focused .card.is-match,
+#stage.is-focused .union.lit-down,#stage.is-focused .union.lit-up,
+#stage.is-focused .wire.lit-down,#stage.is-focused .wire.lit-up{opacity:1}
+.card.lit-down{box-shadow:0 0 0 2px var(--down), 0 10px 22px -14px rgba(169,118,42,.9);background:rgba(169,118,42,.06)}
+.card.lit-up{box-shadow:0 0 0 2px var(--up), 0 10px 22px -14px rgba(47,111,106,.9);background:rgba(47,111,106,.06)}
+.card.lit-ally{box-shadow:0 0 0 2px var(--down-soft)}
+.card.is-open{box-shadow:0 0 0 2.5px var(--ink), 0 12px 26px -14px rgba(31,51,80,.8)}
+.card.is-match{box-shadow:0 0 0 2px var(--act-m)}
+.wire.lit-down{stroke:var(--down);stroke-width:2.6}
+.wire.lit-up{stroke:var(--up);stroke-width:2.6}
+.union.lit-down{box-shadow:0 0 0 2px var(--down)}
+.union.lit-up{box-shadow:0 0 0 2px var(--up)}
+
+/* ---------- Tiroir ---------- */
+.drawer{position:fixed;top:0;right:0;bottom:0;width:var(--drawer);z-index:40;
+  background:var(--paper-lite);border-left:1.5px solid var(--ink);
+  box-shadow:-18px 0 40px -30px rgba(31,51,80,.8);
+  transform:translateX(100%);transition:transform .28s ease;display:flex;flex-direction:column}
+body.drawer-open .drawer{transform:none}
+.drawer-head{padding:20px 24px 16px;border-bottom:1.5px solid var(--ink);position:relative}
+.drawer-head .gen{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-3);margin:0 0 8px}
+.drawer-head h2{font-family:var(--serif);font-size:24px;font-weight:600;line-height:1.1;margin:0 0 4px;letter-spacing:-.01em}
+.drawer-head .dates{font-family:var(--serif);font-size:13.5px;font-style:italic;color:var(--ink-2);margin:0}
+.drawer-head .rel-big{margin:10px 0 0;font-family:var(--serif);font-size:14px;color:var(--ink);
+  border-top:1px solid var(--rule);padding-top:10px}
+.drawer-head .rel-big b{font-weight:600}
+.drawer-head .rel-big i{font-style:italic;color:var(--ink-3);font-size:12.5px}
+.closer{position:absolute;top:16px;right:18px;width:30px;height:30px;border:1px solid var(--rule);border-radius:2px;
+  background:transparent;color:var(--ink-2);font-size:16px;line-height:1;cursor:pointer}
+.closer:hover{border-color:var(--ink);color:var(--ink)}
+.drawer .seg{margin-top:14px}
+.drawer .seg button{flex:1;padding:9px 4px}
+.drawer-body{overflow-y:auto;padding:22px 24px 40px;flex:1}
+.dsec{margin-bottom:28px}
+.dsec > h3{margin:0 0 12px;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+.dsec p{font-family:var(--serif);font-size:13.6px;line-height:1.6;color:var(--ink);margin:0 0 12px}
+.dsec p:last-child{margin-bottom:0}
+
+.tl{list-style:none;margin:0;padding:0 0 0 20px;border-left:1px solid var(--rule)}
+.tl li{position:relative;padding:0 0 16px}
+.tl li:last-child{padding-bottom:0}
+.tl li::before{content:"";position:absolute;left:-24.5px;top:5px;width:8px;height:8px;border-radius:50%;
+  background:var(--paper-lite);border:1.5px solid var(--ink-3)}
+.tl li.is-birth::before{border-color:var(--act-n);background:var(--act-n)}
+.tl li.is-death::before{border-color:var(--act-d);background:var(--act-d)}
+.tl li.is-union::before{border-color:var(--act-m);background:var(--act-m)}
+.tl .yr{font-family:var(--serif);font-size:12px;color:var(--ink-3);letter-spacing:.04em}
+.tl .yr .age{font-style:italic}
+.tl .what{font-family:var(--serif);font-size:13.4px;line-height:1.42;color:var(--ink);display:block;margin-top:1px}
+.tl li.is-soft .what{color:var(--ink-2)}
+
+.notes{list-style:none;margin:0;padding:0}
+.notes li{border-left:2px solid var(--rule);padding:2px 0 2px 14px;margin-bottom:14px}
+.notes li.is-doubt{border-left-color:var(--doubt)}
+.notes .t{display:block;font-size:8.6px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);margin-bottom:4px}
+.notes li.is-doubt .t{color:var(--doubt)}
+.notes .b{font-family:var(--serif);font-size:13.4px;line-height:1.55;color:var(--ink)}
+
+.acts{list-style:none;margin:0;padding:0}
+.acts li{border-top:1px solid rgba(31,51,80,.13)}
+.acts li:first-child{border-top:0}
+.acts button{display:flex;align-items:baseline;gap:10px;width:100%;text-align:left;background:transparent;border:0;
+  padding:10px 0;cursor:pointer;font:inherit;color:inherit}
+.acts button:disabled{cursor:default}
+.acts .sq{width:9px;height:9px;border-radius:2px;flex:none;transform:translateY(-1px)}
+.acts .a-n{background:var(--act-n)} .acts .a-d{background:var(--act-d)} .acts .a-m{background:var(--act-m)}
+.acts .a-x{background:transparent;border:1px dashed var(--doubt-soft)}
+.acts .lb{font-family:var(--serif);font-size:13.2px;line-height:1.4;color:var(--ink);flex:1}
+.acts .lb .role{display:block;font-family:var(--sans);font-size:8.4px;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--ink-3);margin-top:3px}
+.acts li.is-missing .lb{color:var(--doubt)}
+.acts .go{font-size:8.4px;letter-spacing:.13em;text-transform:uppercase;color:var(--act-m);white-space:nowrap}
+.acts button:hover .go{text-decoration:underline}
+.tag-new{display:inline-block;font-size:7.4px;letter-spacing:.13em;text-transform:uppercase;color:var(--fresh);
+  border:1px solid var(--fresh-line);border-radius:2px;padding:1px 5px;margin-left:7px;vertical-align:middle}
+.kin{list-style:none;margin:0;padding:0;font-family:var(--serif);font-size:13.2px;line-height:1.5}
+.kin li{padding:4px 0}
+.kin .role{font-family:var(--sans);font-size:8.4px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-3);margin-right:8px}
+.kin a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--rule);cursor:pointer}
+.kin a:hover{border-bottom-color:var(--ink)}
+.kin .rel{color:var(--ink-3);font-style:italic}
+
+@media (max-width:1100px){
+  .drawer{top:auto;left:0;width:auto;height:76vh;border-left:0;border-top:1.5px solid var(--ink);
+    border-radius:10px 10px 0 0;transform:translateY(100%);box-shadow:0 -18px 40px -30px rgba(31,51,80,.8)}
+  body.drawer-open .drawer{transform:none}
+}
+
+/* ---------- Frise ---------- */
+.fr-intro{max-width:900px;font-family:var(--serif);font-size:14px;line-height:1.6;color:var(--ink-2);margin:0 0 24px}
+.frise{position:relative;border-top:1.5px solid var(--ink);padding-top:0}
+.fr-head{display:flex;align-items:flex-end;height:26px;position:relative;margin-left:200px;border-bottom:1px solid var(--rule)}
+.fr-tick{position:absolute;bottom:0;transform:translateX(-50%);font-family:var(--serif);font-size:11px;color:var(--ink-3)}
+.fr-rows{list-style:none;margin:0;padding:0;position:relative}
+.fr-grid{position:absolute;inset:0 0 0 200px;pointer-events:none}
+.fr-grid span{position:absolute;top:0;bottom:0;width:1px;background:rgba(31,51,80,.10)}
+.fr-grid span.c{background:rgba(31,51,80,.20)}
+.fr-row{display:flex;align-items:center;height:26px;position:relative;transition:opacity .2s ease}
+.fr-row:hover{background:rgba(31,51,80,.045)}
+.fr-nm{width:200px;flex:none;padding-right:16px;text-align:right;font-family:var(--serif);font-size:12.4px;
+  color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+.fr-nm b{font-weight:600}
+.fr-track{position:relative;flex:1;height:100%}
+.fr-bar{position:absolute;top:8px;height:10px;background:var(--ink-2);border-radius:5px;cursor:pointer}
+.fr-bar.is-doubt{background:repeating-linear-gradient(90deg,var(--doubt-soft) 0 5px,transparent 5px 9px)}
+.fr-bar.is-short{background:var(--doubt)}
+.fr-mark{position:absolute;top:6px;width:9px;height:9px;background:var(--paper-lite);border:1.5px solid var(--act-m);
+  transform:translateX(-50%) rotate(45deg);border-radius:1px}
+.fr-birth{position:absolute;top:9px;width:4px;height:8px;background:var(--act-n);border-radius:1px;transform:translateX(-50%);opacity:.75}
+.fr-row.lit-down .fr-bar{background:var(--down)}
+.fr-row.lit-up .fr-bar{background:var(--up)}
+.fr-row.is-open .fr-bar{background:var(--ink)}
+.fr-row.is-open .fr-nm{font-weight:600}
+#frise.is-focused .fr-row:not(.lit-down):not(.lit-up):not(.is-open){opacity:.28}
+.fr-gen{display:flex;align-items:center;gap:12px;margin:16px 0 4px}
+.fr-gen span{font-size:8.6px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-3);white-space:nowrap}
+.fr-gen::after{content:"";flex:1;height:1px;background:var(--rule)}
+.fr-legend{display:flex;flex-wrap:wrap;gap:14px 26px;margin-top:22px;padding-top:14px;border-top:1px solid var(--rule)}
+
+/* ---------- Transcriptions ---------- */
+.tr-wrap{max-width:1060px}
+.tr-intro{max-width:840px;font-family:var(--serif);font-size:14px;line-height:1.6;color:var(--ink-2);margin:0 0 30px}
+.tr{border:1.5px solid var(--ink);border-radius:3px;background:var(--paper-lite);padding:24px 28px;margin-bottom:26px;
+    box-shadow:0 1px 0 rgba(31,51,80,.12), 0 8px 18px -14px rgba(31,51,80,.5);transition:box-shadow .4s ease}
+.tr.is-flash{box-shadow:0 0 0 2.5px var(--down), 0 8px 18px -14px rgba(31,51,80,.5)}
+.tr-head{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:baseline;justify-content:space-between;
+  border-bottom:1px solid var(--rule);padding-bottom:12px;margin-bottom:16px}
+.tr h3{font-family:var(--serif);font-size:19px;font-weight:600;margin:0}
+.tr .when{font-family:var(--serif);font-size:14px;font-style:italic;color:var(--ink-2)}
+.tr .ref{font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);margin:0 0 16px}
+.tr blockquote{margin:0;font-family:var(--serif);font-size:14px;line-height:1.72;color:var(--ink);
+  border-left:2px solid var(--rule);padding-left:18px}
+.tr blockquote b{font-weight:600}
+.tr .who{margin:16px 0 0;padding-top:14px;border-top:1px solid rgba(31,51,80,.14);
+  font-family:var(--serif);font-size:13px;line-height:1.6;color:var(--ink-2)}
+.tr .who a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--rule);cursor:pointer}
+.tr .who a:hover{border-bottom-color:var(--ink)}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media print{
+  @page{size:A3 landscape;margin:9mm}
+  body{background:#fff;background-image:none}
+  .tools,.tabs,.drawer,.hint{display:none!important}
+  .sheet{margin-right:0!important;padding:0;max-width:none}
+  .panel{display:block!important}
+  #viewport{overflow:visible}
+}
+</style>
+</head>
+<body>
+
+<div class="sheet">
+
+  <header class="masthead">
+    <div class="eyebrow"><span>Prototype</span><span>Données entièrement fictives</span><span>Famille ROUSSEL — Vaux-le-Bourg</span></div>
+    <h1>Arbre interactif <em>— maquette de travail</em></h1>
+    <p class="deck">Cliquez sur une fiche : sa <b>descendance s'allume</b> et son histoire s'ouvre à droite. Choisissez un <b>point de vue</b> et chaque fiche annonce ce que la personne est <b>pour vous</b>. Les actes ne sont plus rattachés à une personne mais aux <b>cinq ou six qu'ils nomment</b> — d'où la rubrique « apparaît aussi dans ».</p>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button type="button" class="tab is-active" role="tab" aria-selected="true" data-panel="panel-arbre">Arbre</button>
+    <button type="button" class="tab" role="tab" aria-selected="false" data-panel="panel-frise">Frise <span class="count">essai</span></button>
+    <button type="button" class="tab" role="tab" aria-selected="false" data-panel="panel-transcriptions">Transcriptions <span class="count">4</span></button>
+  </nav>
+
+  <section class="panel is-active" id="panel-arbre" role="tabpanel">
+
+    <div class="bar">
+      <div class="field">
+        <h6>Point de vue</h6>
+        <select id="root" aria-label="Personne servant de point de vue"></select>
+      </div>
+      <div class="legend-group">
+        <h6>Lecture</h6>
+        <div class="legend">
+          <div class="leg"><span class="swatch sw-solid"></span>Établi</div>
+          <div class="leg"><span class="swatch sw-dash"></span>À confirmer</div>
+          <div class="leg"><span class="swatch sw-down"></span>Descendance</div>
+          <div class="leg"><span class="swatch sw-up"></span>Ascendance</div>
+        </div>
+      </div>
+      <div class="field">
+        <h6>Affichage</h6>
+        <div class="seg" id="viewSeg">
+          <button type="button" data-view="normal" class="on">Arbre</button>
+          <button type="button" data-view="preuve">Preuves</button>
+          <button type="button" data-view="neuf">Nouveautés</button>
+        </div>
+      </div>
+      <div class="tools">
+        <input type="search" id="q" placeholder="Nom, lieu, métier…" aria-label="Chercher">
+        <button type="button" id="clear">Tout éteindre</button>
+        <button type="button" id="zoomOut" aria-label="Réduire">−</button>
+        <button type="button" id="zoomFit">Ajuster</button>
+        <button type="button" id="zoomIn" aria-label="Agrandir">+</button>
+      </div>
+    </div>
+
+    <p class="viewnote" id="viewnote"></p>
+    <p class="hint" id="panHint">Faites glisser l'arbre horizontalement pour l'explorer — ou utilisez − / + pour ajuster la taille.</p>
+
+    <div id="viewport">
+      <div id="wrap">
+        <div id="stage">
+          <svg class="wires" id="wires" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"></svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" id="panel-frise" role="tabpanel">
+    <p class="fr-intro">Essai de rendu, à part de l'arbre. Chaque vie est une barre ; le temps court de gauche à droite. Les losanges marquent les mariages, les traits verts la naissance d'un enfant. Les vies brisées avant sept ans sont en rouge, les dates approximatives en hachuré. Cliquez sur une barre pour ouvrir la fiche — la sélection de l'arbre et celle de la frise sont les mêmes.</p>
+    <div id="frise"></div>
+  </section>
+
+  <section class="panel" id="panel-transcriptions" role="tabpanel">
+    <p class="tr-intro">Transcriptions fictives. Chaque acte listé dans une fiche renvoie ici ; chaque transcription renvoie à toutes les personnes qu'elle nomme.</p>
+    <div class="tr-wrap" id="trWrap"></div>
+  </section>
+
+</div>
+
+<aside class="drawer" id="drawer" aria-hidden="true" aria-label="Fiche détaillée">
+  <div class="drawer-head">
+    <button class="closer" id="closeDrawer" aria-label="Fermer">×</button>
+    <p class="gen" id="dGen"></p>
+    <h2 id="dName"></h2>
+    <p class="dates" id="dDates"></p>
+    <p class="rel-big" id="dRel"></p>
+    <div class="seg" role="group" aria-label="Sens de la lumière">
+      <button type="button" data-mode="down" class="on">Descendance</button>
+      <button type="button" data-mode="up">Ancêtres</button>
+      <button type="button" data-mode="both">Lignée entière</button>
+    </div>
+  </div>
+  <div class="drawer-body" id="dBody"></div>
+</aside>
+
+<script>
+/* ============================================================
+   1. LES DONNÉES
+   ============================================================ */
+
+const PERSONNES = [
+{id:"antoine", prenoms:"Antoine", nom:"ROUSSEL", gen:0, x:170, y:40, w:230, doute:true,
+ naissance:{date:"≈ 1738", lieu:"Vaux-le-Bourg", incertain:true},
+ deces:{date:"03/11/1801", lieu:"Vaux-le-Bourg", age:"63 ans"},
+ metiers:[{quoi:"laboureur", an:1765},{quoi:"propriétaire", an:1788}],
+ lieux:[{quoi:"Vaux-le-Bourg, ferme des Grands-Champs", an:1765}],
+ recit:["Le plus ancien Roussel que le dépouillement atteigne. Il n'apparaît d'abord que par ricochet — comme père, comme témoin, comme voisin — avant que son acte de sépulture ne le nomme enfin en propre.",
+        "Laboureur en 1765, il est dit propriétaire vingt-trois ans plus tard : entre les deux, une famille qui monte d'un cran."],
+ notes:[{t:"Ce que l'on ignore", b:"Ses parents. Le registre paroissial de Vaux-le-Bourg ne commence qu'en 1736 ; s'il est né vers 1738, son baptême est peut-être dans les premières pages, très abîmées.", doute:true}]},
+
+{id:"marguerite", prenoms:"Marguerite", nom:"DELAUNAY", gen:0, x:540, y:40, w:230, f:true, doute:true,
+ naissance:{date:"≈ 1742", lieu:"Pesmes ?", incertain:true},
+ deces:{date:"1809", lieu:"Vaux-le-Bourg", age:"67 ans ?"},
+ recit:["Connue seulement par les actes de ses enfants, où son nom flotte entre DELAUNAY et DE LAUNAY."],
+ notes:[{t:"Graphie", b:"DELAUNAY en 1768, DE LAUNAY en 1772, DELONNAY sur la sépulture de 1809. Trois plumes, trois orthographes, une seule femme.", doute:false}]},
+
+{id:"pierre", prenoms:"Pierre", nom:"VAILLANT", gen:0, x:1010, y:40, w:230,
+ naissance:{date:"≈ 1740", lieu:"Marnay"},
+ deces:{date:"22/01/1812", lieu:"Marnay", age:"72 ans"},
+ metiers:[{quoi:"maréchal-ferrant", an:1769}],
+ recit:["Maréchal-ferrant à Marnay, sur la place de l'église. Son atelier passe à son gendre, puis disparaît des rôles vers 1830."]},
+
+{id:"anne", prenoms:"Anne", nom:"CHARPENTIER", gen:0, x:1380, y:40, w:230, f:true,
+ naissance:{date:"≈ 1745", lieu:"Marnay"},
+ deces:{date:"18/07/1815", lieu:"Marnay", age:"70 ans"},
+ recit:["Elle signe son acte de mariage d'une main assurée — rare pour une femme de son rang à cette date."]},
+
+{id:"nicolas", prenoms:"Nicolas", nom:"FAVRE", gen:1, x:170, y:470, w:230,
+ naissance:{date:"1769", lieu:"Autrey"},
+ deces:{date:"1836", lieu:"Autrey", age:"67 ans"},
+ metiers:[{quoi:"tisserand", an:1790}],
+ recit:["Tisserand à Autrey, illettré : il fait une croix au bas de son acte de mariage."]},
+
+{id:"jeanne", prenoms:"Jeanne", nom:"ROUSSEL", gen:1, x:540, y:470, w:230, f:true,
+ naissance:{date:"12/04/1768", lieu:"Vaux-le-Bourg"},
+ deces:{date:"05/09/1841", lieu:"Autrey", age:"73 ans"},
+ metiers:[{quoi:"sans profession", an:1790},{quoi:"aubergiste", an:1812}],
+ lieux:[{quoi:"quitte Vaux-le-Bourg pour Autrey", an:1790},{quoi:"reprend l'auberge du Cheval-Blanc", an:1812}],
+ recit:["Sœur aînée d'Étienne, elle part à vingt-deux ans pour Autrey et n'en reviendra pas. Veuve en 1836, elle tient encore l'auberge à soixante-dix ans passés.",
+        "Sa branche s'écarte tôt de la nôtre : c'est elle qu'il faut suivre pour comprendre les FAVRE d'Autrey, qui reviennent comme témoins pendant trois générations."]},
+
+{id:"etienne", prenoms:"Étienne", nom:"ROUSSEL", gen:1, x:1010, y:470, w:230,
+ naissance:{date:"24/12/1772", lieu:"Vaux-le-Bourg"},
+ deces:{date:"18/03/1839", lieu:"Marnay", age:"66 ans"},
+ metiers:[{quoi:"cordonnier", an:1803},{quoi:"propriétaire", an:1818}],
+ lieux:[{quoi:"Vaux-le-Bourg, chez son père", an:1772},{quoi:"s'installe à Marnay après son mariage", an:1803},{quoi:"rue du Pont, Marnay", an:1818}],
+ recit:["Le pivot de la maquette. Cordonnier au moment de son mariage, il est dit propriétaire quinze ans plus tard : l'atelier de son beau-père, repris à la mort de celui-ci, a fait la différence.",
+        "Veuf à quarante-cinq ans, il ne se remarie qu'en 1822, avec une femme dont le nom reste illisible sur la seule copie que nous ayons."],
+ notes:[{t:"Âges déclarés", b:"Il se dit 30 ans en 1803, 38 en 1810, 66 à son décès. Une seule anomalie sur quatre déclarations — c'est peu, pour l'époque.", doute:false},
+        {t:"À vérifier", b:"Le patronyme de sa seconde femme, lu « Gueniffet » sur un cliché très pâle. Deux autres lectures sont possibles.", doute:true}]},
+
+{id:"celestine", prenoms:"Célestine", nom:"VAILLANT", gen:1, x:1380, y:470, w:230, f:true,
+ naissance:{date:"19/06/1775", lieu:"Marnay"},
+ deces:{date:"05/03/1818", lieu:"Marnay", age:"42 ans"},
+ recit:["Fille du maréchal-ferrant. Elle meurt à quarante-deux ans, quatre mois après la naissance de son dernier enfant.",
+        "Illettrée : elle n'a pas signé son acte de mariage, alors que sa mère avait signé le sien."],
+ notes:[{t:"Une génération en arrière", b:"Sa mère signe, elle non. L'alphabétisation ne monte pas toujours en ligne droite.", doute:false}]},
+
+{id:"marc", prenoms:"Marc", nom:"FAVRE", gen:2, x:170, y:900, w:220,
+ naissance:{date:"1793", lieu:"Autrey"},
+ deces:{date:"1861", lieu:"Autrey", age:"68 ans"},
+ metiers:[{quoi:"tailleur de pierre", an:1820}],
+ recit:["Cousin germain de Louis. Il n'a laissé aucun acte en propre après 1793 — mais il est partout ailleurs : témoin à trois mariages, déclarant à deux décès. C'est le genre d'homme qu'on ne trouve qu'en lisant les actes des autres."]},
+
+{id:"rosalie", prenoms:"Rosalie", nom:"GUYOT", gen:2, x:530, y:900, w:220, f:true, doute:true, neuf:true,
+ naissance:{date:"≈ 1798", lieu:"Autrey ?", incertain:true},
+ deces:{date:"1870 ?", lieu:"Autrey", age:"72 ans ?"},
+ recit:["Deux Rosalie GUYOT coexistent à Autrey dans ces années-là. Le rattachement reste à prouver."],
+ notes:[{t:"Homonyme", b:"L'autre Rosalie GUYOT, née en 1801, épouse un Bertrand en 1824. Ne pas confondre.", doute:true}]},
+
+{id:"louis", prenoms:"Louis", nom:"ROUSSEL", gen:2, x:860, y:900, w:240,
+ naissance:{date:"28/11/1810", lieu:"Marnay"},
+ deces:{date:"30/04/1878", lieu:"Autrey-le-Grand", age:"67 ans"},
+ metiers:[{quoi:"cordonnier avec son père", an:1832},{quoi:"propriétaire", an:1845},{quoi:"entrepreneur de travaux publics", an:1856}],
+ lieux:[{quoi:"Marnay, rue du Pont", an:1810},{quoi:"Autrey-le-Grand, après son mariage", an:1836}],
+ recit:["Douze enfants en quinze ans ; huit meurent avant leur premier trimestre. Les six naissances de 1844 à 1852 se terminent toutes de la même façon, six fois de suite.",
+        "C'est pourtant lui qui fait sortir la famille de l'atelier : adjudicataire de deux ponts et d'une portion de route en 1856, il meurt propriétaire de trois maisons."],
+ notes:[{t:"Le tournant", b:"Entre 1845 et 1856, il passe de « propriétaire » à « entrepreneur de travaux publics ». Les registres de l'enregistrement diraient sur quoi il a bâti ce saut.", doute:false},
+        {t:"À chercher", b:"Les adjudications de 1856 ne sont pas dans les archives communales. Voir la série S du département.", doute:true}]},
+
+{id:"adele", prenoms:"Adèle", nom:"BOUCHARD", gen:2, x:1240, y:900, w:240, f:true,
+ naissance:{date:"07/06/1813", lieu:"Pesmes"},
+ deces:{date:"12/05/1885", lieu:"Autrey-le-Grand", age:"71 ans"},
+ metiers:[{quoi:"épicière au village", an:1858}],
+ recit:["Veuve à soixante-cinq ans, elle tient l'épicerie encore sept ans et adopte à la fin de sa vie sa petite-fille Marthe."]},
+
+{id:"firmin", prenoms:"Firmin", nom:"ROUSSEL", gen:2, x:1540, y:900, w:200, small:true,
+ naissance:{date:"14/02/1806", lieu:"Marnay"},
+ deces:{date:"09/05/1806", lieu:"Marnay", age:"3 mois"},
+ recit:["Premier-né, mort au printemps suivant. Son prénom sera redonné à un enfant de 1841, mort lui aussi."]},
+
+{id:"leonie", prenoms:"Léonie", nom:"FAVRE", gen:3, x:170, y:1330, w:230, f:true,
+ naissance:{date:"1826", lieu:"Autrey"},
+ deces:{date:"1901", lieu:"Autrey", age:"75 ans"},
+ recit:["La branche FAVRE continue de son côté : c'est le repère utile pour vérifier que la lumière s'arrête bien où elle doit."]},
+
+{id:"yvonne", prenoms:"Yvonne", nom:"ROUSSEL", gen:3, x:620, y:1330, w:250, f:true,
+ naissance:{date:"23/09/1843", lieu:"Autrey-le-Grand"},
+ deces:{date:"1919", lieu:"Autrey-le-Grand", age:"76 ans"},
+ metiers:[{quoi:"épicière, avec sa mère", an:1866}],
+ lieux:[{quoi:"Autrey-le-Grand, rue d'Autrey", an:1843},{quoi:"Besançon, chez sa tante", an:1862},{quoi:"retour à Autrey-le-Grand", an:1866}],
+ recit:["Quatrième survivante d'une fratrie de douze. Envoyée à Besançon à dix-neuf ans « pour apprendre l'état », elle en revient quatre ans plus tard et n'en reparlera jamais.",
+        "Veuve en 1900, elle adopte sa petite-fille Marthe et lui laisse l'épicerie."],
+ notes:[{t:"Le trou de 1862-1866", b:"Quatre ans sans aucune trace. Les recensements de Besançon de 1866 sont dépouillés : elle n'y figure pas sous son nom.", doute:true}]},
+
+{id:"theodore", prenoms:"Théodore", nom:"MONNIER", gen:3, x:1010, y:1330, w:250, neuf:true,
+ naissance:{date:"27/01/1838", lieu:"Gray"},
+ deces:{date:"12/01/1900", lieu:"Autrey-le-Grand", age:"61 ans"},
+ metiers:[{quoi:"boucher à Gray", an:1862},{quoi:"marchand de bestiaux", an:1878}],
+ recit:["Venu de Gray, il ne s'installe à Autrey qu'après son mariage. Son décès est déclaré par son gendre — aucun fils vivant."]},
+
+{id:"camille", prenoms:"Camille", nom:"ROUSSEL", gen:3, x:1350, y:1330, w:250,
+ naissance:{date:"10/07/1841", lieu:"Autrey-le-Grand"},
+ deces:{date:"1847", lieu:"Autrey-le-Grand", age:"6 ans"},
+ recit:["Mort à six ans, l'un des huit de la fratrie."]},
+
+{id:"marthe", prenoms:"Marthe", nom:"MONNIER", gen:4, x:815, y:1760, w:250, f:true, neuf:true,
+ naissance:{date:"01/10/1871", lieu:"Autrey-le-Grand"},
+ deces:{date:"1963", lieu:"Gray", age:"91 ans"},
+ recit:["Élevée par sa grand-mère, adoptée par elle en 1901. C'est par elle que le dossier arrive jusqu'à nous."]}
+];
+
+const UNIONS = [
+ {id:"u1", epoux:["antoine","marguerite"], enfants:["jeanne","etienne"], mariage:null, lieu:"Vaux-le-Bourg ?", an:1765},
+ {id:"u2", epoux:["pierre","anne"], enfants:["celestine"], mariage:"04/02/1769", lieu:"Marnay", acte:"Acte n° 7", an:1769},
+ {id:"u4", epoux:["nicolas","jeanne"], enfants:["marc"], mariage:null, lieu:"Autrey", an:1790},
+ {id:"u3", epoux:["etienne","celestine"], enfants:["firmin","louis"], mariage:"26/04/1803", lieu:"Marnay", acte:"6 floréal an XI", an:1803},
+ {id:"u7", epoux:["marc","rosalie"], enfants:["leonie"], mariage:"1822", lieu:"Autrey", an:1822},
+ {id:"u5", epoux:["louis","adele"], enfants:["yvonne","camille"], mariage:"25/10/1836", lieu:"Autrey", acte:"Acte n° 16", an:1836},
+ {id:"u6", epoux:["yvonne","theodore"], enfants:["marthe"], mariage:"06/06/1866", lieu:"Autrey", acte:"Acte n° 1", an:1866}
+];
+
+/* --- LES ACTES : un acte nomme plusieurs personnes, chacune à un titre --- */
+const ACTES = [
+ {id:"a-1768-n", type:"n", an:1768, titre:"Naissance de Jeanne ROUSSEL", date:"12/04/1768", lieu:"Vaux-le-Bourg", cote:"Registre paroissial — f° 42",
+  mentions:[{qui:"jeanne",role:"la baptisée",principal:1},{qui:"antoine",role:"père"},{qui:"marguerite",role:"mère"}]},
+ {id:"a-1769-m", type:"m", an:1769, titre:"Mariage de Pierre VAILLANT et Anne CHARPENTIER", date:"04/02/1769", lieu:"Marnay", cote:"Acte n° 7",
+  mentions:[{qui:"pierre",role:"l'époux",principal:1},{qui:"anne",role:"l'épouse",principal:1}]},
+ {id:"a-1772-n", type:"n", an:1772, titre:"Naissance d'Étienne ROUSSEL", date:"24/12/1772", lieu:"Vaux-le-Bourg", cote:"Registre paroissial — f° 61",
+  mentions:[{qui:"etienne",role:"le baptisé",principal:1},{qui:"antoine",role:"père"},{qui:"marguerite",role:"mère"}]},
+ {id:"a-1775-n", type:"n", an:1775, titre:"Naissance de Célestine VAILLANT", date:"19/06/1775", lieu:"Marnay", cote:"Acte n° 23",
+  mentions:[{qui:"celestine",role:"la baptisée",principal:1},{qui:"pierre",role:"père"},{qui:"anne",role:"mère"}]},
+ {id:"a-1793-n", type:"n", an:1793, titre:"Naissance de Marc FAVRE", date:"1793", lieu:"Autrey", cote:"Acte n° 11",
+  mentions:[{qui:"marc",role:"le nouveau-né",principal:1},{qui:"nicolas",role:"père"},{qui:"jeanne",role:"mère"}]},
+ {id:"a-1801-d", type:"d", an:1801, titre:"Sépulture d'Antoine ROUSSEL", date:"03/11/1801", lieu:"Vaux-le-Bourg", cote:"Acte n° 18",
+  mentions:[{qui:"antoine",role:"le défunt",principal:1},{qui:"etienne",role:"fils déclarant"},{qui:"marguerite",role:"veuve"}]},
+ {id:"a-1803-m", type:"m", an:1803, titre:"Mariage d'Étienne ROUSSEL et Célestine VAILLANT", date:"26/04/1803", lieu:"Marnay", cote:"6 floréal an XI", tr:"t1",
+  mentions:[{qui:"etienne",role:"l'époux",principal:1},{qui:"celestine",role:"l'épouse",principal:1},
+            {qui:"antoine",role:"père de l'époux, décédé"},{qui:"marguerite",role:"mère de l'époux"},
+            {qui:"pierre",role:"père de l'épouse, présent"},{qui:"anne",role:"mère de l'épouse, présente"}]},
+ {id:"a-1806-n", type:"n", an:1806, titre:"Naissance de Firmin ROUSSEL", date:"14/02/1806", lieu:"Marnay", cote:"Acte n° 5",
+  mentions:[{qui:"firmin",role:"le nouveau-né",principal:1},{qui:"etienne",role:"père"},{qui:"celestine",role:"mère"}]},
+ {id:"a-1806-d", type:"d", an:1806, titre:"Décès de Firmin ROUSSEL", date:"09/05/1806", lieu:"Marnay", cote:"Acte n° 14",
+  mentions:[{qui:"firmin",role:"le défunt",principal:1},{qui:"etienne",role:"père déclarant"}]},
+ {id:"a-1810-n", type:"n", an:1810, titre:"Naissance de Louis ROUSSEL", date:"28/11/1810", lieu:"Marnay", cote:"Acte n° 41", tr:"t3",
+  mentions:[{qui:"louis",role:"le nouveau-né",principal:1},{qui:"etienne",role:"père déclarant"},{qui:"celestine",role:"mère"}]},
+ {id:"a-1812-d", type:"d", an:1812, titre:"Décès de Pierre VAILLANT", date:"22/01/1812", lieu:"Marnay", cote:"Acte n° 3",
+  mentions:[{qui:"pierre",role:"le défunt",principal:1},{qui:"etienne",role:"gendre déclarant"},{qui:"anne",role:"veuve"}]},
+ {id:"a-1815-d", type:"d", an:1815, titre:"Décès d'Anne CHARPENTIER", date:"18/07/1815", lieu:"Marnay", cote:"Acte n° 22",
+  mentions:[{qui:"anne",role:"la défunte",principal:1},{qui:"etienne",role:"gendre déclarant"}]},
+ {id:"a-1818-d", type:"d", an:1818, titre:"Décès de Célestine VAILLANT", date:"05/03/1818", lieu:"Marnay", cote:"Acte n° 9",
+  mentions:[{qui:"celestine",role:"la défunte",principal:1},{qui:"etienne",role:"époux déclarant"}]},
+ {id:"a-1836-m", type:"m", an:1836, titre:"Mariage de Louis ROUSSEL et Adèle BOUCHARD", date:"25/10/1836", lieu:"Autrey", cote:"Acte n° 16", tr:"t4", neuf:true,
+  mentions:[{qui:"louis",role:"l'époux",principal:1},{qui:"adele",role:"l'épouse",principal:1},
+            {qui:"etienne",role:"père de l'époux, présent et consentant"},{qui:"marc",role:"témoin, cousin de l'époux"}]},
+ {id:"a-1839-d", type:"d", an:1839, titre:"Décès d'Étienne ROUSSEL", date:"18/03/1839", lieu:"Marnay", cote:"Acte n° 12", tr:"t2",
+  mentions:[{qui:"etienne",role:"le défunt",principal:1},{qui:"louis",role:"fils déclarant"},{qui:"marc",role:"témoin, voisin"}]},
+ {id:"a-1841-d", type:"d", an:1841, titre:"Décès de Jeanne ROUSSEL", date:"05/09/1841", lieu:"Autrey", cote:"Acte n° 31",
+  mentions:[{qui:"jeanne",role:"la défunte",principal:1},{qui:"marc",role:"fils déclarant"}]},
+ {id:"a-1843-n", type:"n", an:1843, titre:"Naissance d'Yvonne ROUSSEL", date:"23/09/1843", lieu:"Autrey-le-Grand", cote:"Acte n° 27",
+  mentions:[{qui:"yvonne",role:"la nouveau-née",principal:1},{qui:"louis",role:"père déclarant"},{qui:"adele",role:"mère"}]},
+ {id:"a-1847-d", type:"d", an:1847, titre:"Décès de Camille ROUSSEL", date:"1847", lieu:"Autrey-le-Grand", cote:"Acte n° 19",
+  mentions:[{qui:"camille",role:"le défunt",principal:1},{qui:"louis",role:"père déclarant"}]},
+ {id:"a-1866-m", type:"m", an:1866, titre:"Mariage d'Yvonne ROUSSEL et Théodore MONNIER", date:"06/06/1866", lieu:"Autrey", cote:"Acte n° 1", neuf:true,
+  mentions:[{qui:"yvonne",role:"l'épouse",principal:1},{qui:"theodore",role:"l'époux",principal:1},
+            {qui:"adele",role:"mère de l'épouse, présente et consentante"},{qui:"marc",role:"témoin"}]},
+ {id:"a-1871-n", type:"n", an:1871, titre:"Naissance de Marthe MONNIER", date:"01/10/1871", lieu:"Autrey-le-Grand", cote:"Acte n° 44", neuf:true,
+  mentions:[{qui:"marthe",role:"la nouveau-née",principal:1},{qui:"theodore",role:"père déclarant"},{qui:"yvonne",role:"mère"}]},
+ {id:"a-1878-d", type:"d", an:1878, titre:"Décès de Louis ROUSSEL", date:"30/04/1878", lieu:"Autrey-le-Grand", cote:"Acte n° 8",
+  mentions:[{qui:"louis",role:"le défunt",principal:1},{qui:"theodore",role:"gendre déclarant"}]},
+ {id:"a-1885-d", type:"d", an:1885, titre:"Décès d'Adèle BOUCHARD", date:"12/05/1885", lieu:"Autrey-le-Grand", cote:"Acte n° 15", neuf:true,
+  mentions:[{qui:"adele",role:"la défunte",principal:1},{qui:"yvonne",role:"fille déclarante"}]},
+ {id:"a-1900-d", type:"d", an:1900, titre:"Décès de Théodore MONNIER", date:"12/01/1900", lieu:"Autrey-le-Grand", cote:"Acte n° 2",
+  mentions:[{qui:"theodore",role:"le défunt",principal:1},{qui:"yvonne",role:"veuve"}]},
+ /* --- les manques, qui sont aussi des données --- */
+ {id:"x-antoine-n", type:"x", manquant:1, titre:"Baptême d'Antoine ROUSSEL", note:"Registre commencé en 1736, premières pages très abîmées",
+  mentions:[{qui:"antoine",role:"le baptisé",principal:1}]},
+ {id:"x-u1-m", type:"x", manquant:1, titre:"Mariage ROUSSEL × DELAUNAY", note:"Ni à Vaux-le-Bourg ni à Pesmes ; chercher la paroisse de l'épouse",
+  mentions:[{qui:"antoine",role:"l'époux",principal:1},{qui:"marguerite",role:"l'épouse",principal:1}]},
+ {id:"x-marguerite-d", type:"x", manquant:1, titre:"Sépulture de Marguerite DELAUNAY", note:"Dite morte en 1809 par l'acte de 1822, non retrouvée",
+  mentions:[{qui:"marguerite",role:"la défunte",principal:1}]},
+ {id:"x-u4-m", type:"x", manquant:1, titre:"Mariage FAVRE × ROUSSEL", note:"Vers 1790, ni à Autrey ni à Vaux-le-Bourg",
+  mentions:[{qui:"nicolas",role:"l'époux",principal:1},{qui:"jeanne",role:"l'épouse",principal:1}]},
+ {id:"x-rosalie", type:"x", manquant:1, titre:"Aucun acte pour Rosalie GUYOT", note:"Deux homonymes à Autrey ; le rattachement n'est pas prouvé",
+  mentions:[{qui:"rosalie",role:"la personne",principal:1}]},
+ {id:"x-yvonne-d", type:"x", manquant:1, titre:"Décès d'Yvonne ROUSSEL", note:"Postérieur à 1922 : passer par la mairie",
+  mentions:[{qui:"yvonne",role:"la défunte",principal:1}]},
+ {id:"x-nicolas-n", type:"x", manquant:1, titre:"Naissance de Nicolas FAVRE", note:"Dit né en 1769 à Autrey ; la table décennale ne le donne pas",
+  mentions:[{qui:"nicolas",role:"le nouveau-né",principal:1}]}
+];
+
+const TRANSCRIPTIONS = [
+ {id:"t1", acte:"a-1803-m", titre:"Mariage d'Étienne ROUSSEL et Célestine VAILLANT", when:"Marnay, 26 avril 1803", ref:"État civil de Marnay — 6 floréal an XI",
+  texte:"L'an onze de la République, le six floréal, par-devant nous, maire officier de l'état civil de la commune de Marnay, sont comparus <b>Étienne Roussel, cordonnier, âgé de trente ans, domicilié en cette commune</b>, fils d'Antoine Roussel, propriétaire, et de Marguerite Delaunay, de Vaux-le-Bourg ; et <b>Célestine Vaillant, âgée de vingt-sept ans</b>, fille de Pierre Vaillant, maréchal-ferrant audit Marnay, et d'Anne Charpentier. Lesquels nous ont requis de procéder à la célébration du mariage entre eux projeté. <b>La future n'a su signer</b>, de ce enquise."},
+ {id:"t2", acte:"a-1839-d", titre:"Décès d'Étienne ROUSSEL", when:"Marnay, 18 mars 1839", ref:"État civil de Marnay — acte n° 12",
+  texte:"L'an mil huit cent trente-neuf, le dix-huit mars, à six heures du matin, sont comparus <b>Louis Roussel, âgé de vingt-huit ans, cordonnier, fils du défunt</b>, et Marc Favre, tailleur de pierre, âgé de quarante-six ans, voisin ; lesquels nous ont déclaré qu'<b>Étienne Roussel, propriétaire, âgé de soixante-six ans</b>, est décédé en son domicile rue du Pont."},
+ {id:"t3", acte:"a-1810-n", titre:"Naissance de Louis ROUSSEL", when:"Marnay, 28 novembre 1810", ref:"État civil de Marnay — acte n° 41",
+  texte:"L'an mil huit cent dix, le vingt-huit novembre, est comparu <b>Étienne Roussel, cordonnier, âgé de trente-huit ans</b>, lequel nous a présenté un enfant du sexe masculin, né ce présent jour à trois heures après midi, de lui déclarant et de <b>Célestine Vaillant son épouse</b>, auquel il a déclaré vouloir donner le prénom de <b>Louis</b>."},
+ {id:"t4", acte:"a-1836-m", titre:"Mariage de Louis ROUSSEL et Adèle BOUCHARD", when:"Autrey, 25 octobre 1836", ref:"État civil d'Autrey — acte n° 16",
+  texte:"L'an mil huit cent trente-six, le vingt-cinq octobre, ont comparu <b>Louis Roussel, âgé de vingt-cinq ans, cordonnier, demeurant à Marnay</b>, fils d'Étienne Roussel, propriétaire audit Marnay, <b>présent et consentant</b> ; et <b>Adèle Bouchard, âgée de vingt-trois ans</b>, fille des défunts Jean Bouchard et Firmine Barbier, de Pesmes."}
+];
+
+const GENERATIONS = [
+ {num:"−1", yrs:"≈ 1738 · 1745"},
+ {num:"0",  yrs:"1768 · 1775"},
+ {num:"I",  yrs:"1806 · 1813"},
+ {num:"II", yrs:"1841 · 1843"},
+ {num:"III",yrs:"1871"}
+];
+
+/* ============================================================
+   2. INDEXATION
+   ============================================================ */
+const P={}, U={}, A={};
+PERSONNES.forEach(p=>{P[p.id]=p; p.unions=[]; p.actes=[];});
+UNIONS.forEach(u=>{
+  U[u.id]=u;
+  u.epoux.forEach(s=>P[s].unions.push(u.id));
+  u.enfants.forEach(c=>P[c].parents=u.id);
+});
+ACTES.forEach(a=>{
+  A[a.id]=a;
+  a.mentions.forEach(m=>{ if(P[m.qui]) P[m.qui].actes.push({acte:a.id, role:m.role, principal:!!m.principal}); });
+});
+TRANSCRIPTIONS.forEach(t=>{ if(A[t.acte]) A[t.acte].tr=t.id; });
+
+const nomComplet = p => p.prenoms+" "+p.nom;
+const anDe = s => { const m=String(s||"").match(/(\d{4})/); return m?+m[1]:null; };
+
+/* actes dont la personne est le sujet / où elle n'est que nommée */
+const actesSujet = p => p.actes.filter(x=>x.principal);
+const actesTemoin = p => p.actes.filter(x=>!x.principal);
+
+/* score documentaire : 0 à 3 */
+function preuves(p){
+  const attendus = ['n','d'].concat(p.unions.length?['m']:[]);
+  const eus = attendus.filter(t => actesSujet(p).some(x=>A[x.acte].type===t && !A[x.acte].manquant));
+  return {attendus, eus, score:eus.length, total:attendus.length};
+}
+const estNeuf = p => !!p.neuf || p.actes.some(x=>A[x.acte].neuf);
+
+/* ============================================================
+   3. PARENTÉ RELATIVE
+   ============================================================ */
+function ancetres(id){
+  const m=new Map();
+  (function go(x,d){
+    if(m.has(x) && m.get(x)<=d) return;
+    m.set(x,d);
+    const u=P[x].parents; if(!u) return;
+    U[u].epoux.forEach(s=>go(s,d+1));
+  })(id,0);
+  return m;
+}
+const arriere = n => "arrière-".repeat(Math.max(0,n));
+
+function motAsc(d,f){
+  if(d===1) return f?"mère":"père";
+  if(d===2) return f?"grand-mère":"grand-père";
+  return arriere(d-2)+(f?"grand-mère":"grand-père");
+}
+function motDesc(d,f){
+  if(d===1) return f?"fille":"fils";
+  if(d===2) return f?"petite-fille":"petit-fils";
+  return arriere(d-2)+(f?"petite-fille":"petit-fils");
+}
+function motCollat(a,b,f,court){
+  if(a===1&&b===1) return f?"sœur":"frère";
+  if(b===1) return a===2 ? (f?"tante":"oncle") : arriere(a-3)+(f?"grand-tante":"grand-oncle");
+  if(a===1) return b===2 ? (f?"nièce":"neveu") : arriere(b-3)+(f?"petite-nièce":"petit-neveu");
+  const deg=Math.min(a,b)-1, ecart=Math.abs(a-b);
+  let base = deg===1 ? (f?"cousine germaine":"cousin germain")
+           : deg===2 ? (f?"cousine issue de germains":"cousin issu de germains")
+           : (f?"cousine":"cousin")+" au "+(deg+1)+"ᵉ degré";
+  if(ecart && !court) base += ecart===1 ? ", une génération d'écart" : ", "+ecart+" générations d'écart";
+  return base;
+}
+const feminin = s => /^(mère|grand-mère|fille|petite|sœur|tante|nièce|cousine|épouse|arrière-grand-mère|arrière-petite)/.test(s)
+                   || /^arrière-.*(mère|fille|tante|nièce)/.test(s);
+const possessif = s => (feminin(s) ? (/^[aeéiouh]/i.test(s) ? "son " : "sa ") : "son ") + s;
+
+function chemin(de, vers){          /* suite des ancêtres de "de" jusqu'à "vers" */
+  let file=[[de]];
+  while(file.length){
+    const c=file.shift(), tete=c[c.length-1];
+    if(tete===vers) return c;
+    const u=P[tete].parents; if(!u) continue;
+    U[u].epoux.forEach(s=>file.push(c.concat(s)));
+  }
+  return null;
+}
+
+function parente(root, id, sansAlliance, simple){
+  if(!root || !P[root] || !P[id]) return null;
+  if(root===id) return "point de vue";
+  const A1=ancetres(root), A2=ancetres(id), f=!!P[id].f;
+  if(A1.has(id)) return motAsc(A1.get(id), f);
+  if(A2.has(root)) return motDesc(A2.get(root), f);
+
+  let best=null;
+  A1.forEach((da,anc)=>{
+    if(A2.has(anc)){
+      const db=A2.get(anc), s=da+db;
+      if(!best || s<best.s || (s===best.s && Math.min(da,db)<Math.min(best.da,best.db))) best={anc,da,db,s};
+    }
+  });
+  if(best){
+    const {anc,da,db}=best;
+    /* oncles, tantes, neveux, frères : les mots existent, on les emploie */
+    if(da===db || da===1 || db===1 || simple) return motCollat(da,db,f,simple);
+    /* cousins à générations décalées : on nomme le maillon, c'est plus clair */
+    if(da>db){                                   /* cousin d'un ancêtre du point de vue */
+      const ch=chemin(root,anc), inter=ch&&ch[da-db];
+      const lien=motCollat(db,db,f);
+      return inter ? `${lien} de ${possessif(motAsc(da-db, !!P[inter].f))} ${P[inter].prenoms}` : motCollat(da,db,f);
+    }
+    const ch=chemin(id,anc), inter=ch&&ch[db-da];  /* descendant d'un cousin */
+    const lien=motCollat(da,da, inter?!!P[inter].f:f);
+    return inter ? `${motDesc(db-da,f)} de ${possessif(lien)} ${P[inter].prenoms}` : motCollat(da,db,f);
+  }
+
+  if(!sansAlliance){
+    /* par le conjoint */
+    for(const uid of P[id].unions){
+      const sp=U[uid].epoux.find(s=>s!==id);
+      if(!sp) continue;
+      const r=parente(root, sp, true, true);
+      if(r==="point de vue") return f?"épouse":"époux";
+      if(r) return (f?"épouse":"époux")+" de "+possessif(r);
+    }
+    /* par un gendre ou une bru */
+    for(const uid of P[id].unions){
+      for(const c of U[uid].enfants){
+        for(const uid2 of P[c].unions){
+          const sp=U[uid2].epoux.find(s=>s!==c);
+          if(!sp) continue;
+          const r=parente(root, sp, true, true);
+          if(r==="point de vue") return f?"belle-mère":"beau-père";
+          if(r) return (f?"belle-mère":"beau-père")+" de "+possessif(r)+" "+P[sp].prenoms;
+        }
+      }
+    }
+  }
+  return null;
+}
+
+/* ============================================================
+   4. RENDU DE LA SCÈNE
+   ============================================================ */
+const stage=document.getElementById('stage'), svg=document.getElementById('wires');
+const SVGNS="http://www.w3.org/2000/svg";
+let STAGE_W=0, STAGE_H=0, ROOT="marthe", vue="normal";
+
+function conjointsDe(p){
+  return p.unions.map(id=>{
+    const autre=U[id].epoux.find(s=>s!==p.id);
+    return autre ? nomComplet(P[autre]) : null;
+  }).filter(Boolean).join(" ; ");
+}
+function metiersDe(p){
+  if(!p.metiers||!p.metiers.length) return "";
+  return p.metiers.map(m=>m.quoi+(m.an?` <i>(${m.an})</i>`:"")).join(", ");
+}
+
+function renderCards(){
+  PERSONNES.forEach(p=>{
+    const el=document.createElement('article');
+    const pv=preuves(p);
+    el.className='card'+(p.doute?' is-doubt':'')+(p.small?' is-small':'')+' pv-'+pv.score+(estNeuf(p)?' is-new':'');
+    el.style.cssText=`--x:${p.x}px;--y:${p.y}px;--w:${p.w}px;--h:${p.small?170:210}px`;
+    el.dataset.id=p.id; el.tabIndex=0; el.setAttribute('role','button');
+    el.setAttribute('aria-label','Ouvrir la fiche de '+nomComplet(p));
+
+    const rows=[];
+    rows.push([p.f?'Née':'Né', `${p.naissance.date}${p.naissance.incertain?' <span class="q">?</span>':''}${p.naissance.lieu?' — '+p.naissance.lieu:''}`]);
+    const met=metiersDe(p); if(met) rows.push(['Métier', met]);
+    const conj=conjointsDe(p); if(conj) rows.push([p.f?'Époux':'Épouse', conj]);
+    if(p.deces) rows.push(['Décès', `${p.deces.date}${p.deces.lieu?' — '+p.deces.lieu:''}${p.deces.age?', <i>'+p.deces.age+'</i>':''}`]);
+
+    const jauge = ['n','m','d'].filter(t=>pv.attendus.includes(t)).map(t=>{
+      const ok = pv.eus.includes(t);
+      return `<i class="${ok?'ok g-'+t:''}" title="${{n:'naissance',m:'mariage',d:'décès'}[t]}"></i>`;
+    }).join('');
+
+    el.innerHTML =
+      `<p class="rel"></p>`+
+      `<p class="nm">${p.prenoms} <b>${p.nom}</b></p>`+
+      `<dl class="meta">${rows.map(r=>`<dt>${r[0]}</dt><dd>${r[1]}</dd>`).join('')}</dl>`+
+      `<div class="gauge">${jauge}<span>${pv.score}/${pv.total} acte${pv.total>1?'s':''}</span></div>`+
+      `<p class="more">Sa vie, ses actes →</p>`;
+    stage.appendChild(el);
+  });
+}
+
+function majParente(){
+  PERSONNES.forEach(p=>{
+    const el=stage.querySelector(`.card[data-id="${p.id}"]`);
+    const r=parente(ROOT,p.id);
+    el.querySelector('.rel').textContent = p.id===ROOT ? 'Point de vue' : (r||'lien non établi');
+    el.classList.toggle('is-root', p.id===ROOT);
+  });
+}
+
+function box(id){
+  const el=stage.querySelector(`.card[data-id="${id}"]`);
+  return {left:el.offsetLeft, top:el.offsetTop, w:el.offsetWidth, h:el.offsetHeight,
+          right:el.offsetLeft+el.offsetWidth, bottom:el.offsetTop+el.offsetHeight,
+          cx:el.offsetLeft+el.offsetWidth/2, cy:el.offsetTop+el.offsetHeight/2};
+}
+function mkPath(d, cls, link){
+  const n=document.createElementNS(SVGNS,'path');
+  n.setAttribute('d',d); n.setAttribute('class',cls); n.dataset.link=link;
+  svg.appendChild(n);
+}
+
+function layout(){
+  svg.innerHTML='';
+  stage.querySelectorAll('.union,.rail').forEach(e=>e.remove());
+
+  const parGen={};
+  PERSONNES.forEach(p=>{ (parGen[p.gen]=parGen[p.gen]||[]).push(p); });
+  let maxRight=0, maxBottom=0;
+  Object.keys(parGen).forEach(g=>{
+    const bs=parGen[g].map(p=>box(p.id));
+    const top=Math.min(...bs.map(b=>b.top)), bot=Math.max(...bs.map(b=>b.bottom));
+    maxRight=Math.max(maxRight, ...bs.map(b=>b.right));
+    maxBottom=Math.max(maxBottom, bot);
+    const r=document.createElementNS(SVGNS,'rect');
+    r.setAttribute('class','band'); r.setAttribute('x',0); r.setAttribute('y',top-28);
+    r.setAttribute('width',9999); r.setAttribute('height',(bot-top)+56);
+    r.style.opacity = (g%2 ? .055 : .03);
+    svg.appendChild(r);
+    const gen=GENERATIONS[g];
+    if(gen){
+      const rail=document.createElement('div');
+      rail.className='rail'; rail.style.top=((top+bot)/2)+'px';
+      rail.innerHTML=`<div class="num">${gen.num}</div><div class="lbl">Génération</div><div class="yrs">${gen.yrs}</div>`;
+      stage.appendChild(rail);
+    }
+  });
+
+  STAGE_W=maxRight+40; STAGE_H=maxBottom+60;
+  stage.style.width=STAGE_W+'px'; stage.style.height=STAGE_H+'px';
+  svg.setAttribute('viewBox',`0 0 ${STAGE_W} ${STAGE_H}`);
+  svg.setAttribute('width',STAGE_W); svg.setAttribute('height',STAGE_H);
+
+  UNIONS.forEach(u=>{
+    let [a,b]=u.epoux.map(box);
+    if(a.left>b.left){ const t=a; a=b; b=t; }
+    const y=Math.round((a.cy+b.cy)/2);
+    const cx=Math.round((a.right+b.left)/2);
+    mkPath(`M${a.right} ${y} H${b.left}`, 'wire'+(u.mariage?'':' is-doubt'), 'union:'+u.id);
+
+    if(u.mariage){
+      const pill=document.createElement('div');
+      pill.className='union'; pill.dataset.union=u.id;
+      pill.style.cssText=`--x:${cx}px;--y:${y}px;--w:${Math.max(96,Math.min(150,b.left-a.right-26))}px`;
+      pill.innerHTML=`<span class="k">Mariage</span><span class="v">${u.mariage}</span>`+(u.acte?`<span class="x">${u.acte}</span>`:'');
+      stage.appendChild(pill);
+    }else{
+      const d=document.createElementNS(SVGNS,'rect');
+      d.setAttribute('class','node'); d.setAttribute('x',cx-6); d.setAttribute('y',y-6);
+      d.setAttribute('width',12); d.setAttribute('height',12);
+      d.setAttribute('transform',`rotate(45 ${cx} ${y})`);
+      svg.appendChild(d);
+    }
+    if(u.enfants.length){
+      const bas=Math.max(a.bottom,b.bottom);
+      const haut=Math.min(...u.enfants.map(c=>box(c).top));
+      const bus=Math.round((bas+haut)/2);
+      u.enfants.forEach(c=>{
+        const k=box(c);
+        mkPath(`M${cx} ${y} V${bus} H${Math.round(k.cx)} V${k.top}`, 'wire', `child:${u.id}:${c}`);
+      });
+    }
+  });
+}
+
+/* ============================================================
+   5. LA LUMIÈRE
+   ============================================================ */
+let courant=null, mode='down';
+const frise=document.getElementById('frise');
+
+function descendance(id){
+  const gens=new Set(), unions=new Set(), liens=new Set(), allies=new Set();
+  (function walk(pid){
+    gens.add(pid);
+    P[pid].unions.forEach(uid=>{
+      const u=U[uid]; unions.add(uid);
+      u.epoux.forEach(s=>{ if(s!==pid && !gens.has(s)) allies.add(s); });
+      u.enfants.forEach(c=>{ liens.add(`child:${uid}:${c}`); if(!gens.has(c)) walk(c); });
+    });
+  })(id);
+  return {gens, unions, liens, allies};
+}
+function ascendance(id){
+  const gens=new Set(), unions=new Set(), liens=new Set(), allies=new Set();
+  (function climb(pid){
+    gens.add(pid);
+    const uid=P[pid].parents; if(!uid) return;
+    unions.add(uid); liens.add(`child:${uid}:${pid}`);
+    U[uid].epoux.forEach(s=>{ if(!gens.has(s)) climb(s); });
+  })(id);
+  return {gens, unions, liens, allies};
+}
+function eteindre(){
+  stage.classList.remove('is-focused');
+  frise.classList.remove('is-focused');
+  document.querySelectorAll('.lit-down,.lit-up,.lit-ally,.is-open,.is-match')
+    .forEach(e=>e.classList.remove('lit-down','lit-up','lit-ally','is-open','is-match'));
+}
+function allumer(id, m){
+  eteindre();
+  if(!id) return;
+  stage.classList.add('is-focused'); frise.classList.add('is-focused');
+  document.querySelectorAll(`.card[data-id="${id}"],.fr-row[data-id="${id}"]`).forEach(e=>e.classList.add('is-open'));
+
+  const poser=(set, cls)=>{
+    set.gens.forEach(pid=>{
+      document.querySelectorAll(`.card[data-id="${pid}"],.fr-row[data-id="${pid}"]`)
+        .forEach(el=>{ if(!el.classList.contains('is-open')) el.classList.add(cls); });
+    });
+    set.allies.forEach(pid=>{
+      const el=stage.querySelector(`.card[data-id="${pid}"]`);
+      if(el && !el.classList.contains(cls) && !el.classList.contains('is-open')) el.classList.add('lit-ally');
+    });
+    set.unions.forEach(uid=>{
+      const pill=stage.querySelector(`.union[data-union="${uid}"]`); if(pill) pill.classList.add(cls);
+      const w=svg.querySelector(`[data-link="union:${uid}"]`); if(w) w.classList.add(cls);
+    });
+    set.liens.forEach(k=>{ const w=svg.querySelector(`[data-link="${k}"]`); if(w) w.classList.add(cls); });
+  };
+  if(m==='down'||m==='both') poser(descendance(id),'lit-down');
+  if(m==='up'  ||m==='both') poser(ascendance(id),'lit-up');
+}
+
+/* ============================================================
+   6. LE TIROIR
+   ============================================================ */
+const drawer=document.getElementById('drawer'), dBody=document.getElementById('dBody');
+
+function friseDeVie(p){
+  const nAn=anDe(p.naissance&&p.naissance.date), ev=[];
+  const age=a=>(nAn&&a)?`<span class="age"> · ${a-nAn} ans</span>`:'';
+  if(p.naissance) ev.push({an:nAn, cls:'is-birth', yr:p.naissance.date, quoi:`<b>Naissance</b>${p.naissance.lieu?' à '+p.naissance.lieu:''}`});
+  (p.lieux||[]).forEach(l=>ev.push({an:l.an, cls:'is-soft', yr:l.an, quoi:l.quoi}));
+  (p.metiers||[]).forEach(m=>ev.push({an:m.an, cls:'is-soft', yr:m.an, quoi:`Dit <b>${m.quoi}</b>`}));
+  p.unions.forEach(uid=>{
+    const u=U[uid], autre=P[u.epoux.find(s=>s!==p.id)];
+    ev.push({an:u.an, cls:'is-union', yr:u.mariage||('≈ '+u.an),
+      quoi:`<b>Mariage</b> avec ${nomComplet(autre)}${u.lieu?', à '+u.lieu:''}${u.mariage?'':' <i>— acte non retrouvé</i>'}`});
+    u.enfants.forEach(c=>{
+      const k=P[c], kAn=anDe(k.naissance.date), kd=k.deces?anDe(k.deces.date):null;
+      ev.push({an:kAn, cls:'', yr:k.naissance.date,
+        quoi:`Naissance de ${k.prenoms}${kd&&kAn&&kd-kAn<7?` <i>— mort${k.f?'e':''} à ${k.deces.age}</i>`:''}`});
+    });
+  });
+  if(p.deces) ev.push({an:anDe(p.deces.date), cls:'is-death', yr:p.deces.date,
+    quoi:`<b>Décès</b>${p.deces.lieu?' à '+p.deces.lieu:''}${p.deces.age?', à '+p.deces.age:''}`});
+  ev.sort((a,b)=>(a.an||0)-(b.an||0));
+  return `<ul class="tl">${ev.map(e=>`<li class="${e.cls}"><span class="yr">${e.yr}${age(e.an)}</span><span class="what">${e.quoi}</span></li>`).join('')}</ul>`;
+}
+
+function ligneActe(x, avecRole){
+  const a=A[x.acte];
+  return `<li class="${a.manquant?'is-missing':''}">
+    <button type="button" ${a.tr?`data-tr="${a.tr}"`:'disabled'}>
+      <span class="sq a-${a.type}"></span>
+      <span class="lb">${a.titre}${a.date?` <i style="color:var(--ink-3)">— ${a.date}</i>`:''}${a.neuf?'<span class="tag-new">Séance du 24 août</span>':''}
+        ${avecRole?`<span class="role">${x.role}</span>`:(a.note?`<span class="role">${a.note}</span>`:(a.cote?`<span class="role">${a.cote}</span>`:''))}</span>
+      ${a.tr?'<span class="go">Lire l\'acte →</span>':''}
+    </button></li>`;
+}
+
+function parenteHTML(p){
+  const li=[];
+  const lien=id=>{ const r=parente(ROOT,id); return `<a data-go="${id}">${nomComplet(P[id])}</a>${r&&id!==ROOT?` <span class="rel">— ${r}</span>`:''}`; };
+  if(p.parents){
+    const u=U[p.parents];
+    li.push(`<li><span class="role">Parents</span>${u.epoux.map(lien).join('<br>')}</li>`);
+    const fr=u.enfants.filter(c=>c!==p.id);
+    if(fr.length) li.push(`<li><span class="role">Fratrie</span>${fr.map(c=>`<a data-go="${c}">${P[c].prenoms}</a>`).join(', ')}</li>`);
+  }
+  const enf=[].concat(...p.unions.map(uid=>U[uid].enfants));
+  if(enf.length) li.push(`<li><span class="role">Enfants</span>${enf.map(c=>`<a data-go="${c}">${P[c].prenoms}</a>`).join(', ')}</li>`);
+  return li.length?`<ul class="kin">${li.join('')}</ul>`
+    :'<p style="font-family:var(--serif);color:var(--ink-2);font-style:italic;margin:0">Aucun rattachement établi.</p>';
+}
+
+function ouvrir(id){
+  const p=P[id]; if(!p) return;
+  courant=id;
+  document.getElementById('dGen').textContent='Génération '+(GENERATIONS[p.gen]?GENERATIONS[p.gen].num:'?');
+  document.getElementById('dName').innerHTML=`${p.prenoms} <b>${p.nom}</b>`;
+  const n=anDe(p.naissance.date), d=p.deces?anDe(p.deces.date):null;
+  document.getElementById('dDates').textContent=(n||'?')+' — '+(d||'?')+(p.deces&&p.deces.age?` · ${p.deces.age}`:'');
+  const r=parente(ROOT,id);
+  document.getElementById('dRel').innerHTML = id===ROOT
+    ? `<b>Point de vue actuel.</b> <i>Tout l'arbre se lit depuis cette personne.</i>`
+    : (r ? `Pour ${nomComplet(P[ROOT])} : <b>${r}</b>` : `<i>Aucun lien de parenté établi avec ${nomComplet(P[ROOT])}.</i>`);
+
+  const sujet=actesSujet(p), temoin=actesTemoin(p), pv=preuves(p);
+
+  dBody.innerHTML=
+    `<div class="dsec"><h3>Chronologie</h3>${friseDeVie(p)}</div>`+
+    (p.recit?`<div class="dsec"><h3>Le récit</h3>${p.recit.map(t=>`<p>${t}</p>`).join('')}</div>`:'')+
+    (p.notes&&p.notes.length?`<div class="dsec"><h3>À savoir, à vérifier</h3><ul class="notes">${
+      p.notes.map(nn=>`<li class="${nn.doute?'is-doubt':''}"><span class="t">${nn.t}</span><span class="b">${nn.b}</span></li>`).join('')}</ul></div>`:'')+
+    `<div class="dsec"><h3>Son dossier <span style="color:var(--ink-3);font-weight:400">— ${pv.score}/${pv.total}</span></h3>
+       <ul class="acts">${sujet.map(x=>ligneActe(x,false)).join('')}</ul></div>`+
+    (temoin.length?`<div class="dsec"><h3>Apparaît aussi dans</h3><ul class="acts">${temoin.map(x=>ligneActe(x,true)).join('')}</ul></div>`:'')+
+    `<div class="dsec"><h3>Parenté</h3>${parenteHTML(p)}</div>`;
+
+  document.body.classList.add('drawer-open');
+  drawer.setAttribute('aria-hidden','false');
+  dBody.scrollTop=0;
+  allumer(id, mode);
+  history.replaceState(null,'','#p='+id);
+  render(); setTimeout(render,320);
+}
+function fermer(){
+  document.body.classList.remove('drawer-open');
+  drawer.setAttribute('aria-hidden','true');
+  courant=null; eteindre();
+  history.replaceState(null,'',location.pathname);
+  render(); setTimeout(render,320);
+}
+
+/* ============================================================
+   7. LA FRISE
+   ============================================================ */
+function renderFrise(){
+  const vies=PERSONNES.map(p=>({p, n:anDe(p.naissance.date), d:p.deces?anDe(p.deces.date):null}))
+                      .filter(v=>v.n).sort((a,b)=>a.n-b.n);
+  const min=Math.floor((Math.min(...vies.map(v=>v.n))-8)/10)*10;
+  const max=Math.ceil((Math.max(...vies.map(v=>v.d||v.n+70))+8)/10)*10;
+  const span=max-min;
+  const pc=y=>((y-min)/span*100);
+
+  let ticks='', grid='';
+  for(let y=min;y<=max;y+=10){
+    const c=(y%50===0);
+    grid+=`<span class="${c?'c':''}" style="left:${pc(y)}%"></span>`;
+    if(c) ticks+=`<span class="fr-tick" style="left:${pc(y)}%">${y}</span>`;
+  }
+
+  const rows=vies.map(v=>{
+    const p=v.p, fin=v.d||max, dur=fin-v.n;
+    const court = v.d && dur<7;
+    const flou = /≈|\?/.test(p.naissance.date+(p.deces?p.deces.date:''));
+    const marks=p.unions.map(uid=>{
+      const u=U[uid]; return u.an?`<span class="fr-mark" style="left:${pc(u.an)}%" title="Mariage ${u.mariage||'≈ '+u.an}"></span>`:'';
+    }).join('');
+    const naiss=[].concat(...p.unions.map(uid=>U[uid].enfants)).map(c=>{
+      const a=anDe(P[c].naissance.date);
+      return a?`<span class="fr-birth" style="left:${pc(a)}%" title="Naissance de ${P[c].prenoms}"></span>`:'';
+    }).join('');
+    return `<li class="fr-row" data-id="${p.id}">
+      <span class="fr-nm">${p.prenoms} <b>${p.nom}</b></span>
+      <span class="fr-track">
+        <span class="fr-bar${court?' is-short':''}${flou?' is-doubt':''}"
+              style="left:${pc(v.n)}%;width:${Math.max(0.6,pc(fin)-pc(v.n))}%"
+              title="${p.naissance.date} — ${p.deces?p.deces.date:'?'}"></span>
+        ${naiss}${marks}
+      </span></li>`;
+  }).join('');
+
+  frise.innerHTML=
+    `<div class="frise">
+       <div class="fr-head">${ticks}</div>
+       <div style="position:relative">
+         <div class="fr-grid">${grid}</div>
+         <ul class="fr-rows">${rows}</ul>
+       </div>
+       <div class="fr-legend">
+         <div class="leg"><span class="dot" style="width:22px;height:8px;border-radius:4px;background:var(--ink-2)"></span>Une vie</div>
+         <div class="leg"><span class="dot" style="width:22px;height:8px;border-radius:4px;background:var(--doubt)"></span>Mort avant sept ans</div>
+         <div class="leg"><span class="dot" style="width:22px;height:8px;border-radius:4px;background:repeating-linear-gradient(90deg,var(--doubt-soft) 0 5px,transparent 5px 9px)"></span>Dates approximatives</div>
+         <div class="leg"><span class="fr-mark" style="position:static;transform:rotate(45deg);display:inline-block"></span>Mariage</div>
+         <div class="leg"><span class="dot" style="width:4px;height:10px;background:var(--act-n)"></span>Naissance d'un enfant</div>
+       </div>
+     </div>`;
+  frise.classList.toggle('is-focused', !!courant);
+}
+
+/* ============================================================
+   8. TRANSCRIPTIONS
+   ============================================================ */
+document.getElementById('trWrap').innerHTML=TRANSCRIPTIONS.map(t=>{
+  const a=A[t.acte];
+  const qui = a ? a.mentions.map(m=>`<a data-go="${m.qui}">${nomComplet(P[m.qui])}</a> <span style="color:var(--ink-3)">(${m.role})</span>`).join(' · ') : '';
+  return `<article class="tr" id="${t.id}">
+     <div class="tr-head"><h3>${t.titre}</h3><span class="when">${t.when}</span></div>
+     <p class="ref">${t.ref}</p>
+     <blockquote>${t.texte}</blockquote>
+     ${qui?`<p class="who"><b>Cet acte nomme :</b> ${qui}</p>`:''}
+   </article>`;}).join('');
+
+function onglet(nom){
+  document.querySelectorAll('.tab').forEach(t=>{
+    const on=t.dataset.panel===nom;
+    t.classList.toggle('is-active',on); t.setAttribute('aria-selected',on?'true':'false');
+    document.getElementById(t.dataset.panel).classList.toggle('is-active',on);
+  });
+  if(nom==='panel-arbre') render();
+}
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{onglet(t.dataset.panel);window.scrollTo(0,0);});
+
+function versTranscription(id){
+  onglet('panel-transcriptions');
+  const el=document.getElementById(id); if(!el) return;
+  el.scrollIntoView({behavior:'smooth',block:'center'});
+  el.classList.add('is-flash'); setTimeout(()=>el.classList.remove('is-flash'),1800);
+}
+
+/* ============================================================
+   9. ÉVÉNEMENTS
+   ============================================================ */
+stage.addEventListener('click', e=>{
+  const c=e.target.closest('.card');
+  if(c){ ouvrir(c.dataset.id); return; }
+  if(!e.target.closest('.union')){ courant ? fermer() : eteindre(); }
+});
+stage.addEventListener('keydown', e=>{
+  const c=e.target.closest('.card');
+  if(c && (e.key==='Enter'||e.key===' ')){ e.preventDefault(); ouvrir(c.dataset.id); }
+});
+stage.addEventListener('mouseover', e=>{
+  const c=e.target.closest('.card');
+  if(c && !courant && vue==='normal') allumer(c.dataset.id, mode);
+});
+stage.addEventListener('mouseleave', ()=>{ if(!courant) eteindre(); });
+frise.addEventListener('click', e=>{
+  const r=e.target.closest('.fr-row'); if(r) ouvrir(r.dataset.id);
+});
+
+document.getElementById('closeDrawer').onclick=fermer;
+document.addEventListener('keydown', e=>{ if(e.key==='Escape' && courant) fermer(); });
+document.querySelectorAll('.drawer .seg button').forEach(b=>b.onclick=()=>{
+  mode=b.dataset.mode;
+  document.querySelectorAll('.drawer .seg button').forEach(o=>o.classList.toggle('on',o===b));
+  if(courant) allumer(courant, mode);
+});
+dBody.addEventListener('click', e=>{
+  const tr=e.target.closest('[data-tr]'); if(tr){ versTranscription(tr.dataset.tr); return; }
+  const go=e.target.closest('[data-go]'); if(go) ouvrir(go.dataset.go);
+});
+document.getElementById('trWrap').addEventListener('click', e=>{
+  const go=e.target.closest('[data-go]');
+  if(go){ onglet('panel-arbre'); window.scrollTo(0,0); ouvrir(go.dataset.go); }
+});
+
+/* point de vue */
+const sel=document.getElementById('root');
+sel.innerHTML=PERSONNES.slice().sort((a,b)=>(anDe(b.naissance.date)||0)-(anDe(a.naissance.date)||0))
+  .map(p=>`<option value="${p.id}">${nomComplet(p)}</option>`).join('');
+sel.value=ROOT;
+sel.onchange=()=>{ ROOT=sel.value; majParente(); if(courant) ouvrir(courant); };
+
+/* modes d'affichage */
+const NOTES={
+  normal:"",
+  preuve:"Chaque fiche affiche les actes attendus — naissance, mariage, décès — et ceux qui sont en main. Les fiches pâles et pointillées ne reposent sur aucun acte : ce sont les chantiers ouverts.",
+  neuf:"N'allume que les apports de la séance du 24 août : trois actes nouveaux et deux personnes entrées dans l'arbre depuis."
+};
+document.querySelectorAll('#viewSeg button').forEach(b=>b.onclick=()=>{
+  vue=b.dataset.view;
+  document.querySelectorAll('#viewSeg button').forEach(o=>o.classList.toggle('on',o===b));
+  stage.classList.remove('view-preuve','view-neuf');
+  if(vue!=='normal') stage.classList.add('view-'+vue);
+  document.getElementById('viewnote').textContent=NOTES[vue];
+  if(vue!=='normal'){ eteindre(); }
+});
+
+/* recherche */
+document.getElementById('q').addEventListener('input', e=>{
+  const q=e.target.value.trim().toLowerCase();
+  eteindre(); courant=null;
+  document.body.classList.remove('drawer-open'); drawer.setAttribute('aria-hidden','true');
+  if(q.length<2){ render(); return; }
+  stage.classList.add('is-focused');
+  PERSONNES.forEach(p=>{
+    const foin=[nomComplet(p), p.naissance.lieu, p.deces&&p.deces.lieu,
+      (p.metiers||[]).map(m=>m.quoi).join(' '), (p.lieux||[]).map(l=>l.quoi).join(' ')].join(' ').toLowerCase();
+    if(foin.includes(q)) stage.querySelector(`.card[data-id="${p.id}"]`).classList.add('is-match');
+  });
+  render();
+});
+document.getElementById('clear').onclick=()=>{ document.getElementById('q').value=''; fermer(); };
+
+/* ============================================================
+   10. ÉCHELLE ET DÉPLACEMENT
+   ============================================================ */
+const vp=document.getElementById('viewport'), wrap=document.getElementById('wrap'), hint=document.getElementById('panHint');
+let user=null;
+function fitScale(){ return Math.min(1, (vp.clientWidth||STAGE_W)/STAGE_W); }
+function render(){
+  const s=user||fitScale();
+  stage.style.transform='scale('+s+')';
+  wrap.style.height=(STAGE_H*s)+'px';
+  const over=STAGE_W*s>vp.clientWidth+2;
+  vp.style.overflowX=over?'auto':'hidden';
+  hint.classList.toggle('is-on',over);
+}
+document.getElementById('zoomFit').onclick=()=>{user=null;render();};
+document.getElementById('zoomIn').onclick=()=>{user=Math.min(2.2,(user||fitScale())*1.25);render();};
+document.getElementById('zoomOut').onclick=()=>{user=Math.max(.25,(user||fitScale())/1.25);render();};
+window.addEventListener('resize',()=>{if(!user)render();});
+let down=false,sx=0,sl=0;
+vp.addEventListener('pointerdown',e=>{
+  if(e.target.closest('.card,.union')||vp.scrollWidth<=vp.clientWidth) return;
+  down=true;sx=e.clientX;sl=vp.scrollLeft;vp.classList.add('is-panning');vp.setPointerCapture(e.pointerId);
+});
+vp.addEventListener('pointermove',e=>{ if(down) vp.scrollLeft=sl-(e.clientX-sx); });
+['pointerup','pointercancel'].forEach(k=>vp.addEventListener(k,()=>{down=false;vp.classList.remove('is-panning');}));
+
+/* ============================================================
+   11. DÉMARRAGE
+   ============================================================ */
+renderCards();
+majParente();
+layout();
+renderFrise();
+render();
+window.addEventListener('load',()=>{layout();render();});
+
+const m=location.hash.match(/p=([\w-]+)/);
+if(m && P[m[1]]) ouvrir(m[1]);
+</script>
+</body>
+</html>

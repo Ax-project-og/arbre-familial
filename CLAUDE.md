@@ -1,0 +1,197 @@
+# CLAUDE.md
+
+Contexte permanent du projet. À lire avant toute modification.
+
+## 1. Ce qu'est ce dépôt
+
+Un **arbre généalogique de la branche maternelle**, publié en page web statique sur GitHub Pages pour être consulté par la famille. Ce n'est pas une application : c'est un **document éditorial** — un dossier de recherche mis en forme, qui se lit comme un article et se met à jour après chaque séance de dépouillement aux archives.
+
+Fichiers :
+
+| Fichier | Rôle |
+|---|---|
+| `index.html` | **Le document réel.** Fichier unique, HTML + CSS + JS, aucune dépendance externe. C'est ce qui est publié. |
+| `proto.html` | **Maquette d'architecture** avec des données fictives. Sert de modèle pour la version interactive à venir. Ne contient aucune donnée réelle. |
+| `CONVERSION.md` | Le plan de migration du document réel vers le modèle de `proto.html`. |
+| `arbre-branche-maternelle-v1.html` | **Temporaire.** Copie du document d'avant conversion, référence de comparaison visuelle. À supprimer une fois la conversion validée. |
+| `outils/` | **Non publié, jetable.** Scripts d'accompagnement de la conversion : `extraire.py`, `convertir.py`, `verifier.py`, le moteur `moteur.js` et les données extraites. À supprimer avec `v1.html`. |
+
+Le document réel fait ~2 900 lignes et ~355 Ko. Il n'y a **ni build, ni bundler, ni npm, ni framework**. On ouvre le fichier dans un navigateur, ça marche. Cette contrainte est délibérée : la famille doit pouvoir l'ouvrir dans dix ans, et le dépôt doit rester lisible dans un diff GitHub.
+
+Les scripts d'`outils/` ne font pas exception : ce ne sont pas des étapes de construction, mais des outils de mise au point, utilisés le temps de la conversion puis jetés. Après validation, `index.html` s'édite directement.
+
+## 2. La famille, en une page
+
+Cinq lieux principaux : **Vars**, **Mont-le-Frânois**, **Champlitte**, **Fahy-lès-Autrey**, **Oyrières** (Haute-Saône), puis **Gray**, **Autrey-lès-Gray**, et deux incursions extérieures — **Lyon** (1889-1897), **Selongey** en Côte-d'Or (branche VILLETTE), **Baume-les-Dames** et **Bourges** (branche CARPENTIER).
+
+Neuf générations numérotées **−2, −1, 0, I à VII**, d'environ 1710 à aujourd'hui. La ligne directe passe par :
+
+AMIOT (Mont-le-Frânois) → AMIOT × RENEVIER (Vars, 1803) → PAUFARD × AMIOT (Fahy, 1836) → GRILLOT × PAUFARD (1866) → **Joséphine GRILLOT** → **Yvonne** (Lyon, 1889) → VILLETTE × GRILLOT (1906) → RIBAUT × VILLETTE (1930) → FONTANA × RIBAUT (1963) → génération VII.
+
+Trois nœuds compliqués, qui expliquent la plupart des choix de modélisation :
+
+- **Yvonne Marguerite GRILLOT** (1889-1963) est née fille naturelle à Lyon. Son père, Victor CARPENTIER, l'a reconnue en 1892 ; le tribunal civil de Beaune a **annulé la reconnaissance en 1897** (enfant adultérine, art. 335 du Code civil). Elle est ensuite **adoptée par sa grand-mère** Théolinde PAUFARD. Elle a donc trois filiations successives et juridiquement distinctes. Aucun modèle de données ne doit la réduire à « fille de X et Y ».
+- **Joséphine GRILLOT** a **deux mariages** (CARPENTIER 1892, BOURDEAU 1899).
+- **François AMIOT** s'est **remarié** après 1818 à une Françoise dont le patronyme reste douteux ; cette seconde union n'a pas de fiche.
+
+## 3. Les conventions du document — à ne jamais casser
+
+Ces conventions portent du sens. Les modifier silencieusement fausse la lecture du dossier.
+
+**Fiabilité.** Trait plein = information établie ou fortement probable. **Trait pointillé rouge** (`.is-doubt`, `.aside--doubt`, `.wire--doubt`) = information incertaine, à confirmer. Le `<span class="q">?</span>` marque une donnée précise à vérifier. Le `≈` marque une date approximative. Ces marques sont *documentaires* : ne jamais recolorer une bordure pour un effet visuel, sous peine d'ambiguïté.
+
+**Code documentaire** — les carrés colorés `.acts li` :
+
+| Classe | Sens | Couleur |
+|---|---|---|
+| `a-n` | acte de naissance / baptême en main | vert `--act-n` |
+| `a-m` | acte de mariage en main | bleu `--act-m` |
+| `a-d` | acte de décès en main | violet `--act-d` |
+| `a-x` | acte non retrouvé ou non renseigné | contour pointillé rouge |
+
+**Apports récents.** `<span class="tag-new">…</span>` signale ce qu'a apporté la dernière séance : *Nouveau, Daté, Datée, Confirmée, Complétée, Corrigé, Prouvé, Identifié, Résolu, À trancher, Lieu, Prénom, Acte, Acte trouvé*. Le badge de date en légende (`23-25 août 2026`) et la mention « douzième séance » en tête se mettent à jour à chaque séance.
+
+**Chips de transcription** — `.chip` dans le `<p class="ref">` : nature de l'acte (`c-n`, `c-m`, `c-d`) puis qualificatifs (*Filiation*, *Cliché pâle*, *Homonyme à écarter*, `c-warn` pour les alertes).
+
+**Typographie.** Serif (`--serif`) pour tout ce qui est contenu généalogique ; sans-serif pour les étiquettes, en petites capitales espacées. Patronymes en `<b>` majuscules, prénoms en romain. Guillemets français « … ». Dates en `JJ/MM/AAAA` dans les fiches, en toutes lettres dans les transcriptions. Heures en `17 h 30`.
+
+## 4. Structure du document réel
+
+```
+<header class="masthead">      titre, chapeau, date de séance
+<nav class="tabs">             deux onglets : Arbre · Transcriptions
+<section id="panel-arbre">
+   .bar                        légende (fiabilité + code documentaire) et outils de zoom
+   #viewport > #wrap > #stage  la scène, à l'échelle
+      <svg id="wires">         vide au départ — tout est tracé au chargement
+      aside.aside              1 encart posé dans la scène (fratrie PAUFARD)
+<section class="dossier">      8 encarts éditoriaux, en flux, deux colonnes
+<div class="footnotes">        pistes de recherche, actes dépouillés, méthode, où chercher
+<section id="panel-transcriptions">  62 transcriptions en 12 sections
+<script>                       LES DONNÉES, puis le moteur, puis la vue
+```
+
+**Les données d'un côté, le moteur de l'autre.** En bas du fichier, les tableaux —
+`PERSONNES` (30), `UNIONS` (13), `FILIATIONS`, `UNIONS_HORS_ARBRE`, `ENCARTS`,
+`ACTES` (66), `TRANSCRIPTIONS` (62), `GENERATIONS` (10) — sont la **seule zone à éditer
+après chaque séance**. `renderCards()` fabrique les fiches, `renderEncarts()` les encarts
+de la scène, puis `layout()` mesure ce qui est réellement posé
+(`offsetLeft/offsetTop/offsetHeight`) et en déduit les fils, les pastilles, les losanges,
+les bandes et les rails. **Déplacer une fiche ne casse plus rien.**
+
+**Une personne** porte `naissance`, `deces`, `metiers[]`, `lieux[]` — et `divers[]` pour
+les rubriques qui n'entrent dans aucun de ces moules (*Variantes*, *Rang*, *Parents*,
+*Statut*, *En 1889*…). Rien n'est jeté : ce qui ne se structure pas se conserve tel quel.
+
+**Un acte n'appartient à personne** : il en nomme plusieurs, chacune à un titre.
+`mentions[{qui, role, principal}]` — d'où « son dossier » d'un côté, « apparaît aussi
+dans » de l'autre. Attention : le code documentaire d'une fiche dit *acte en notre
+possession*, et les transcriptions n'en sont qu'une partie. Un acte détenu mais non
+transcrit est normal ; l'inverse aussi.
+
+**La fiche annonce, le tiroir raconte.** La fiche ne garde que naissance, métier,
+conjoint, décès. Un clic ouvre le tiroir : chronologie déduite des données, filiations,
+réserves, autres mentions, unions sans fiche, dossier d'actes cliquables, parenté.
+
+**Trois marques de doute, et une seule à la fois.** `incertain` pose le `?` sur la date,
+`lieuIncertain` sur le lieu, `ageIncertain` sur l'âge déclaré ; `approx` dit qu'une date
+est une fourchette. Elles ne sont pas interchangeables : Cécile FONTANA est née le
+8 mars 1966, c'est le *lieu* qui porte le `?`. La frise ne hachure une vie que si ce sont
+ses **dates** qui flottent.
+
+**Parenté relative.** Un sélecteur choisit le point de vue — par défaut la plus jeune de
+la génération VII — et chaque fiche annonce ce que la personne est pour lui. Au-delà de
+l'arrière-grand-père, la chaîne des « arrière- » cesse d'être lisible : le calcul passe
+aux mots français (*trisaïeul*, *quadrisaïeul*, … *septaïeul*), puis à « aïeul à la Nᵉ
+génération ». Le calcul suit la filiation **biologique** : Victor CARPENTIER est « époux
+de son arrière-arrière-grand-mère », pas son aïeul — sa reconnaissance a été annulée.
+
+**Trois modes d'affichage.** *Arbre*, *Preuves* (la jauge documentaire apparaît, et les
+fiches sans aucun acte pâlissent : ce sont les chantiers ouverts), *Nouveautés* (n'allume
+que ce qu'ont apporté les dernières séances). Une recherche filtre sur nom, lieu, métier.
+
+**La frise** (onglet à part) donne une barre par vie. Elle ne prête à personne une vie
+qu'aucun acte n'atteste : quand la mort est inconnue, la barre s'arrête à la dernière
+trace et s'y efface ; `vivant:true` la fait courir jusqu'à l'année en cours.
+
+**Les âges se calculent sur les dates complètes**, jamais par soustraction de millésimes :
+Yvonne, née le 1ᵉʳ octobre 1889 et morte le 11 février 1963, a 73 ans et non 74. Quand une
+date est incomplète, l'âge s'annonce avec `≈` ; et un âge calculé ne vient **jamais**
+doubler ni contredire un âge porté par un acte.
+
+**Système de coordonnées.** La scène fait 1 760 px de large. Chaque personne porte `x`,
+`y`, `w`, `h` ; le CSS en fait `left/top/width/min-height`. `h` est un **minimum** :
+une fiche s'agrandit si son contenu déborde, et **la moitié des fiches débordent
+effectivement** — les fils s'attachent au bord réel, pas au bord déclaré. Les positions
+restent écrites à la main : la composition est éditoriale, un placement automatique
+ferait un arbre correct et sans point de vue.
+
+Trois réglages restent explicites dans les données, parce qu'ils relèvent de la
+composition et non du calcul : `pw` (largeur d'une pastille), `bus` (hauteur du coude
+d'une descente, reprise du tracé manuel — la retirer laisse le moteur la placer à
+mi-chemin) et `encart` (le fil fin vers l'encart de la fratrie).
+
+**Surbrillance de lignée.** Un clic sur une fiche allume sa descendance en bronze, son
+ascendance en vert-de-gris, les conjoints entrés par alliance en anneau pâle, et estompe
+le reste. `Échap` ou un second clic éteint. Les bordures gardent leur sens documentaire :
+la lumière passe par un anneau et un fond teinté, jamais par la couleur du trait.
+
+Deux modes dans l'URL : `?audit` entoure de rouge toute boîte qui en chevauche une autre
+et liste les collisions en console — à utiliser après chaque ajout de contenu ; `?calque`
+superpose en rouge les 26 tracés du document manuel, pour comparer. Ce dernier disparaîtra
+avec la fin de la conversion.
+
+## 5. Règles de travail
+
+**Ne jamais inventer une donnée.** Ce dossier est une enquête : chaque affirmation vient d'un acte, d'un recensement ou d'un papier de famille, et une date fausse peut envoyer quelqu'un chercher pendant des mois au mauvais endroit. Si une information manque, elle reste absente ou marquée `?`. Si une lecture est douteuse, elle est écrite entre crochets avec un point d'interrogation : `[Véroille ?]`.
+
+**Ne jamais promouvoir une hypothèse en fait.** Les encarts distinguent explicitement ce qui est *prouvé*, *probable*, *hypothétique* et *à trancher*. Une reformulation qui gomme cette gradation est une régression, même si le texte est plus fluide.
+
+**Ne jamais supprimer une réserve de lecture** ni une piste de recherche sans que le propriétaire l'ait explicitement demandé. Les « recherches négatives » (ce qu'on a cherché sans trouver) ont autant de valeur que les trouvailles : elles évitent de refaire le travail.
+
+**Distinguer les sources.** Acte d'état civil > recensement > papier de famille > tradition orale. Une date venue d'une fiche manuscrite familiale se signale comme telle (« d'après les papiers de famille ») et n'efface pas une date d'acte.
+
+**Le ton.** Prose française soignée, à la troisième personne, sans emphase inutile. Les gloses (`.gloss`) après chaque transcription expliquent *ce que la pièce apporte*, pas ce qu'elle contient — elles raisonnent. Ne pas les transformer en résumés.
+
+**Personnes vivantes.** Les générations VI à VIII concernent des vivants. Pas d'adresses, pas d'informations sensibles ; dates de naissance et unions seulement, telles que la famille les a fournies.
+
+## 6. Ce qui est en cours
+
+La conversion vers un arbre interactif, décrite dans `CONVERSION.md`. `proto.html` en est la maquette validée.
+
+**Faites** — les six étapes de `CONVERSION.md`. Le document se régénère à partir de ses
+données sans perte de texte : `outils/verifier.py` passe **60 contrôles**, dont le
+décompte des étiquettes d'apport rubrique par rubrique, l'absence de chevauchement,
+l'absence de dépendance externe et de stockage navigateur.
+
+Les trois nœuds compliqués du § 2 sont modélisés : les **trois filiations d'Yvonne**
+(naturelle, reconnaissance annulée 1892-1897, adoptive) se lisent dans son tiroir, dans
+l'ordre, tandis que le fil de l'arbre suit la biologique ; les **deux mariages de
+Joséphine** partagent une ligne, parce que toutes les unions d'une personne qui s'est
+mariée plusieurs fois s'alignent sur son propre centre ; le **remariage de François
+AMIOT** est dans `UNIONS_HORS_ARBRE`, avec la première union de Victor CARPENTIER.
+
+**À faire avant publication** — la recette technique passe, mais trois choses relèvent du
+propriétaire du dossier :
+
+- **relire les libellés de parenté** sur une dizaine de couples. Le calcul est vérifié,
+  le vocabulaire est un choix : *septaïeul* est exact mais peu courant.
+- **confirmer les identifiants**, publics et définitifs dès qu'ils circulent en `#p=`.
+- **essayer sur un téléphone.** Le tiroir passe en feuille basse sous 900 px et le
+  glissement horizontal fonctionne, mais cela n'a pas été vu sur un vrai appareil.
+
+Puis, une fois validé : supprimer `arbre-branche-maternelle-v1.html`, le dossier
+`outils/` et le mode `?calque`, qui n'ont plus d'objet.
+
+**Le travail qui reste dans les données**, et qu'aucun script ne fera :
+
+- les **rôles** dans les actes — « gendre déclarant », « témoin, voisin ». `ACTES` sait
+  qui chaque acte nomme, pas à quel titre : cela demande la lecture de chaque pièce.
+- le **récit** de chaque personne. Le tiroir n'en affiche pas : il n'y a pas de `recit`
+  dans les données, et il n'était pas question d'en écrire un à partir de rien.
+- les **identifiants**, publics et définitifs dès qu'ils circulent en `#p=`. Quatre
+  suivent le nom d'usage du dossier plutôt que le premier prénom : `theolinde-`,
+  `josephine-`, `napoleon-`, `claude-alexis-`. À confirmer avant publication.
+- les **dates non structurées** : celles que l'extraction n'a pas su lire sans risque de
+  contresens sont restées absentes plutôt que devinées. Voir
+  `outils/rapport-extraction.md`.
