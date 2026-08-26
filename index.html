@@ -46,7 +46,12 @@ body{
 .eyebrow span:not(:first-child)::before{content:"·";margin-right:14px;color:var(--ink-3)}
 h1{font-family:var(--serif);font-size:clamp(28px,3.4vw,44px);line-height:1.05;margin:0 0 10px;font-weight:600;letter-spacing:-.01em}
 h1 em{font-style:italic;color:var(--ink-2);font-weight:400}
-.deck{font-family:var(--serif);font-size:15.5px;line-height:1.5;color:var(--ink-2);max-width:940px;margin:0}
+/* Le chapeau occupe toute la largeur, mais en colonnes : une ligne de 1 700 px
+   ne se lit pas. La colonne se règle en em, donc sur la taille du texte — trois
+   colonnes sur un grand écran, deux sur un portable, une sur un téléphone. */
+.deck{font-family:var(--serif);font-size:15.5px;line-height:1.5;color:var(--ink-2);
+  margin:0;columns:26em 3;column-gap:38px;text-align:justify;hyphens:auto}
+@media print{ .deck{columns:2} }
 
 /* ---------- Onglets ---------- */
 .tabs{display:flex;gap:0;border-bottom:1.5px solid var(--ink);margin:0 0 22px}
@@ -515,7 +520,7 @@ select{max-width:250px}
   <header class="masthead">
     <div class="eyebrow"><span>Document de travail</span><span>Recherches en cours</span><span>Mise à jour : 25 août 2026, douzième séance</span></div>
     <h1>Arbre généalogique <em>— branche maternelle</em></h1>
-    <p class="deck">Synthèse provisoire, de 1743 à aujourd'hui. Quinze actes dépouillés. Ceux de <b>Vars</b> donnent <b>Barbe RENEVIER née le 19 juin 1774</b>, <b>François AMIOT né le 24 décembre 1780 à Mont-le-Frânois</b>, et Claude RENEVIER <b>fils de François RENEVIER et de Barbe GUIGNARD</b>. Le <b>mariage du 25 octobre 1836 à Fahy-lès-Autrey</b> vient de rouvrir la piste décisive : François AMIOT y est dit <b>vivant, cinquante-cinq ans, propriétaire, demeurant à Vars</b> — il n'a pas assisté au mariage de sa fille, qui lui a fait signifier un acte respectueux. Un <b>baptême de février 1781</b> révèle une fille aînée, <b>Françoise AMYOT</b>, et donne au père son métier : <b>laboureur</b>. Enfin, l'<b>acte de naissance lyonnais d'Yvonne</b> et ses mentions marginales dénouent l'énigme de son père : reconnue en 1892 par <b>Victor Jean-Baptiste CARPENTIER</b>, elle voit cette reconnaissance <b>annulée en 1897 par le tribunal de Beaune</b>, puis se fait <b>adopter par sa propre grand-mère Théolinde</b>. Le dépouillement de <b>Fahy-lès-Autrey</b> porte la fratrie de Théolinde à <b>douze enfants, dont huit morts avant leur premier trimestre</b>. Enfin, deux actes referment les deux plus vieilles questions du dossier : <b>François AMIOT meurt à Vars le 18 mars 1839</b>, remarié, son gendre venant le déclarer ; et le mariage BOURDEAU de 1899 révèle que Joséphine était <b>veuve en premières noces de Victor Jean-Baptiste CARPENTIER</b>, lieutenant d'infanterie territoriale mort à Bourges en 1898 — le père d'Yvonne, qu'elle avait donc épousé. Le recensement de <b>Serrigny</b> les montre enfin sous le même toit, lui <b>pharmacien</b> : le pharmacien de la tradition orale familiale, longtemps invérifiable, c'était lui. Le <b>mariage du 27 août 1892 à Fahy</b>, enfin retrouvé, livre la clef de toute l'affaire : Carpentier est <b>veuf de Julie-Lucie GÉNIN, morte le 25 juin 1889</b>, alors qu'Yvonne, née le 1<sup>er</sup> octobre suivant, a été conçue de son vivant. <b>Enfant adultérine</b>, elle ne pouvait légalement être reconnue — d'où l'annulation de 1897. La douzième séance ajoute quatre pièces : le <b>baptême de François AMIOT du 24 décembre 1780</b>, qui donne ses parrain et marraine et une signature du père ; deux <b>tables de décès</b> qui datent enfin la mort de <b>François Bernard AMIOT au 25 janvier 1803</b> ; et, du côté VILLETTE, la <b>naissance de Camille Jean à Selongey en 1877</b> et le <b>décès de son père Émile Adolphe en 1892</b>, qui font remonter cette branche de deux générations — jusqu'à un cordonnier <b>né à Paris en 1840</b>.</p>
+    <p class="deck">Synthèse provisoire, de 1743 à aujourd'hui. Quinze actes dépouillés. Ceux de <b>Vars</b> donnent <b>Barbe RENEVIER née le 19 juin 1774</b>, <b>François AMIOT né le 24 décembre 1780 à Mont-le-Frânois</b>, et Claude RENEVIER <b>fils de François RENEVIER et de Barbe GUIGNARD</b>. Le <b>mariage du 25 octobre 1836 à Fahy-lès-Autrey</b> vient de rouvrir la piste décisive : François AMIOT y est dit <b>vivant, cinquante-cinq ans, propriétaire, demeurant à Vars</b> — il n'a pas assisté au mariage de sa fille, qui lui a fait signifier un acte respectueux. Un <b>baptême de février 1781</b> révèle une fille aînée, <b>Françoise AMYOT</b>, et donne au père son métier : <b>laboureur</b>. Enfin, l'<b>acte de naissance lyonnais d'Yvonne</b> et ses mentions marginales dénouent l'énigme de son père : reconnue en 1892 par <b>Victor Jean-Baptiste CARPENTIER</b>, elle voit cette reconnaissance <b>annulée en 1897 par le tribunal de Beaune</b>, puis se fait <b>adopter par sa propre grand-mère Théolinde</b>. Le dépouillement de <b>Fahy-lès-Autrey</b> porte la fratrie de Théolinde à <b>douze enfants, dont huit morts avant leur premier trimestre</b>. Enfin, deux actes referment les deux plus vieilles questions du dossier : <b>François AMIOT meurt à Vars le 18 mars 1839</b>, remarié, son gendre venant le déclarer ; et le mariage BOURDEAU de 1899 révèle que Joséphine était <b>veuve en premières noces de Victor Jean-Baptiste CARPENTIER</b>, lieutenant d'infanterie territoriale mort à Bourges en 1898 — le père d'Yvonne, qu'elle avait donc épousé. Le recensement de <b>Serrigny</b> les montre enfin sous le même toit, lui <b>pharmacien</b> : le pharmacien de la tradition orale familiale, longtemps invérifiable, c'était lui. Le <b>mariage du 27 août 1892 à Fahy</b>, enfin retrouvé, livre la clef de toute l'affaire : Carpentier est <b>veuf de Julie-Lucie GÉNIN, morte le 25 juin 1889</b>, alors qu'Yvonne, née le 1<sup>er</sup> octobre suivant, a été conçue de son vivant. <b>Si Carpentier est bien son père</b>, elle est enfant adultérine et ne pouvait légalement être reconnue, ce qui expliquerait l'annulation de 1897 — mais le jugement de Beaune reste à lire, et une tradition familiale attribue la paternité à un palefrenier du village. La douzième séance ajoute quatre pièces : le <b>baptême de François AMIOT du 24 décembre 1780</b>, qui donne ses parrain et marraine et une signature du père ; deux <b>tables de décès</b> qui datent enfin la mort de <b>François Bernard AMIOT au 25 janvier 1803</b> ; et, du côté VILLETTE, la <b>naissance de Camille Jean à Selongey en 1877</b> et le <b>décès de son père Émile Adolphe en 1892</b>, qui font remonter cette branche de deux générations — jusqu'à un cordonnier <b>né à Paris en 1840</b>.</p>
   </header>
 
   <nav class="tabs" role="tablist" aria-label="Sections du document">
@@ -638,10 +643,11 @@ select{max-width:250px}
         <h4>L'affaire de la reconnaissance<span class="tag-new">Résolue</span></h4>
         <ul class="unions">
           <li><span class="rank">Le fait</span><span class="txt">Julie-Lucie GÉNIN, première femme de Carpentier, meurt à Besançon le <b>25 juin 1889</b>. Yvonne naît le <b>1<sup>er</sup> octobre 1889</b> : elle a donc été conçue vers janvier, <b>du vivant de l'épouse légitime</b>.</span></li>
-          <li><span class="rank">Conséquence</span><span class="txt">Yvonne est un <b>enfant adultérin</b>. L'article 335 du Code civil en interdisait absolument la reconnaissance.</span></li>
+          <li><span class="rank">Hypothèse</span><span class="txt"><b>Si Carpentier est le père</b>, Yvonne est un enfant adultérin, et l'article 335 du Code civil en interdisait absolument la reconnaissance. C'est l'explication la plus économique de l'annulation — mais elle repose sur une paternité que <b>rien n'établit</b>. <span class="tag">Jugement à lire</span></span></li>
           <li><span class="rank">La tentative</span><span class="txt">Mariés à Fahy le 27 août 1892, les époux reconnaissent Yvonne à Lyon 1<sup>er</sup> cinq jours plus tard, le <b>1<sup>er</sup> septembre</b> — la séquence classique pour légitimer un enfant naturel. <span class="tag tag-ok">Mention de 1892</span></span></li>
           <li><span class="rank">L'annulation</span><span class="txt">Le <b>Tribunal civil de Beaune</b> déclare la reconnaissance <b>nulle et de nul effet</b> le <b>14 mai 1897</b> : il ne fait que constater une nullité de plein droit. Yvonne redevient fille de père inconnu — d'où le conseil de famille de 1906. <span class="tag tag-ok">Mention f° 145</span></span></li>
           <li><span class="rank">Adoption</span><span class="txt">Yvonne est <b>adoptée par sa grand-mère</b> Théolinde PAUFARD, veuve de Napoléon GRILLOT, par arrêt dont la date reste à lire. <span class="tag">Date à relever</span></span></li>
+          <li><span class="rank">Rumeur</span><span class="txt"><b>Tradition familiale, non vérifiée.</b> Le père d'Yvonne aurait été un <b>palefrenier du village</b>, avec qui Joséphine aurait eu une brève liaison ; c'est pour cette raison qu'on l'aurait éloignée pour accoucher à Lyon. Le propriétaire du dossier la donne pour <b>fiable à 70 %</b>. Elle expliquerait l'accouchement lyonnais aussi bien que l'hypothèse Carpentier, et rendrait la reconnaissance de 1892 fausse plutôt qu'adultérine — deux motifs d'annulation différents. <b>Aucun acte ne l'appuie</b> ; elle ne modifie pas la filiation retenue, qui reste « fille naturelle de père inconnu ». <span class="tag">Rumeur</span></span></li>
           <li><span class="rank">Le pharmacien</span><span class="txt"><b>Élucidé.</b> La tradition orale plaçait un pharmacien dans la vie de Joséphine : c'était Carpentier, recensé « pharmacien, chef de ménage » à Serrigny. <span class="tag tag-ok">Confirmé</span></span></li>
         </ul>
       </aside>
@@ -835,6 +841,8 @@ select{max-width:250px}
       </ul>
       <div class="negative">
         <h5>Recherches négatives</h5>
+        <p><b>L'adoption d'Yvonne — trois fenêtres fermées.</b><span class="tag-new">Nouveau</span> Naissances et reconnaissances de <b>Fahy-lès-Autrey, 1897-1930</b> : rien sur l'adoption. Naissances et reconnaissances de <b>Gray-la-Ville, 1908-1922</b> : rien non plus. L'arrêt d'adoption n'est donc pas transcrit là où on l'attendrait — ce qui oriente vers une <b>procédure judiciaire</b> dont la mention n'a pas été reportée à l'état civil communal, et renvoie au folio 145 de l'acte lyonnais comme seule piste.</p>
+        <p><b>Recensement de Lyon 1<sup>er</sup>, 1891</b><span class="tag-new">Nouveau</span> — à l'adresse qu'occupait Joséphine, 1 Côte des Carmélites : <b>elle n'y figure pas</b>. Elle avait donc quitté Lyon entre la naissance d'octobre 1889 et le recensement, ce qui resserre son séjour lyonnais autour de l'accouchement seul.</p>
         <p><b>Mariage PAUFARD × AMIOT :</b> registres de <b>Vars, 1820-1850</b>, dépouillés le 24 août 2026 — l'acte n'y est pas, et pour cause : il a été célébré à <b>Fahy-lès-Autrey le 25 octobre 1836</b>, chez l'époux et non chez l'épouse. Recherche close.</p>
         <p><b>Décès de Bernard AMYOT :</b> absent de la table décennale des décès de Mont-le-Frânois, 1792 – an XI. Il est donc mort <b>avant le 20 septembre 1792</b>, ou entre septembre 1802 et avril 1803.</p>
         <p><b>Mariage GRILLOT × CARPENTIER : trouvé.</b> Célébré à <b>Fahy-lès-Autrey le 27 août 1892</b>, il figurait dans le <b>registre des publications</b> de la commune, source distincte des registres de mariages. Les recherches menées auparavant à Serrigny (1880-1900), au recensement de Serrigny de 1891 et à Lyon (tous arrondissements) étaient négatives parce que le couple s'est marié chez la mariée et que Carpentier résidait alors à <b>Besançon</b>. <i>Leçon de méthode : penser au registre des publications avant d'élargir géographiquement.</i></p>
@@ -1428,7 +1436,7 @@ select{max-width:250px}
           L'an mil huit cent quatre-vingt-douze, le vingt-sept août, à neuf heures du matin, devant nous Charnotet Jean-Baptiste, maire, officier de l'état civil de la commune de Fahy-lès-Autrey, canton d'Autrey (Haute-Saône), sont comparus publiquement en la maison commune :<br><br><b>Carpentier Victor Jean-Baptiste, âgé de trente-cinq ans, pharmacien, domicilié à Besançon, né à Baume-les-Dames (Doubs) le dix octobre mil huit cent cinquante-six</b>, ainsi qu'il résulte de l'extrait délivré par le greffier du tribunal de première instance de Baume-les-Dames, <b>veuf de Génin Julie-Lucie, sans profession, décédée à Besançon le vingt-cinq juin mil huit cent quatre-vingt-neuf</b>, ainsi qu'il résulte de l'extrait délivré par le maire de Besançon ; <b>fils majeur de Carpentier Louis, âgé de soixante-quinze ans, propriétaire, domicilié à Trouvans, canton de Rougemont (Doubs), ici présent et consentant, et de Thuriet Marie-Edwige, âgée de soixante-sept ans, aussi propriétaire</b>, domiciliée audit Trouvans, non présente mais consentante <b>ainsi que l'atteste la procuration passée conjointement avec son époux le seize août mil huit cent quatre-vingt-douze, à Baume-les-Dames, devant M<sup>e</sup> Dufay, notaire</b> — d'une part ;<br><br>et demoiselle <b>Grillot Françoise-Léonie-Joséphine, âgée de vingt-trois ans, sans profession, domiciliée et née à Fahy-lès-Autrey le deux mars mil huit cent soixante-neuf, fille majeure de Grillot François-André-Napoléon, âgé de cinquante-quatre ans, et de Paufard Théolinde-Adélaïde, âgée de quarante-huit ans, tous deux propriétaires, domiciliés audit Fahy, ici présents et consentants</b> — d'autre part.<br><br>Publications faites à Fahy-lès-Autrey les dimanches quatorze et vingt et un août, <b>et à Besançon les mêmes dimanches</b>. Les futurs époux, le père du futur et les père et mère de la future nous ont déclaré <b>qu'il a été fait un contrat de mariage, reçu par M<sup>e</sup> Moreau, notaire à la résidence d'Autrey, le vingt-cinq août mil huit cent quatre-vingt-douze</b>. […] Déclarons au nom de la loi que Carpentier Victor Jean-Baptiste et Grillot Françoise-Léonie-Joséphine sont unis en mariage.<br><br>En présence de <b>Monjean Joseph Alexandre, âgé de quarante-sept ans, capitaine au 133<sup>e</sup> d'infanterie, chevalier de la Légion d'honneur, domicilié à Belley, beau-frère de l'épouse</b>, premier témoin ; de <b>Retrouvey Alphonse, âgé de vingt-huit ans, docteur en médecine, domicilié à Besançon, ami de l'époux, non parent</b>, deuxième témoin ; de <b>Grillot Nicolas-Eugène, âgé de cinquante-deux ans, négociant, domicilié à Gray, oncle paternel de l'épouse</b>, troisième témoin ; et de <b>Paufard Auguste, âgé de quarante et un ans, cultivateur, domicilié à Autrey, cousin maternel de l'épouse</b>, quatrième témoin.
           <span class="sign">Signé : Joséphine Grillot — N. Grillot — V. Carpentier — L. Carpentier — Monjean — Retrouvey — E. Grillot — Paufard — Charnotet, le maire</span>
         </blockquote>
-        <p class="gloss"><b>La pièce qui explique tout.</b> Le mariage n'avait rien de clandestin : il se célèbre chez elle, avec ses deux parents présents et consentants. Mais Carpentier est <b>veuf de Julie-Lucie GÉNIN, morte le 25 juin 1889</b> — or Yvonne, née le 1<sup>er</sup> octobre 1889, a été conçue vers janvier, <b>du vivant de la première épouse</b>. C'est un <b>enfant adultérin</b>, que l'article 335 du Code civil interdisait de reconnaître. La reconnaissance du 1<sup>er</sup> septembre 1892, cinq jours après la noce, était donc nulle de plein droit, et le tribunal de Beaune n'a fait que le constater en 1897. <span class="warn">Une anomalie demeure : Joseph Alexandre MONJEAN est dit « beau-frère de l'épouse », ce qui est incompatible avec une fille unique. Erreur de colonne, beau-frère de l'époux, ou sœur inconnue — son dossier Léonore tranchera.</span> L'oncle <b>Nicolas-Eugène GRILLOT</b> est ici qualifié « oncle paternel » en toutes lettres : la fratrie de Napoléon est prouvée.</p>
+        <p class="gloss"><b>La pièce qui explique tout.</b> Le mariage n'avait rien de clandestin : il se célèbre chez elle, avec ses deux parents présents et consentants. Mais Carpentier est <b>veuf de Julie-Lucie GÉNIN, morte le 25 juin 1889</b> — or Yvonne, née le 1<sup>er</sup> octobre 1889, a été conçue vers janvier, <b>du vivant de la première épouse</b>. <b>Si Carpentier est bien le père</b>, c'est un enfant adultérin, que l'article 335 du Code civil interdisait de reconnaître : la reconnaissance du 1<sup>er</sup> septembre 1892, cinq jours après la noce, aurait alors été nulle de plein droit, et le tribunal de Beaune n'aurait fait que le constater en 1897. C'est l'explication la plus économique, et elle n'est pas prouvée — <b>seul le jugement de Beaune dira le motif retenu</b>, et une tradition familiale attribue la paternité à un tout autre homme. <span class="warn">Une anomalie demeure : Joseph Alexandre MONJEAN est dit « beau-frère de l'épouse », ce qui est incompatible avec une fille unique. Erreur de colonne, beau-frère de l'époux, ou sœur inconnue — son dossier Léonore tranchera.</span> L'oncle <b>Nicolas-Eugène GRILLOT</b> est ici qualifié « oncle paternel » en toutes lettres : la fratrie de Napoléon est prouvée.</p>
       </article>
 
       <article class="tr" id="t-1899-publication-de-mariage-bourdeau-grillot">
@@ -1937,12 +1945,21 @@ const PERSONNES = [
  x:560, y:1197, w:280, h:230,
  naissance:{date:"23/09/1843", heure:"2 h du matin", lieu:"Fahy-lès-Autrey"},
  deces:{date:"1936", incertain:true},
- metiers:[{quoi:"épicière au village", an:1905, note:"1905-1906"}],
+ metiers:[{quoi:"épicière au village", an:1905, note:"1905-1906"},
+          {quoi:"épicière, <b>patronne</b> et seule au foyer", an:1911,
+           note:"recensements jusqu'en 1926"}],
+ lieux:[{quoi:"Fahy-lès-Autrey, présente à chaque recensement", an:1906,
+         note:"jusqu'en 1926, puis plus rien"}],
  divers:[
-   {dt:"Rang", dd:"sixième de <b>douze</b> enfants, quatrième survivante<span class=\"tag-new\">Corrigé</span>"}
+   {dt:"Rang", dd:"sixième de <b>douze</b> enfants, quatrième survivante<span class=\"tag-new\">Corrigé</span>"},
+   {dt:"Variantes", dd:"recensée tantôt <b>PAUFARD</b>, tantôt <b>GRILLOT</b>, du nom de son mari<span class=\"tag-new\">Recensement</span>"}
  ],
  notes:[
-   {b:"Veuve en 1900, elle <b>adopte sa petite-fille Yvonne</b>.", ferme:true}
+   {b:"Veuve en 1900, elle <b>adopte sa petite-fille Yvonne</b>.", ferme:true},
+   {b:"Les <b>recensements de Fahy</b> la suivent jusqu'en <b>1926</b> — seule sous son toit, "
+     +"dite épicière et patronne — puis elle en disparaît. La date de 1936 reste donc une "
+     +"estimation : entre 1926 et 1936, on ne la voit plus.<span class=\"tag-new\">Recensement</span>",
+    ferme:false}
  ],
  dossier:[
    {type:"n", libelle:"Naissance"},
@@ -1989,6 +2006,15 @@ const PERSONNES = [
    {dt:"À Serrigny", dd:"femme du pharmacien, dite <b>Léonie</b>, 26 ans<span class=\"tag-new\">Nouveau</span>"},
    {dt:"Unions", dd:"mariée à Fahy le 27/08/1892 ; veuve en 1898, remariée en 1899"}
  ],
+ notes:[
+   {b:"<b>D'après la famille</b> — elle serait morte d'une <b>pneumonie</b> contractée lors "
+     +"d'une promenade à cheval. Tradition familiale tenue pour sûre par le propriétaire du "
+     +"dossier ; l'acte de décès ne dit pas la cause, et n'a pas à la dire.", ferme:true},
+   {b:"<b>Rumeur familiale, non vérifiée.</b> Le père d'Yvonne aurait été un palefrenier du "
+     +"village, avec qui Joséphine aurait eu une brève liaison — ce qui expliquerait qu'on "
+     +"l'ait éloignée pour accoucher à Lyon. Donnée pour fiable à 70 %. <b>Aucun acte ne "
+     +"l'appuie</b> : la filiation d'Yvonne reste « de père inconnu ».", ferme:false}
+ ],
  dossier:[
    {type:"n", libelle:"Naissance"},
    {type:"m", libelle:"Mariage"},
@@ -2012,10 +2038,16 @@ const PERSONNES = [
  neuf:true, apports:["Datée"],
  naissance:{date:"01/10/1889", lieu:"Lyon 1<sup>er</sup>, 1 Côte des Carmélites"},
  deces:{date:"11/02/1963", lieu:"Gray-la-Ville", age:"73 ans"},
- lieux:[{quoi:"Fahy-lès-Autrey", an:1906}],
+ lieux:[{quoi:"Fahy-lès-Autrey, <b>chez sa grand-mère Théolinde</b>", an:1906,
+         note:"recensement de Fahy"}],
  divers:[
    {dt:"Statut", dd:"fille naturelle de père inconnu ; <b>adoptée par sa grand-mère</b>"},
    {dt:"Mariage", dd:"22/09/1906, <b>à seize ans</b>"}
+ ],
+ notes:[
+   {b:"Le <b>recensement de Fahy de 1906</b> la montre sous le toit de Théolinde PAUFARD — "
+     +"elle y vit donc avant son mariage de septembre, et l'adoption a bien un ancrage "
+     +"domestique.<span class=\"tag-new\">Recensement</span>", ferme:true}
  ],
  dossier:[
    {type:"n", libelle:"Naissance"},
@@ -2115,10 +2147,10 @@ const PERSONNES = [
    {dt:"Union", dd:"épouse Philippe <b>TOCHON</b>"}
  ]},
 
-{id:"isabelle-fontana-1968", prenoms:"Isabelle Marie-Line", nom:"FONTANA", f:true, gen:9,
+{id:"isabelle-fontana-1968", prenoms:"Isabelle Marie-Pierre", nom:"FONTANA", f:true, gen:9,
  x:970, y:3234, w:250, h:140, vivant:true,
- neuf:true, apports:["Datée"],
- naissance:{date:"29/03/1968", lieu:"Mantes-la-Ville", lieuIncertain:true},
+ neuf:true, apports:["Corrigée"],
+ naissance:{date:"29/03/1968", lieu:"Mantes-la-Jolie"},
  divers:[
    {dt:"Union", dd:"épouse Laurent <b>GAYET</b><span class=\"tag-new\">Prénom</span>"}
  ]}
@@ -2171,10 +2203,12 @@ const FILIATIONS = [
   quoi:"Reconnue, puis la reconnaissance annulée",
   b:"Reconnue à Lyon 1<sup>er</sup> le 1<sup>er</sup> septembre 1892, cinq jours après le "
     +"mariage de sa mère avec Victor CARPENTIER — la séquence classique pour légitimer un "
-    +"enfant naturel. Mais Yvonne a été conçue du vivant de la première femme de Carpentier : "
-    +"<b>enfant adultérine</b>, l'article 335 du Code civil en interdisait absolument la "
-    +"reconnaissance. Le tribunal civil de Beaune la déclare <b>nulle et de nul effet</b> le "
-    +"14 mai 1897. Yvonne redevient fille de père inconnu.",
+    +"enfant naturel. Le tribunal civil de Beaune la déclare <b>nulle et de nul effet</b> le "
+    +"14 mai 1897, et Yvonne redevient fille de père inconnu. Le motif, lui, n'est pas établi : "
+    +"<b>si Carpentier est le père</b>, Yvonne a été conçue du vivant de sa première femme et "
+    +"l'article 335 du Code civil interdisait absolument de la reconnaître ; si le père est un "
+    +"autre, la reconnaissance était fausse. Les deux mènent à l'annulation par des chemins "
+    +"différents. <b>Seul le jugement de Beaune tranchera.</b>",
   doute:false},
 
  {enfant:"yvonne-grillot-1889", parent:"theolinde-paufard-1843",
@@ -2198,9 +2232,11 @@ const UNIONS_HORS_ARBRE = [
 
  {epoux:"victor-carpentier-1856", rang:1, statut:"établie",
   avec:"Julie-Lucie GÉNIN", quand:"jusqu'au 25/06/1889",
-  b:"Morte à Besançon le 25 juin 1889. Yvonne, née le 1<sup>er</sup> octobre suivant, "
-    +"a été conçue de son vivant : c'est ce qui rend la filiation adultérine et "
-    +"entraîne l'annulation de 1897."}
+  b:"Morte à Besançon le 25 juin 1889. Yvonne naît le 1<sup>er</sup> octobre suivant : elle "
+    +"<b>pourrait</b> avoir été conçue du vivant de Julie-Lucie, ce qui ferait d'elle une "
+    +"enfant adultérine et expliquerait l'annulation de 1897. Mais cela suppose que "
+    +"Carpentier soit le père, et <b>rien ne l'établit</b> : tant que le jugement du tribunal "
+    +"de Beaune n'est pas lu, le motif de l'annulation reste une hypothèse."}
 ];
 
 /* Les encarts posés dans la scène. Ils restent du texte éditorial, mais
@@ -2803,7 +2839,7 @@ const TRANSCRIPTIONS = [
  type:"m", an:1892,
  chips:[{c:"c-m", t:"Acte de mariage"}, {c:"", t:"Contrat de mariage"}, {c:"", t:"Clef de l'affaire"}],
  texte:"L'an mil huit cent quatre-vingt-douze, le vingt-sept août, à neuf heures du matin, devant nous Charnotet Jean-Baptiste, maire, officier de l'état civil de la commune de Fahy-lès-Autrey, canton d'Autrey (Haute-Saône), sont comparus publiquement en la maison commune :<br><br><b>Carpentier Victor Jean-Baptiste, âgé de trente-cinq ans, pharmacien, domicilié à Besançon, né à Baume-les-Dames (Doubs) le dix octobre mil huit cent cinquante-six</b>, ainsi qu'il résulte de l'extrait délivré par le greffier du tribunal de première instance de Baume-les-Dames, <b>veuf de Génin Julie-Lucie, sans profession, décédée à Besançon le vingt-cinq juin mil huit cent quatre-vingt-neuf</b>, ainsi qu'il résulte de l'extrait délivré par le maire de Besançon ; <b>fils majeur de Carpentier Louis, âgé de soixante-quinze ans, propriétaire, domicilié à Trouvans, canton de Rougemont (Doubs), ici présent et consentant, et de Thuriet Marie-Edwige, âgée de soixante-sept ans, aussi propriétaire</b>, domiciliée audit Trouvans, non présente mais consentante <b>ainsi que l'atteste la procuration passée conjointement avec son époux le seize août mil huit cent quatre-vingt-douze, à Baume-les-Dames, devant M<sup>e</sup> Dufay, notaire</b> — d'une part ;<br><br>et demoiselle <b>Grillot Françoise-Léonie-Joséphine, âgée de vingt-trois ans, sans profession, domiciliée et née à Fahy-lès-Autrey le deux mars mil huit cent soixante-neuf, fille majeure de Grillot François-André-Napoléon, âgé de cinquante-quatre ans, et de Paufard Théolinde-Adélaïde, âgée de quarante-huit ans, tous deux propriétaires, domiciliés audit Fahy, ici présents et consentants</b> — d'autre part.<br><br>Publications faites à Fahy-lès-Autrey les dimanches quatorze et vingt et un août, <b>et à Besançon les mêmes dimanches</b>. Les futurs époux, le père du futur et les père et mère de la future nous ont déclaré <b>qu'il a été fait un contrat de mariage, reçu par M<sup>e</sup> Moreau, notaire à la résidence d'Autrey, le vingt-cinq août mil huit cent quatre-vingt-douze</b>. […] Déclarons au nom de la loi que Carpentier Victor Jean-Baptiste et Grillot Françoise-Léonie-Joséphine sont unis en mariage.<br><br>En présence de <b>Monjean Joseph Alexandre, âgé de quarante-sept ans, capitaine au 133<sup>e</sup> d'infanterie, chevalier de la Légion d'honneur, domicilié à Belley, beau-frère de l'épouse</b>, premier témoin ; de <b>Retrouvey Alphonse, âgé de vingt-huit ans, docteur en médecine, domicilié à Besançon, ami de l'époux, non parent</b>, deuxième témoin ; de <b>Grillot Nicolas-Eugène, âgé de cinquante-deux ans, négociant, domicilié à Gray, oncle paternel de l'épouse</b>, troisième témoin ; et de <b>Paufard Auguste, âgé de quarante et un ans, cultivateur, domicilié à Autrey, cousin maternel de l'épouse</b>, quatrième témoin. <span class=\"sign\">Signé : Joséphine Grillot — N. Grillot — V. Carpentier — L. Carpentier — Monjean — Retrouvey — E. Grillot — Paufard — Charnotet, le maire</span>",
- gloss:"<b>La pièce qui explique tout.</b> Le mariage n'avait rien de clandestin : il se célèbre chez elle, avec ses deux parents présents et consentants. Mais Carpentier est <b>veuf de Julie-Lucie GÉNIN, morte le 25 juin 1889</b> — or Yvonne, née le 1<sup>er</sup> octobre 1889, a été conçue vers janvier, <b>du vivant de la première épouse</b>. C'est un <b>enfant adultérin</b>, que l'article 335 du Code civil interdisait de reconnaître. La reconnaissance du 1<sup>er</sup> septembre 1892, cinq jours après la noce, était donc nulle de plein droit, et le tribunal de Beaune n'a fait que le constater en 1897. <span class=\"warn\">Une anomalie demeure : Joseph Alexandre MONJEAN est dit « beau-frère de l'épouse », ce qui est incompatible avec une fille unique. Erreur de colonne, beau-frère de l'époux, ou sœur inconnue — son dossier Léonore tranchera.</span> L'oncle <b>Nicolas-Eugène GRILLOT</b> est ici qualifié « oncle paternel » en toutes lettres : la fratrie de Napoléon est prouvée."},
+ gloss:"<b>La pièce qui explique tout.</b> Le mariage n'avait rien de clandestin : il se célèbre chez elle, avec ses deux parents présents et consentants. Mais Carpentier est <b>veuf de Julie-Lucie GÉNIN, morte le 25 juin 1889</b> — or Yvonne, née le 1<sup>er</sup> octobre 1889, a été conçue vers janvier, <b>du vivant de la première épouse</b>. <b>Si Carpentier est bien le père</b>, c'est un enfant adultérin, que l'article 335 du Code civil interdisait de reconnaître : la reconnaissance du 1<sup>er</sup> septembre 1892, cinq jours après la noce, aurait alors été nulle de plein droit, et le tribunal de Beaune n'aurait fait que le constater en 1897. C'est l'explication la plus économique, et elle n'est pas prouvée — <b>seul le jugement de Beaune dira le motif retenu</b>, et une tradition familiale attribue la paternité à un tout autre homme. <span class=\"warn\">Une anomalie demeure : Joseph Alexandre MONJEAN est dit « beau-frère de l'épouse », ce qui est incompatible avec une fille unique. Erreur de colonne, beau-frère de l'époux, ou sœur inconnue — son dossier Léonore tranchera.</span> L'oncle <b>Nicolas-Eugène GRILLOT</b> est ici qualifié « oncle paternel » en toutes lettres : la fratrie de Napoléon est prouvée."},
 
 {id:"t-1899-publication-de-mariage-bourdeau-grillot", titre:"Publication de mariage BOURDEAU × GRILLOT",
  when:"17 décembre 1899", ref:"Fahy-lès-Autrey — publications de mariage de 1899, n° 9",
