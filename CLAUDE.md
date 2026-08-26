@@ -18,7 +18,12 @@ Fichiers :
 
 Le document réel fait ~2 900 lignes et ~355 Ko. Il n'y a **ni build, ni bundler, ni npm, ni framework**. On ouvre le fichier dans un navigateur, ça marche. Cette contrainte est délibérée : la famille doit pouvoir l'ouvrir dans dix ans, et le dépôt doit rester lisible dans un diff GitHub.
 
-Les scripts d'`outils/` ne font pas exception : ce ne sont pas des étapes de construction, mais des outils de mise au point, utilisés le temps de la conversion puis jetés. Après validation, `index.html` s'édite directement.
+Les scripts d'`outils/` ne font pas exception : ce ne sont pas des étapes de construction,
+mais l'échafaudage de la conversion. **Elle est faite : `index.html` s'édite maintenant
+directement**, et `outils/convertir.py` est verrouillé — le relancer reconstruirait le
+fichier depuis `v1.html` et effacerait tout ce qui a été fait depuis. Seul
+`outils/verifier.py` garde un usage : c'est la recette, et elle lit les données du
+fichier publié.
 
 ## 2. La famille, en une page
 
@@ -57,27 +62,38 @@ Ces conventions portent du sens. Les modifier silencieusement fausse la lecture 
 
 ## 4. Structure du document réel
 
-```
-<header class="masthead">      titre, chapeau, date de séance
-<nav class="tabs">             deux onglets : Arbre · Transcriptions
-<section id="panel-arbre">
-   .bar                        légende (fiabilité + code documentaire) et outils de zoom
-   #viewport > #wrap > #stage  la scène, à l'échelle
-      <svg id="wires">         vide au départ — tout est tracé au chargement
-      aside.aside              1 encart posé dans la scène (fratrie PAUFARD)
-<section class="dossier">      8 encarts éditoriaux, en flux, deux colonnes
-<div class="footnotes">        pistes de recherche, actes dépouillés, méthode, où chercher
-<section id="panel-transcriptions">  62 transcriptions en 12 sections
-<script>                       LES DONNÉES, puis le moteur, puis la vue
-```
+`index.html` fait ~4 240 lignes, réparties ainsi :
 
-**Les données d'un côté, le moteur de l'autre.** En bas du fichier, les tableaux —
-`PERSONNES` (30), `UNIONS` (13), `FILIATIONS`, `UNIONS_HORS_ARBRE`, `ENCARTS`,
-`ACTES` (66), `TRANSCRIPTIONS` (62), `GENERATIONS` (10) — sont la **seule zone à éditer
-après chaque séance**. `renderCards()` fabrique les fiches, `renderEncarts()` les encarts
-de la scène, puis `layout()` mesure ce qui est réellement posé
-(`offsetLeft/offsetTop/offsetHeight`) et en déduit les fils, les pastilles, les losanges,
-les bandes et les rails. **Déplacer une fiche ne casse plus rien.**
+| Lignes | Quoi | Y touche-t-on ? |
+|---|---|---|
+| 7-515 | l'apparence (CSS) | rarement |
+| 520-580 | titre, chapeau, onglets | badge de séance |
+| 583-593 | la scène : un `<svg>` vide, rien d'autre | jamais |
+| 595-880 | dossier, pistes de recherche, recherches négatives | **oui**, en HTML |
+| 888-1780 | les 62 transcriptions, en HTML | **oui**, en HTML |
+| **1782-3040** | **les données** | **oui — c'est ici que tout se passe** |
+| 3047-fin | le moteur, puis la vue (zoom, glissement, onglets) | jamais |
+
+Trois onglets : **Arbre · Frise · Transcriptions**.
+
+**Avant / maintenant.** Le document était écrit à la main : chaque personne existait
+deux fois et sans lien — sa fiche en HTML à une position fixe, et le trait la reliant à
+ses parents écrit à part en coordonnées littérales (`M845 1972 V2252 H705 V2277`).
+Ajouter quelqu'un obligeait à recalculer les tracés voisins un par un, et le coût
+grandissait avec l'arbre.
+
+Aujourd'hui, deux couches. **Les données** — `PERSONNES` (30), `UNIONS` (13),
+`FILIATIONS`, `UNIONS_HORS_ARBRE`, `ENCARTS`, `ACTES` (66), `GENERATIONS` (10) — et
+**le moteur** qui les lit. `renderCards()` fabrique les fiches, `renderEncarts()` les
+encarts de la scène, puis `layout()` mesure ce qui est réellement posé
+(`offsetLeft/offsetTop/offsetHeight`) et en déduit fils, pastilles, losanges, bandes et
+rails. **On n'écrit plus un seul tracé.** Le coût d'un ajout ne dépend plus de la taille
+de l'arbre.
+
+⚠️ `TRANSCRIPTIONS` et `SECTIONS_TR` existent dans les données mais **ne sont lus par
+personne** : les transcriptions affichées sont le HTML des lignes 888-1780. C'est un
+doublon dormant de 119 Ko, hérité de la conversion. Le corriger à deux endroits est une
+servitude — et un oubli passerait inaperçu. À supprimer.
 
 **Une personne** porte `naissance`, `deces`, `metiers[]`, `lieux[]` — et `divers[]` pour
 les rubriques qui n'entrent dans aucun de ces moules (*Variantes*, *Rang*, *Parents*,
@@ -140,6 +156,57 @@ Deux modes dans l'URL : `?audit` entoure de rouge toute boîte qui en chevauche 
 et liste les collisions en console — à utiliser après chaque ajout de contenu ; `?calque`
 superpose en rouge les 26 tracés du document manuel, pour comparer. Ce dernier disparaîtra
 avec la fin de la conversion.
+
+## 4 bis. Ce que le moteur déduit, et ce qu'il faut lui dire
+
+La distinction commande tout le travail d'édition. **Le moteur raisonne sur un graphe
+déclaré ; il ne lit aucune prose.**
+
+**Déduit — ne jamais l'écrire à la main :**
+
+- les **fils**, leur coude, les pastilles de mariage, les losanges d'union sans date ;
+- les **bandes** de génération, la colonne des chiffres romains, la hauteur de la scène ;
+- la **hauteur réelle** de chaque fiche, donc l'endroit exact où les fils s'y attachent ;
+- l'**ascendance et la descendance** complètes de n'importe qui, à n'importe quelle
+  profondeur, et la **surbrillance** qui en découle ;
+- la **parenté entre deux personnes quelconques** — « époux de son arrière-arrière-
+  grand-mère » n'est écrit nulle part, il se calcule sur cinq générations ;
+- la **chronologie** du tiroir : naissance, domiciles, métiers, mariages, naissances des
+  enfants, décès, remis dans l'ordre, avec l'âge à chaque étape ;
+- la **frise**, la **jauge documentaire** du mode *Preuves*, le mode *Nouveautés*.
+
+**Déclaré — le moteur ne le devinera jamais :**
+
+- **qui est enfant de qui.** `enfants:[…]` dans une union, ou une entrée `FILIATIONS`.
+  C'est la seule chose qui fait exister un lien ;
+- **la position** `x`/`y` d'une fiche. Volontaire : la composition dit quelque chose
+  (collatéraux à gauche, ligne directe au centre) qu'un placement automatique détruirait ;
+- **qui figure dans quel acte** — la table `mentions` d'`ACTES`. Elle a été écrite à la
+  main, et il le fallait : l'appariement automatique attribuait à Joséphine († 1905) un
+  décès de 1879 qui est celui d'une homonyme collatérale, et rattachait à Jean Émile
+  VILLETTE (né en 1911) un acte de 1877. **Ne jamais automatiser ce rattachement** ;
+- **les rôles** dans un acte (« gendre déclarant ») : ils demandent la lecture de la pièce ;
+- **toute la prose** — gloses, encarts, réserves, anecdotes, recherches négatives. Le
+  moteur l'affiche, il ne la comprend pas.
+
+En un mot : il est intelligent sur la **structure**, aveugle au **texte**. Il ne saura
+jamais que le « pharmacien » du recensement de Serrigny est Carpentier tant qu'on ne
+l'aura pas écrit dans `mentions`.
+
+## 4 ter. Ajouter quelqu'un
+
+1. Copier un bloc de `PERSONNES` voisin, changer `id`, `prenoms`, `nom`, `f`, `gen`,
+   les dates. L'`id` se compose du prénom d'usage, du patronyme et de l'année de
+   naissance — **il est public et définitif** dès qu'il circule dans un lien `#p=`.
+2. Ajouter cet `id` aux `enfants` de l'union de ses parents. C'est ce geste, et lui seul,
+   qui trace le fil.
+3. Poser un `x`/`y` plausible, ouvrir le fichier, ajuster. **`?audit` dans l'URL** entoure
+   de rouge toute boîte qui en chevauche une autre.
+4. `outils/verifier.py` après la séance : il dit si un compte a bougé sans raison.
+
+Un `id` cité mais inexistant fait échouer le rendu — c'est voulu, l'incohérence se voit
+tout de suite. Une page blanche après une modification, c'est presque toujours une
+virgule ou une accolade : `Ctrl+Maj+J` donne la ligne.
 
 ## 5. Règles de travail
 
