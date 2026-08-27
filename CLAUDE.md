@@ -16,7 +16,7 @@ Fichiers :
 | `arbre-branche-maternelle-v1.html` | **Temporaire.** Copie du document d'avant conversion, référence de comparaison visuelle. À supprimer une fois la conversion validée. |
 | `outils/` | **Non publié, jetable.** Scripts d'accompagnement de la conversion : `extraire.py`, `convertir.py`, `verifier.py`, le moteur `moteur.js` et les données extraites. À supprimer avec `v1.html`. |
 
-Le document réel fait ~2 900 lignes et ~355 Ko. Il n'y a **ni build, ni bundler, ni npm, ni framework**. On ouvre le fichier dans un navigateur, ça marche. Cette contrainte est délibérée : la famille doit pouvoir l'ouvrir dans dix ans, et le dépôt doit rester lisible dans un diff GitHub.
+Le document réel fait ~5 200 lignes et ~435 Ko. Il n'y a **ni build, ni bundler, ni npm, ni framework**. On ouvre le fichier dans un navigateur, ça marche. Cette contrainte est délibérée : la famille doit pouvoir l'ouvrir dans dix ans, et le dépôt doit rester lisible dans un diff GitHub.
 
 Les scripts d'`outils/` ne font pas exception : ce ne sont pas des étapes de construction,
 mais l'échafaudage de la conversion. **Elle est faite : `index.html` s'édite maintenant
@@ -54,7 +54,7 @@ Ces conventions portent du sens. Les modifier silencieusement fausse la lecture 
 | `a-d` | acte de décès en main | violet `--act-d` |
 | `a-x` | acte non retrouvé ou non renseigné | contour pointillé rouge |
 
-**Apports récents.** `<span class="tag-new">…</span>` signale ce qu'a apporté la dernière séance : *Nouveau, Daté, Datée, Confirmée, Complétée, Corrigé, Prouvé, Identifié, Résolu, À trancher, Lieu, Prénom, Acte, Acte trouvé*. Le badge de date en légende (`23-25 août 2026`) et la mention « douzième séance » en tête se mettent à jour à chaque séance.
+**Apports récents.** `<span class="tag-new">…</span>` signale ce qu'a apporté la dernière séance : *Nouveau, Daté, Datée, Confirmée, Complétée, Corrigé, Prouvé, Identifié, Résolu, À trancher, Lieu, Prénom, Acte, Acte trouvé*. Le badge de date en légende (`23-25 août 2026`) et la mention de séance en tête — « quinzième séance » à ce jour — se mettent à jour à chaque séance.
 
 **Chips de transcription** — `.chip` dans le `<p class="ref">` : nature de l'acte (`c-n`, `c-m`, `c-d`) puis qualificatifs (*Filiation*, *Cliché pâle*, *Homonyme à écarter*, `c-warn` pour les alertes).
 
@@ -62,19 +62,29 @@ Ces conventions portent du sens. Les modifier silencieusement fausse la lecture 
 
 ## 4. Structure du document réel
 
-`index.html` fait ~4 240 lignes, réparties ainsi :
+`index.html` fait ~5 200 lignes, réparties ainsi — les bornes bougent à chaque
+séance, se repérer plutôt sur les repères en gras :
 
 | Lignes | Quoi | Y touche-t-on ? |
 |---|---|---|
-| 7-515 | l'apparence (CSS) | rarement |
-| 520-580 | titre, chapeau, onglets | badge de séance |
-| 583-593 | la scène : un `<svg>` vide, rien d'autre | jamais |
-| 595-880 | dossier, pistes de recherche, recherches négatives | **oui**, en HTML |
-| 888-1780 | les 62 transcriptions, en HTML | **oui**, en HTML |
-| **1782-3040** | **les données** | **oui — c'est ici que tout se passe** |
-| 3047-fin | le moteur, puis la vue (zoom, glissement, onglets) | jamais |
+| 7-603 | l'apparence (CSS) | rarement |
+| 608-621 | titre, chapeau, onglets | badge de séance, compteurs |
+| 623-691 | la scène : un `<svg>` vide, rien d'autre | jamais |
+| 692-816 | le dossier : les douze encarts, en HTML | **oui**, en HTML |
+| 817-849 | le bas de page de l'onglet Arbre | rarement — voir plus bas |
+| 851-882 | les panneaux Frise et **Recherches**, vides : le moteur les remplit | jamais |
+| 885-1912 | les 71 transcriptions, en HTML | **oui**, en HTML |
+| **1937-3750** | **les données** | **oui — c'est ici que tout se passe** |
+| 3753-fin | le moteur, puis la vue (zoom, glissement, onglets) | jamais |
 
-Trois onglets : **Arbre · Frise · Transcriptions**.
+Quatre onglets : **Arbre · Frise · Recherches · Transcriptions**.
+
+⚠️ Le bas de page de l'onglet Arbre porte **« Questions encore ouvertes »**, qui est
+**produit par le moteur** (`renderOuvertes()`) à partir des recherches de priorité `P1`.
+Ne rien y écrire à la main : c'est précisément ce que la refonte du § 9 a supprimé, et
+`verifier.py` échoue si un `<li>` réapparaît dans la source. Les deux colonnes voisines
+— patronyme, âges déclarés, homonymes, réserves de lecture, où chercher — restent, elles,
+du HTML écrit à la main.
 
 **Avant / maintenant.** Le document était écrit à la main : chaque personne existait
 deux fois et sans lien — sa fiche en HTML à une position fixe, et le trait la reliant à
@@ -83,17 +93,18 @@ Ajouter quelqu'un obligeait à recalculer les tracés voisins un par un, et le c
 grandissait avec l'arbre.
 
 Aujourd'hui, deux couches. **Les données** — `PERSONNES` (30), `UNIONS` (13),
-`FILIATIONS`, `UNIONS_HORS_ARBRE`, `ENCARTS`, `ACTES` (66), `GENERATIONS` (10) — et
-**le moteur** qui les lit. `renderCards()` fabrique les fiches, `renderEncarts()` les
+`FILIATIONS`, `UNIONS_HORS_ARBRE`, `ENCARTS`, `ACTES` (75), `GENERATIONS` (10),
+`DOSSIERS` (7), `RECHERCHES` (95), `SEANCES` (4) — et **le moteur** qui les lit. `renderCards()` fabrique les fiches, `renderEncarts()` les
 encarts de la scène, puis `layout()` mesure ce qui est réellement posé
 (`offsetLeft/offsetTop/offsetHeight`) et en déduit fils, pastilles, losanges, bandes et
 rails. **On n'écrit plus un seul tracé.** Le coût d'un ajout ne dépend plus de la taille
 de l'arbre.
 
-⚠️ `TRANSCRIPTIONS` et `SECTIONS_TR` existent dans les données mais **ne sont lus par
-personne** : les transcriptions affichées sont le HTML des lignes 888-1780. C'est un
-doublon dormant de 119 Ko, hérité de la conversion. Le corriger à deux endroits est une
-servitude — et un oubli passerait inaperçu. À supprimer.
+Les **transcriptions n'existent qu'en HTML**, dans leur onglet : il n'y a pas de tableau
+`TRANSCRIPTIONS` — le doublon dormant hérité de la conversion a été supprimé. Le lien
+passe par le champ `tr` de chaque acte, et `verifier.py` vérifie qu'aucun `tr` ne pointe
+dans le vide et que les deux comptes s'égalent. **Un acte transcrit = une entrée `ACTES`
+portant son `tr` = un `<article class="tr" id="…">`**, ni plus ni moins.
 
 **Une personne** porte `naissance`, `deces`, `metiers[]`, `lieux[]` — et `divers[]` pour
 les rubriques qui n'entrent dans aucun de ces moules (*Variantes*, *Rang*, *Parents*,
@@ -157,6 +168,33 @@ et liste les collisions en console — à utiliser après chaque ajout de conten
 superpose en rouge les 26 tracés du document manuel, pour comparer. Ce dernier disparaîtra
 avec la fin de la conversion.
 
+**L'onglet Recherches** est le dossier d'enquête, sorti de la page Arbre où il avait
+débordé la généalogie. Il est produit par `renderRecherches()` à partir d'un **seul
+tableau**, `RECHERCHES`, dont il tire **quatre vues** : *à rechercher* (statuts `afaire`
+et `encours`, groupés par dossier et triés par priorité), *négatives et pistes écartées*,
+*résolues*, et le *journal des séances*. Une recherche qui aboutit change de `statut` et
+passe d'elle-même d'une vue à l'autre — **aucune liste ne peut diverger d'une autre**,
+puisqu'il n'y en a qu'une.
+
+Chaque entrée porte `id`, `dossier`, `priorite` (`P1`|`P2`|`P3`|absent), `statut`,
+`titre`, `ou`, `pourquoi`, et selon le cas `resultat`, `consequence`, `piece`, `seances`.
+Trois règles que la recette fait respecter :
+
+- **`negative` et `caduque` ne se confondent pas.** Avoir cherché sans rien trouver est un
+  *résultat* qui contraint la suite ; constater qu'une piste n'a plus d'objet est un
+  *abandon*. Les confondre fait perdre de l'information.
+- **`consequence` est obligatoire** sur toute entrée `negative` ou `caduque`. Une recherche
+  négative correctement rédigée ne dit pas « rien trouvé » : elle dit ce que l'échec permet
+  de conclure.
+- **Pas d'émoji.** Les statuts et priorités passent par les pastilles et étiquettes déjà
+  définies dans la feuille de style. La sobriété typographique est un des points forts du
+  rendu.
+
+`piece` désigne un `id` d'`ACTES`, et le renvoi « Lire la pièce → » réutilise
+`versTranscription()`. Les **fronts A à E et les rangs 1 à 5 sont abandonnés** : c'était un
+artefact de la manière dont le dossier a grossi, pas un classement. `verifier.py` échoue si
+l'un d'eux reparaît dans le document.
+
 ## 4 bis. Ce que le moteur déduit, et ce qu'il faut lui dire
 
 La distinction commande tout le travail d'édition. **Le moteur raisonne sur un graphe
@@ -164,6 +202,8 @@ déclaré ; il ne lit aucune prose.**
 
 **Déduit — ne jamais l'écrire à la main :**
 
+- les **quatre vues** de l'onglet Recherches et le bloc « Questions encore ouvertes »
+  de la page Arbre, entièrement tirés de `RECHERCHES` ;
 - les **fils**, leur coude, les pastilles de mariage, les losanges d'union sans date ;
 - les **bandes** de génération, la colonne des chiffres romains, la hauteur de la scène ;
 - la **hauteur réelle** de chaque fiche, donc l'endroit exact où les fils s'y attachent ;
@@ -227,9 +267,16 @@ virgule ou une accolade : `Ctrl+Maj+J` donne la ligne.
 La conversion vers un arbre interactif, décrite dans `CONVERSION.md`. `proto.html` en est la maquette validée.
 
 **Faites** — les six étapes de `CONVERSION.md`. Le document se régénère à partir de ses
-données sans perte de texte : `outils/verifier.py` passe **60 contrôles**, dont le
+données sans perte de texte : `outils/verifier.py` passe **108 contrôles**, dont le
 décompte des étiquettes d'apport rubrique par rubrique, l'absence de chevauchement,
-l'absence de dépendance externe et de stockage navigateur.
+l'absence de dépendance externe et de stockage navigateur, et — depuis la refonte du § 9 —
+la cohérence de `RECHERCHES` : nomenclature des statuts et des priorités, dossiers
+existants, pièces transcrites, conséquence présente sur chaque recherche négative.
+
+Les **écarts volontaires** avec le document d'avant conversion sont inscrits dans le
+dictionnaire `EVOLUTIONS`, en tête de `verifier.py`, avec leur raison : c'est ce qui permet
+à une divergence *non prévue* de continuer à faire échouer la recette. Toute correction
+apportée au dossier qui change un décompte doit y être consignée, jamais contournée.
 
 Les trois nœuds compliqués du § 2 sont modélisés : les **trois filiations d'Yvonne**
 (naturelle, reconnaissance annulée 1892-1897, adoptive) se lisent dans son tiroir, dans
