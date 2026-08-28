@@ -117,7 +117,11 @@ possession*, et les transcriptions n'en sont qu'une partie. Un acte détenu mais
 transcrit est normal ; l'inverse aussi.
 
 **La fiche annonce, le tiroir raconte.** La fiche ne garde que naissance, métier,
-conjoint, décès. Un clic ouvre le tiroir : chronologie déduite des données, filiations,
+**domicile**, décès. Le conjoint n'y figure plus : le fil qui relie les deux fiches le dit
+déjà, et c'est le principe même de l'arbre — la ligne a été rendue au domicile, que rien
+d'autre ne montrait. Le lieu et l'année seulement : les précisions attachées à un lieu
+(« jusqu'en 1836 », « aux recensements de 1841, 1846… ») restent au tiroir, où la
+chronologie les remet en ordre. Un clic ouvre le tiroir : chronologie déduite des données, filiations,
 réserves, autres mentions, unions sans fiche, dossier d'actes cliquables, parenté.
 
 **Trois marques de doute, et une seule à la fois.** `incertain` pose le `?` sur la date,
