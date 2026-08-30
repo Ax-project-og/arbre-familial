@@ -90,7 +90,11 @@ h1 em{font-style:italic;color:var(--ink-2);font-weight:400}
 #viewport{width:100%;overflow:hidden}
 #wrap{position:relative}
 #stage{position:relative;width:1760px;height:3434px;transform-origin:top left}
-.wires{position:absolute;inset:0;width:1760px;height:3434px}
+/* Surtout pas de largeur en dur ici : le CSS l'emporterait sur les attributs
+   width/height que layout() pose, et le viewBox se retrouverait comprimé dans
+   une boîte trop étroite — les fils se décaleraient vers la gauche, d'autant
+   plus que la scène s'élargit. */
+.wires{position:absolute;inset:0;width:100%;height:100%}
 .wire{fill:none;stroke:var(--ink-2);stroke-width:1.6}
 .wire--doubt{fill:none;stroke:var(--doubt-soft);stroke-width:1.6;stroke-dasharray:7 5}
 .wire--thin{fill:none;stroke:var(--ink-3);stroke-width:1.2;stroke-dasharray:4 4}
@@ -2162,7 +2166,7 @@ select{max-width:250px}
 
 const PERSONNES = [
 {id:"francois-renevier", prenoms:"François", nom:"RENEVIER", gen:0,
- x:640, y:20, w:210, h:170, small:true,
+ x:640, y:20, w:260, h:170, small:true,
  deces:{date:"avant 1807", note:"présumé"},
  lieux:[{quoi:"Vars", incertain:true}],
  dossier:[
@@ -2170,7 +2174,7 @@ const PERSONNES = [
  ]},
 
 {id:"barbe-guignard", prenoms:"Barbe", nom:"GUIGNARD", f:true, gen:0,
- x:890, y:20, w:210, h:170, small:true,
+ x:960, y:20, w:260, h:170, small:true,
  deces:{date:"avant 1807", note:"présumé"},
  lieux:[{quoi:"Vars", incertain:true}],
  notes:[
@@ -2178,7 +2182,7 @@ const PERSONNES = [
  ]},
 
 {id:"francois-bernard-amiot", prenoms:"François Bernard", nom:"AMIOT", gen:1,
- x:170, y:300, w:210, h:200, small:true,
+ x:170, y:300, w:260, h:200, small:true,
  neuf:true, apports:["Daté"],
  deces:{date:"25/01/1803", note:"5 pluviôse an XI", neuf:"Nouveau"},
  metiers:[{quoi:"laboureur", an:1780, note:"et en 1781"}, {quoi:"propriétaire"}],
@@ -2191,7 +2195,7 @@ const PERSONNES = [
  ]},
 
 {id:"nicolle-bertault", prenoms:"Nicolle", nom:"BERTAULT", f:true, gen:1,
- x:420, y:300, w:210, h:200, small:true,
+ x:490, y:300, w:260, h:200, small:true,
  deces:{date:"1803-1839", lieu:"Mont-le-Frânois", neuf:"Lieu"},
  lieux:[{quoi:"Champlitte", an:1803}, {quoi:"Mont-le-Frânois"}],
  divers:[
@@ -2202,7 +2206,7 @@ const PERSONNES = [
  ]},
 
 {id:"claude-renevier-1743", prenoms:"Claude", nom:"RENEVIER", gen:1,
- x:700, y:300, w:210, h:200, small:true,
+ x:830, y:300, w:260, h:200, small:true,
  naissance:{date:"≈ 1743", lieu:"Vars", lieuIncertain:true},
  deces:{date:"04/08/1807", heure:"17 h", lieu:"Vars", age:"64 ans"},
  metiers:[{quoi:"propriétaire cultivateur"}],
@@ -2211,7 +2215,7 @@ const PERSONNES = [
  ]},
 
 {id:"catherine-petitot-1731", prenoms:"Catherine", nom:"PETITOT", f:true, gen:1,
- x:950, y:300, w:210, h:200, small:true,
+ x:1150, y:300, w:260, h:200, small:true,
  naissance:{date:"≈ 1731", incertain:true},
  deces:{date:"31/03/1807", heure:"7 h", lieu:"Vars", age:"76 ans", ageIncertain:true},
  dossier:[
@@ -2219,7 +2223,7 @@ const PERSONNES = [
  ]},
 
 {id:"francois-amiot-1780", prenoms:"François", nom:"AMIOT", gen:2,
- x:170, y:569, w:230, h:250, small:true,
+ x:170, y:569, w:260, h:250, small:true,
  neuf:true, apports:["Acte trouvé"],
  naissance:{date:"24/12/1780", lieu:"Mont-le-Frânois"},
  deces:{date:"18/03/1839", heure:"6 h", lieu:"Vars", age:"58 ans"},
@@ -2237,7 +2241,7 @@ const PERSONNES = [
  ]},
 
 {id:"barbe-renevier-1774", prenoms:"Barbe", nom:"RENEVIER", f:true, gen:2,
- x:540, y:569, w:230, h:250, small:true,
+ x:590, y:569, w:260, h:250, small:true,
  naissance:{date:"19/06/1774", lieu:"Vars"},
  deces:{date:"05/03/1818", heure:"4 h du matin", lieu:"Vars", age:"43 ans"},
  notes:[
@@ -2249,7 +2253,7 @@ const PERSONNES = [
  ]},
 
 {id:"jean-baptiste-paufard-1788", prenoms:"Jean-Baptiste", nom:"PAUFARD", gen:2,
- x:800, y:569, w:230, h:250, small:true,
+ x:930, y:569, w:290, h:250, small:true,
  neuf:true, apports:["Daté"],
  naissance:{date:"≈ 1788-1791", note:"48 ans en 1836, 55 en 1846", approx:true},
  deces:{date:"1846-1865", lieu:"Fahy-lès-Autrey", neuf:"Confirmé"},
@@ -2276,7 +2280,7 @@ const PERSONNES = [
  ]},
 
 {id:"denise-redoutet-1789", prenoms:"Denise", nom:"REDOUTET", f:true, gen:2,
- x:1060, y:569, w:230, h:250, small:true,
+ x:1280, y:569, w:260, h:250, small:true,
  neuf:true, apports:["Datée"],
  naissance:{date:"≈ 1789-1790", note:"47 ans en 1836, 56 en 1846", approx:true},
  deces:{date:"1846-1865", lieu:"Fahy-lès-Autrey", neuf:"Confirmé"},
@@ -2293,7 +2297,7 @@ const PERSONNES = [
  ]},
 
 {id:"francoise-amiot-1810", prenoms:"Françoise", nom:"AMIOT", f:true, gen:3,
- x:280, y:878, w:260, h:250,
+ x:200, y:878, w:350, h:250,
  naissance:{date:"28/11/1810", heure:"15 h", lieu:"Vars"},
  deces:{date:"30/04/1878", heure:"minuit", lieu:"Fahy-lès-Autrey", age:"67 ans"},
  metiers:[{quoi:"propriétaire"},
@@ -2324,7 +2328,7 @@ const PERSONNES = [
  ]},
 
 {id:"claude-alexis-paufard-1813", prenoms:"Claude Alexis", nom:"PAUFARD", surnom:"dit Alexis", gen:3,
- x:680, y:878, w:320, h:250,
+ x:720, y:878, w:350, h:250,
  naissance:{date:"07/06/1813", heure:"6 h", lieu:"Oyrières"},
  deces:{date:"12/05/1865", heure:"17 h", lieu:"Fahy", age:"51 ans"},
  metiers:[{quoi:"tailleur de pierre", an:1836},
@@ -2363,7 +2367,7 @@ const PERSONNES = [
  ]},
 
 {id:"jeanne-escarnot-1810", prenoms:"Jeanne", nom:"ÉCARNOT", f:true, gen:3,
- x:1120, y:913, w:250, h:180,
+ x:1150, y:913, w:290, h:180,
  neuf:true,
  naissance:{date:"1811", lieu:"Marnay", note:"acte n° 24 de 1811", neuf:"Retrouvée"},
  deces:{date:"05/08/1888", heure:"10 h", lieu:"Gray", age:"77 ans",
@@ -2386,7 +2390,7 @@ const PERSONNES = [
  dossier:[{type:"n", libelle:"Naissance"}, {type:"d", libelle:"Décès"}]},
 
 {id:"thomas-grillot-1810", prenoms:"Thomas", nom:"GRILLOT", gen:3,
- x:1430, y:913, w:250, h:180,
+ x:1500, y:913, w:350, h:180,
  neuf:true,
  naissance:{date:"03/09/1810", heure:"8 h", lieu:"Ancier", neuf:"Daté"},
  deces:{date:"11/02/1890", heure:"10 h", lieu:"Gray", age:"80 ans",
@@ -2412,7 +2416,7 @@ const PERSONNES = [
  dossier:[{type:"n", libelle:"Naissance"}, {type:"d", libelle:"Décès"}]},
 
 {id:"theolinde-paufard-1843", prenoms:"Adélaïde Théolinde", nom:"PAUFARD", f:true, gen:4,
- x:560, y:1240, w:280, h:230,
+ x:560, y:1240, w:320, h:230,
  naissance:{date:"23/09/1843", heure:"2 h du matin", lieu:"Fahy-lès-Autrey"},
  deces:{date:"1936", incertain:true},
  metiers:[{quoi:"épicière au village", an:1905, note:"1905-1906"},
@@ -2445,7 +2449,7 @@ const PERSONNES = [
  ]},
 
 {id:"napoleon-grillot-1838", prenoms:"André François Napoléon", nom:"GRILLOT", gen:4,
- x:1000, y:1240, w:280, h:230,
+ x:1050, y:1240, w:320, h:230,
  neuf:true, apports:["Nom complet"],
  naissance:{date:"27/01/1838", lieu:"Gray"},
  deces:{date:"12/01/1900", heure:"13 h", lieu:"Fahy-lès-Autrey", age:"61 ans"},
@@ -2465,7 +2469,7 @@ const PERSONNES = [
  ]},
 
 {id:"victor-carpentier-1856", prenoms:"Victor Jean-Baptiste", nom:"CARPENTIER", gen:5,
- x:300, y:1722, w:260, h:250,
+ x:300, y:1722, w:350, h:250,
  neuf:true, apports:["Identifié"],
  naissance:{date:"09/10/1856", lieu:"Baume-les-Dames <i>(Doubs)</i>"},
  deces:{date:"29/10/1898", heure:"4 h", lieu:"hôpital militaire de Bourges", age:"42 ans"},
@@ -2514,7 +2518,7 @@ const PERSONNES = [
  ]},
 
 {id:"josephine-grillot-1869", prenoms:"Françoise Léonie Joséphine", nom:"GRILLOT", f:true, gen:5,
- x:700, y:1722, w:290, h:250,
+ x:820, y:1722, w:320, h:250,
  naissance:{date:"02/03/1869", heure:"20 h", lieu:"Fahy-lès-Autrey"},
  deces:{date:"08/09/1905", heure:"10 h", lieu:"Fahy-lès-Autrey", age:"36 ans"},
  divers:[
@@ -2539,7 +2543,7 @@ const PERSONNES = [
  ]},
 
 {id:"maxime-bourdeau-1863", prenoms:"Maxime", nom:"BOURDEAU", gen:5,
- x:1130, y:1747, w:260, h:200,
+ x:1310, y:1747, w:290, h:200,
  neuf:true, apports:["Daté"],
  naissance:{date:"27/10/1863", lieu:"Fahy-lès-Autrey"},
  metiers:[{quoi:"propriétaire-vigneron"}],
@@ -2551,7 +2555,7 @@ const PERSONNES = [
  ]},
 
 {id:"yvonne-grillot-1889", prenoms:"Yvonne Marguerite", nom:"GRILLOT", f:true, gen:6,
- x:560, y:2277, w:290, h:265,
+ x:560, y:2277, w:320, h:265,
  neuf:true, apports:["Datée"],
  naissance:{date:"01/10/1889", lieu:"Lyon 1<sup>er</sup>, 1 Côte des Carmélites"},
  deces:{date:"11/02/1963", lieu:"Gray-la-Ville", age:"73 ans"},
@@ -2583,7 +2587,7 @@ const PERSONNES = [
  ]},
 
 {id:"camille-villette-1877", prenoms:"Camille Jean", nom:"VILLETTE", gen:6,
- x:1000, y:2277, w:290, h:265,
+ x:1050, y:2277, w:320, h:265,
  neuf:true, apports:["Acte trouvé"],
  naissance:{date:"24/07/1877", heure:"13 h", lieu:"Selongey <i>(Côte-d'Or)</i>", note:"déclaré par son père", neuf:"Nouveau"},
  deces:{date:"21/03/1969", lieu:"Gray"},
@@ -2599,7 +2603,7 @@ const PERSONNES = [
  ]},
 
 {id:"renee-villette-1908", prenoms:"Renée Jeanne", nom:"VILLETTE", f:true, gen:7,
- x:350, y:2676, w:260, h:170,
+ x:350, y:2676, w:290, h:170,
  neuf:true, apports:["Confirmée"],
  naissance:{date:"31/01/1908", lieu:"Autrey-lès-Gray"},
  deces:{date:"18/10/2001"},
@@ -2609,7 +2613,7 @@ const PERSONNES = [
  ]},
 
 {id:"edmond-ribaut-1906", prenoms:"Edmond Henri", nom:"RIBAUT", gen:7,
- x:810, y:2676, w:260, h:170,
+ x:810, y:2676, w:290, h:170,
  neuf:true, apports:["Daté"],
  naissance:{date:"06/04/1906"},
  deces:{date:"18/01/1998", neuf:"Nouveau"},
@@ -2621,7 +2625,7 @@ const PERSONNES = [
  ]},
 
 {id:"jean-villette-1911", prenoms:"Jean Émile", nom:"VILLETTE", gen:7,
- x:1180, y:2676, w:260, h:170,
+ x:1230, y:2676, w:290, h:170,
  naissance:{date:"23/02/1911", lieu:"Autrey-lès-Gray"},
  deces:{date:"22/03/2000"},
  dossier:[
@@ -2630,7 +2634,7 @@ const PERSONNES = [
  ]},
 
 {id:"simone-ribaut-1933", prenoms:"Simone Camille Henriette", nom:"RIBAUT", f:true, gen:8,
- x:350, y:2970, w:260, h:150, vivant:true,
+ x:350, y:2970, w:290, h:150, vivant:true,
  neuf:true, apports:["Complétée"],
  naissance:{date:"27/09/1933", lieu:"Gray", neuf:"Nouveau"},
  metiers:[{quoi:"directrice d'hôpital", neuf:"Nouveau"}],
@@ -2639,7 +2643,7 @@ const PERSONNES = [
  ]},
 
 {id:"marcel-fontana-1930", prenoms:"Marcel Félix", nom:"FONTANA", gen:8,
- x:810, y:2970, w:260, h:150, vivant:true,
+ x:810, y:2970, w:290, h:150, vivant:true,
  neuf:true, apports:["Daté"],
  naissance:{date:"05/10/1930", lieu:"Annecy", neuf:"Nouveau"},
  metiers:[{quoi:"professeur de lettres", neuf:"Nouveau"}],
@@ -2648,7 +2652,7 @@ const PERSONNES = [
  ]},
 
 {id:"francoise-ribaut-1944", prenoms:"Françoise", nom:"RIBAUT", f:true, gen:8,
- x:1180, y:2970, w:260, h:150, vivant:true,
+ x:1230, y:2970, w:290, h:150, vivant:true,
  neuf:true, apports:["Complétée"],
  naissance:{date:"19/01/1944", lieu:"Dijon"},
  divers:[
@@ -2659,7 +2663,7 @@ const PERSONNES = [
  ]},
 
 {id:"cecile-fontana-1966", prenoms:"Cécile Madeleine Laure", nom:"FONTANA", f:true, gen:9,
- x:330, y:3234, w:250, h:140, vivant:true,
+ x:700, y:3234, w:290, h:140, vivant:true,
  neuf:true, apports:["Datée"],
  naissance:{date:"08/03/1966", lieu:"Mantes", lieuIncertain:true},
  divers:[
@@ -2667,7 +2671,7 @@ const PERSONNES = [
  ]},
 
 {id:"angelique-fontana-1963", prenoms:"Angélique Marie Renée", nom:"FONTANA", f:true, gen:9,
- x:650, y:3234, w:250, h:140, vivant:true,
+ x:330, y:3234, w:290, h:140, vivant:true,
  neuf:true, apports:["Datée"],
  naissance:{date:"07/12/1963", lieu:"Mantes-la-Jolie"},
  divers:[
@@ -2675,7 +2679,7 @@ const PERSONNES = [
  ]},
 
 {id:"isabelle-fontana-1968", prenoms:"Isabelle Marie-Pierre", nom:"FONTANA", f:true, gen:9,
- x:970, y:3234, w:250, h:140, vivant:true,
+ x:1070, y:3234, w:290, h:140, vivant:true,
  neuf:true, apports:["Corrigée"],
  naissance:{date:"29/03/1968", lieu:"Mantes-la-Jolie"},
  divers:[
@@ -2688,7 +2692,7 @@ const PERSONNES = [
    pas leur rang dans ce tableau. */
 
 {id:"claude-grillot", prenoms:"Claude", nom:"GRILLOT", gen:0,
- x:1560, y:20, w:210, h:170, small:true, neuf:true,
+ x:1560, y:20, w:260, h:170, small:true, neuf:true,
  naissance:{date:"avant 1745", approx:true},
  deces:{date:"avant 1825", note:"dit défunt en mars 1825"},
  notes:[
@@ -2699,7 +2703,7 @@ const PERSONNES = [
  dossier:[{type:"x", libelle:"Acte non retrouvé"}]},
 
 {id:"francoise-charton", prenoms:"Françoise", nom:"CHARTON", f:true, gen:0,
- x:1810, y:20, w:210, h:170, small:true, neuf:true,
+ x:1880, y:20, w:260, h:170, small:true, neuf:true,
  naissance:{date:"avant 1745", approx:true},
  deces:{date:"avant 1825", note:"dite défunte en mars 1825"},
  notes:[
@@ -2710,7 +2714,7 @@ const PERSONNES = [
  dossier:[{type:"x", libelle:"Acte non retrouvé"}]},
 
 {id:"pierre-gabriel-grillot-1745", prenoms:"Pierre Gabriel", nom:"GRILLOT", gen:1,
- x:1220, y:300, w:290, h:200, small:true,
+ x:1490, y:300, w:290, h:200, small:true,
  neuf:true, apports:["Nouveau"],
  naissance:{date:"≈ 1745", lieu:"[Champvans-lès-Dole] <i>(Jura)</i>", approx:true,
             lieuIncertain:true, note:"80 ans en 1825"},
@@ -2728,7 +2732,7 @@ const PERSONNES = [
  dossier:[{type:"d", libelle:"Décès"}, {type:"x", libelle:"Naissance non retrouvée"}]},
 
 {id:"marie-josephe-remy", prenoms:"Marie Josèphe", nom:"RÉMY", f:true, gen:1,
- x:1540, y:300, w:240, h:200, small:true, neuf:true,
+ x:1840, y:300, w:260, h:200, small:true, neuf:true,
  naissance:{date:"dates à établir", approx:true},
  deces:{date:"après mars 1825", approx:true},
  notes:[
@@ -2739,7 +2743,7 @@ const PERSONNES = [
  dossier:[{type:"x", libelle:"Acte non retrouvé"}]},
 
 {id:"thomas-bernardot", prenoms:"Thomas", nom:"BERNARDOT", gen:1,
- x:1810, y:300, w:260, h:200, small:true,
+ x:2180, y:300, w:260, h:200, small:true,
  neuf:true, apports:["Nouveau"],
  naissance:{date:"dates à établir", approx:true},
  deces:{date:"après mai 1809", approx:true},
@@ -2753,7 +2757,7 @@ const PERSONNES = [
  dossier:[{type:"x", libelle:"Acte non retrouvé"}]},
 
 {id:"pierrette-rouget", prenoms:"[Pierrette]", nom:"ROUGET", f:true, gen:1,
- x:2100, y:300, w:240, h:200, small:true,
+ x:2500, y:300, w:260, h:200, small:true,
  neuf:true, doute:true,
  naissance:{date:"dates à établir", approx:true},
  divers:[
@@ -2763,7 +2767,7 @@ const PERSONNES = [
  dossier:[{type:"x", libelle:"Acte non retrouvé"}]},
 
 {id:"jean-pierre-ecarnot-1779", prenoms:"Jean Pierre", nom:"ÉCARNOT", gen:2,
- x:1340, y:569, w:230, h:250, small:true,
+ x:1620, y:569, w:260, h:250, small:true,
  neuf:true, apports:["Nouveau"],
  naissance:{date:"≈ 1779", approx:true, note:"environ 32 ans en 1811"},
  metiers:[{quoi:"boucher, Marnay"}],
@@ -2778,7 +2782,7 @@ const PERSONNES = [
  dossier:[{type:"x", libelle:"Acte non retrouvé"}]},
 
 {id:"noel-grillot-1783", prenoms:"Noël", nom:"GRILLOT", gen:2,
- x:1620, y:569, w:230, h:250, small:true,
+ x:1960, y:569, w:290, h:250, small:true,
  neuf:true, apports:["Nouveau"],
  naissance:{date:"29/08/1783", lieu:"Marnay"},
  deces:{date:"1810-1890", approx:true, note:"dit décédé en février 1890"},
@@ -2802,7 +2806,7 @@ const PERSONNES = [
           {type:"x", libelle:"Naissance et décès non retrouvés"}]},
 
 {id:"anne-pierre-bernardot-1789", prenoms:"Anne Pierre", nom:"BERNARDOT", f:true, gen:2,
- x:1990, y:569, w:230, h:250, small:true,
+ x:2410, y:569, w:260, h:250, small:true,
  neuf:true, apports:["Nouveau"],
  naissance:{date:"≈ 11/03/1789", lieu:"Le Magny", approx:true, note:"jour de lecture incertaine"},
  deces:{date:"avant 1890", approx:true, note:"dite décédée en février 1890"},
@@ -5725,8 +5729,15 @@ function renderFrise() {
   function W(){ return STAGE_W; }
   function H(){ return STAGE_H; }
   function fitScale(){ return Math.min(1, (vp.clientWidth||W()) / W()); }
+  /* La scène s'ouvre à sa taille réelle et se fait défiler : depuis que la
+     branche GRILLOT descend sur le flanc droit, l'ajustement automatique la
+     réduisait à 0,6 sur un écran ordinaire — les fiches se tassaient et les
+     traits, dessinés en SVG au pixel entier, ne tombaient plus exactement sur
+     le bord des cartes. Sur un écran étroit, où le 1:1 n'aurait aucun sens,
+     on ajuste encore. */
+  function echelleDepart(){ return vp.clientWidth < 760 ? fitScale() : 1; }
   function render(){
-    var s = user || fitScale();
+    var s = user || echelleDepart();
     hint.classList.toggle('is-on', W()*s > vp.clientWidth + 2);
     stage.style.transform='scale('+s+')';
     wrap.style.height=(H()*s)+'px';
@@ -5734,23 +5745,47 @@ function renderFrise() {
     vp.style.overflowX = over ? 'auto' : 'hidden';
     vp.classList.toggle('is-scrollable', over);
   }
-  document.getElementById('zoomFit').onclick=function(){ user=null; render(); };
+  /* « Ajuster » fait la bascule : tout voir d'un coup, ou revenir au 1:1. */
+  document.getElementById('zoomFit').onclick=function(){
+    var f=fitScale();
+    user = (user!==null && Math.abs(user-f)<0.001) ? 1 : f;
+    render();
+  };
   document.getElementById('zoomIn').onclick=function(){ user=Math.min(2.2,(user||fitScale())*1.25); render(); };
   document.getElementById('zoomOut').onclick=function(){ user=Math.max(.25,(user||fitScale())/1.25); render(); };
   document.getElementById('printBtn').onclick=function(){ window.print(); };
   window.addEventListener('resize', function(){ if(!user) render(); });
 
-  /* --- glisser pour explorer --- */
-  var down=false, sx=0, sl=0;
+  /* --- glisser pour explorer ---
+     On ne capture le pointeur qu'au premier vrai déplacement : capturer dès
+     l'enfoncement détournait le clic vers le cadre de vue, et l'on ne pouvait
+     plus ouvrir une fiche dès que l'arbre débordait en largeur. */
+  var down=false, pan=false, glisse=false, sx=0, sl=0, pid=null;
   vp.addEventListener('pointerdown', function(e){
-    if(vp.scrollWidth<=vp.clientWidth) return;
-    down=true; sx=e.clientX; sl=vp.scrollLeft; vp.classList.add('is-panning');
-    vp.setPointerCapture(e.pointerId);
+    glisse=false;
+    if(e.button!==0 || vp.scrollWidth<=vp.clientWidth) return;
+    down=true; pan=false; sx=e.clientX; sl=vp.scrollLeft; pid=e.pointerId;
   });
-  vp.addEventListener('pointermove', function(e){ if(down){ vp.scrollLeft = sl-(e.clientX-sx); } });
+  vp.addEventListener('pointermove', function(e){
+    if(!down) return;
+    var dx = e.clientX - sx;
+    if(!pan){
+      if(Math.abs(dx) < 5) return;          /* un clic n'est pas un glissement */
+      pan=true; vp.classList.add('is-panning');
+      try { vp.setPointerCapture(pid); } catch(_){}
+    }
+    vp.scrollLeft = sl - dx;
+  });
   ['pointerup','pointercancel'].forEach(function(k){
-    vp.addEventListener(k, function(){ down=false; vp.classList.remove('is-panning'); });
+    vp.addEventListener(k, function(){
+      if(pan){ try { vp.releasePointerCapture(pid); } catch(_){} glisse=true; }
+      down=false; pan=false; vp.classList.remove('is-panning');
+    });
   });
+  /* le clic qui termine un glissement n'ouvre pas la fiche survolée */
+  vp.addEventListener('click', function(e){
+    if(glisse){ glisse=false; e.stopPropagation(); e.preventDefault(); }
+  }, true);
 
   /* --- audit de mise en page : ...html?audit --- */
   function audit(){

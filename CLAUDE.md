@@ -152,8 +152,30 @@ Yvonne, née le 1ᵉʳ octobre 1889 et morte le 11 février 1963, a 73 ans et no
 date est incomplète, l'âge s'annonce avec `≈` ; et un âge calculé ne vient **jamais**
 doubler ni contredire un âge porté par un acte.
 
-**Système de coordonnées.** La scène part de 1 760 px de large et **s'élargit d'elle-même** sur ce que les fiches occupent réellement — 2 380 px depuis que la branche GRILLOT descend sur le flanc droit (`STAGE_W = max(1760, maxRight + 40)` dans `layout()`). Chaque personne porte `x`,
-`y`, `w`, `h` ; le CSS en fait `left/top/width/min-height`. `h` est un **minimum** :
+**Système de coordonnées.** La scène part de 1 760 px de large et **s'élargit
+d'elle-même** sur ce que les fiches occupent réellement — 2 800 px depuis que la branche
+GRILLOT descend sur le flanc droit (`STAGE_W = max(1760, maxRight + 40)` dans `layout()`).
+
+⚠️ **Le piège qui a fait dérailler les fils.** `.wires`, le `<svg>` qui porte tous les
+tracés, avait sa taille écrite en dur dans la feuille de style (`width:1760px`). Or
+`layout()` pose un `viewBox` à la taille réelle de la scène — et **le CSS l'emporte sur
+l'attribut** : le dessin se retrouvait comprimé dans une boîte trop étroite, à 63 % en
+largeur. Les fils partaient d'autant plus à gauche qu'ils étaient à droite, et ceux de
+la branche GRILLOT sortaient du cadre. Tant que la scène faisait 1 760 px les deux
+valeurs coïncidaient et rien ne se voyait. `.wires` est maintenant en
+`width:100%;height:100%` : **ne jamais y remettre de dimension en pixels.**
+
+**La scène s'ouvre à sa taille réelle, et se fait défiler.** L'ajustement automatique à
+la largeur de la fenêtre a été retiré : à 2 800 px de scène pour 1 700 px d'écran, il
+réduisait tout à 0,6 et tassait les fiches. Le bouton **Ajuster** bascule entre le 1:1
+et la vue d'ensemble ; sous 760 px de large, l'ajustement reste le départ. La largeur
+n'est donc plus une contrainte : **une fiche à l'étroit s'élargit**, on ne la comprime pas.
+
+⚠️ **Le glissement ne doit pas voler le clic.** Le cadre de vue ne capture le pointeur
+qu'au premier déplacement de plus de 5 px : capturer dès l'enfoncement détournait le
+`click` vers lui, et plus aucune fiche ne s'ouvrait dès que l'arbre débordait en largeur.
+
+**Chaque personne porte `x`, `y`, `w`, `h`** ; le CSS en fait `left/top/width/min-height`. `h` est un **minimum** :
 une fiche s'agrandit si son contenu déborde, et **la moitié des fiches débordent
 effectivement** — les fils s'attachent au bord réel, pas au bord déclaré. Les positions
 restent écrites à la main : la composition est éditoriale, un placement automatique
