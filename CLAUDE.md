@@ -16,7 +16,7 @@ Fichiers :
 | `arbre-branche-maternelle-v1.html` | **Temporaire.** Copie du document d'avant conversion, référence de comparaison visuelle. À supprimer une fois la conversion validée. |
 | `outils/` | **Non publié, jetable.** Scripts d'accompagnement de la conversion : `extraire.py`, `convertir.py`, `verifier.py`, le moteur `moteur.js` et les données extraites. À supprimer avec `v1.html`. |
 
-Le document réel fait ~5 200 lignes et ~435 Ko. Il n'y a **ni build, ni bundler, ni npm, ni framework**. On ouvre le fichier dans un navigateur, ça marche. Cette contrainte est délibérée : la famille doit pouvoir l'ouvrir dans dix ans, et le dépôt doit rester lisible dans un diff GitHub.
+Le document réel fait ~5 800 lignes et ~505 Ko. Il n'y a **ni build, ni bundler, ni npm, ni framework**. On ouvre le fichier dans un navigateur, ça marche. Cette contrainte est délibérée : la famille doit pouvoir l'ouvrir dans dix ans, et le dépôt doit rester lisible dans un diff GitHub.
 
 Les scripts d'`outils/` ne font pas exception : ce ne sont pas des étapes de construction,
 mais l'échafaudage de la conversion. **Elle est faite : `index.html` s'édite maintenant
@@ -27,11 +27,13 @@ fichier publié.
 
 ## 2. La famille, en une page
 
-Cinq lieux principaux : **Vars**, **Mont-le-Frânois**, **Champlitte**, **Fahy-lès-Autrey**, **Oyrières** (Haute-Saône), puis **Gray**, **Autrey-lès-Gray**, et deux incursions extérieures — **Lyon** (1889-1897), **Selongey** en Côte-d'Or (branche VILLETTE), **Baume-les-Dames** et **Bourges** (branche CARPENTIER).
+Cinq lieux principaux : **Vars**, **Mont-le-Frânois**, **Champlitte**, **Fahy-lès-Autrey**, **Oyrières** (Haute-Saône), puis **Gray**, **Autrey-lès-Gray**. La branche GRILLOT y ajoute **Ancier**, **Marnay** et **Le Magny**, et remonte hors du département jusqu'à **Champvans-lès-Dole** (Jura). Trois incursions extérieures — **Lyon** (1889-1897), **Selongey** en Côte-d'Or (branche VILLETTE), **Baume-les-Dames** et **Bourges** (branche CARPENTIER).
 
 Neuf générations numérotées **−2, −1, 0, I à VII**, d'environ 1710 à aujourd'hui. La ligne directe passe par :
 
 AMIOT (Mont-le-Frânois) → AMIOT × RENEVIER (Vars, 1803) → PAUFARD × AMIOT (Fahy, 1836) → GRILLOT × PAUFARD (1866) → **Joséphine GRILLOT** → **Yvonne** (Lyon, 1889) → VILLETTE × GRILLOT (1906) → RIBAUT × VILLETTE (1930) → FONTANA × RIBAUT (1963) → génération VII.
+
+Côté paternel de cette dernière union, la branche **GRILLOT** remonte de trois générations au-dessus de Thomas (1810-1890) : **Noël** (Marnay 1783), **Pierre Gabriel** (Champvans-lès-Dole, ≈ 1745-1825) et **Claude GRILLOT × Françoise CHARTON**, connus par la seule filiation portée à l'acte de décès de 1825. **Cinq générations de bouchers**, et une alliance de métier : Thomas épouse la fille de Jean Pierre ÉCARNOT, boucher à Marnay.
 
 Trois nœuds compliqués, qui expliquent la plupart des choix de modélisation :
 
@@ -54,7 +56,7 @@ Ces conventions portent du sens. Les modifier silencieusement fausse la lecture 
 | `a-d` | acte de décès en main | violet `--act-d` |
 | `a-x` | acte non retrouvé ou non renseigné | contour pointillé rouge |
 
-**Apports récents.** `<span class="tag-new">…</span>` signale ce qu'a apporté la dernière séance : *Nouveau, Daté, Datée, Confirmée, Complétée, Corrigé, Prouvé, Identifié, Résolu, À trancher, Lieu, Prénom, Acte, Acte trouvé*. Le badge de date en légende (`23-25 août 2026`) et la mention de séance en tête — « quinzième séance » à ce jour — se mettent à jour à chaque séance.
+**Apports récents.** `<span class="tag-new">…</span>` signale ce qu'a apporté la dernière séance : *Nouveau, Daté, Datée, Confirmée, Complétée, Corrigé, Prouvé, Identifié, Résolu, À trancher, Lieu, Prénom, Acte, Acte trouvé*. Le badge de date en légende (`23-29 août 2026`) et la mention de séance en tête — « seizième séance » à ce jour — se mettent à jour à chaque séance.
 
 **Chips de transcription** — `.chip` dans le `<p class="ref">` : nature de l'acte (`c-n`, `c-m`, `c-d`) puis qualificatifs (*Filiation*, *Cliché pâle*, *Homonyme à écarter*, `c-warn` pour les alertes).
 
@@ -62,20 +64,20 @@ Ces conventions portent du sens. Les modifier silencieusement fausse la lecture 
 
 ## 4. Structure du document réel
 
-`index.html` fait ~5 200 lignes, réparties ainsi — les bornes bougent à chaque
+`index.html` fait ~5 800 lignes, réparties ainsi — les bornes bougent à chaque
 séance, se repérer plutôt sur les repères en gras :
 
 | Lignes | Quoi | Y touche-t-on ? |
 |---|---|---|
 | 7-603 | l'apparence (CSS) | rarement |
 | 608-621 | titre, chapeau, onglets | badge de séance, compteurs |
-| 623-691 | la scène : un `<svg>` vide, rien d'autre | jamais |
-| 692-816 | le dossier : les douze encarts, en HTML | **oui**, en HTML |
-| 817-849 | le bas de page de l'onglet Arbre | rarement — voir plus bas |
-| 851-882 | les panneaux Frise et **Recherches**, vides : le moteur les remplit | jamais |
-| 885-1912 | les 71 transcriptions, en HTML | **oui**, en HTML |
-| **1937-3750** | **les données** | **oui — c'est ici que tout se passe** |
-| 3753-fin | le moteur, puis la vue (zoom, glissement, onglets) | jamais |
+| 628-688 | la scène : un `<svg>` vide, rien d'autre | jamais |
+| 689-841 | le dossier : les quatorze encarts, en HTML | **oui**, en HTML |
+| 843-873 | le bas de page de l'onglet Arbre | rarement — voir plus bas |
+| 877-906 | les panneaux Frise et **Recherches**, vides : le moteur les remplit | jamais |
+| 909-2138 | les 84 transcriptions, en HTML | **oui**, en HTML |
+| **2163-4400** | **les données** | **oui — c'est ici que tout se passe** |
+| 4403-fin | le moteur, puis la vue (zoom, glissement, onglets) | jamais |
 
 Quatre onglets : **Arbre · Frise · Recherches · Transcriptions**.
 
@@ -92,9 +94,9 @@ ses parents écrit à part en coordonnées littérales (`M845 1972 V2252 H705 V2
 Ajouter quelqu'un obligeait à recalculer les tracés voisins un par un, et le coût
 grandissait avec l'arbre.
 
-Aujourd'hui, deux couches. **Les données** — `PERSONNES` (30), `UNIONS` (13),
-`FILIATIONS`, `UNIONS_HORS_ARBRE`, `ENCARTS`, `ACTES` (75), `GENERATIONS` (10),
-`DOSSIERS` (7), `RECHERCHES` (95), `SEANCES` (4) — et **le moteur** qui les lit. `renderCards()` fabrique les fiches, `renderEncarts()` les
+Aujourd'hui, deux couches. **Les données** — `PERSONNES` (39), `UNIONS` (17),
+`FILIATIONS` (4), `UNIONS_HORS_ARBRE`, `ENCARTS`, `ACTES` (87), `GENERATIONS` (10),
+`DOSSIERS` (7), `RECHERCHES` (113), `SEANCES` (5) — et **le moteur** qui les lit. `renderCards()` fabrique les fiches, `renderEncarts()` les
 encarts de la scène, puis `layout()` mesure ce qui est réellement posé
 (`offsetLeft/offsetTop/offsetHeight`) et en déduit fils, pastilles, losanges, bandes et
 rails. **On n'écrit plus un seul tracé.** Le coût d'un ajout ne dépend plus de la taille
@@ -150,7 +152,7 @@ Yvonne, née le 1ᵉʳ octobre 1889 et morte le 11 février 1963, a 73 ans et no
 date est incomplète, l'âge s'annonce avec `≈` ; et un âge calculé ne vient **jamais**
 doubler ni contredire un âge porté par un acte.
 
-**Système de coordonnées.** La scène fait 1 760 px de large. Chaque personne porte `x`,
+**Système de coordonnées.** La scène part de 1 760 px de large et **s'élargit d'elle-même** sur ce que les fiches occupent réellement — 2 380 px depuis que la branche GRILLOT descend sur le flanc droit (`STAGE_W = max(1760, maxRight + 40)` dans `layout()`). Chaque personne porte `x`,
 `y`, `w`, `h` ; le CSS en fait `left/top/width/min-height`. `h` est un **minimum** :
 une fiche s'agrandit si son contenu déborde, et **la moitié des fiches débordent
 effectivement** — les fils s'attachent au bord réel, pas au bord déclaré. Les positions
@@ -159,8 +161,16 @@ ferait un arbre correct et sans point de vue.
 
 Trois réglages restent explicites dans les données, parce qu'ils relèvent de la
 composition et non du calcul : `pw` (largeur d'une pastille), `bus` (hauteur du coude
-d'une descente, reprise du tracé manuel — la retirer laisse le moteur la placer à
-mi-chemin) et `encart` (le fil fin vers l'encart de la fratrie).
+d'une descente — la retirer laisse le moteur la placer à mi-chemin) et `encart` (le fil
+fin vers l'encart de la fratrie).
+
+⚠️ **`bus` est un piège quand une fiche grandit.** Le coude est une coordonnée absolue,
+alors que la hauteur d'une fiche suit son contenu : ajouter deux notes à une fiche peut
+la faire descendre sous son propre coude, et le fil se met à traverser la fiche. `?audit`
+ne le voit pas — il ne compare que des boîtes. Après toute séance qui allonge des fiches,
+vérifier que chaque `bus` reste **sous le bas réel des deux parents** et **au-dessus du
+haut des enfants**. Même remarque pour la pastille de mariage : elle fait `pw` de large et
+doit tenir dans l'écart entre les deux fiches.
 
 **Surbrillance de lignée.** Un clic sur une fiche allume sa descendance en bronze, son
 ascendance en vert-de-gris, les conjoints entrés par alliance en anneau pâle, et estompe
@@ -271,7 +281,7 @@ virgule ou une accolade : `Ctrl+Maj+J` donne la ligne.
 La conversion vers un arbre interactif, décrite dans `CONVERSION.md`. `proto.html` en est la maquette validée.
 
 **Faites** — les six étapes de `CONVERSION.md`. Le document se régénère à partir de ses
-données sans perte de texte : `outils/verifier.py` passe **108 contrôles**, dont le
+données sans perte de texte : `outils/verifier.py` passe **113 contrôles**, dont le
 décompte des étiquettes d'apport rubrique par rubrique, l'absence de chevauchement,
 l'absence de dépendance externe et de stockage navigateur, et — depuis la refonte du § 9 —
 la cohérence de `RECHERCHES` : nomenclature des statuts et des priorités, dossiers
