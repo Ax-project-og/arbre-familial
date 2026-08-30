@@ -16,7 +16,7 @@ Fichiers :
 | `arbre-branche-maternelle-v1.html` | **Temporaire.** Copie du document d'avant conversion, référence de comparaison visuelle. À supprimer une fois la conversion validée. |
 | `outils/` | **Non publié, jetable.** Scripts d'accompagnement de la conversion : `extraire.py`, `convertir.py`, `verifier.py`, le moteur `moteur.js` et les données extraites. À supprimer avec `v1.html`. |
 
-Le document réel fait ~5 800 lignes et ~505 Ko. Il n'y a **ni build, ni bundler, ni npm, ni framework**. On ouvre le fichier dans un navigateur, ça marche. Cette contrainte est délibérée : la famille doit pouvoir l'ouvrir dans dix ans, et le dépôt doit rester lisible dans un diff GitHub.
+Le document réel fait ~6 100 lignes et ~535 Ko. Il n'y a **ni build, ni bundler, ni npm, ni framework**. On ouvre le fichier dans un navigateur, ça marche. Cette contrainte est délibérée : la famille doit pouvoir l'ouvrir dans dix ans, et le dépôt doit rester lisible dans un diff GitHub.
 
 Les scripts d'`outils/` ne font pas exception : ce ne sont pas des étapes de construction,
 mais l'échafaudage de la conversion. **Elle est faite : `index.html` s'édite maintenant
@@ -56,7 +56,7 @@ Ces conventions portent du sens. Les modifier silencieusement fausse la lecture 
 | `a-d` | acte de décès en main | violet `--act-d` |
 | `a-x` | acte non retrouvé ou non renseigné | contour pointillé rouge |
 
-**Apports récents.** `<span class="tag-new">…</span>` signale ce qu'a apporté la dernière séance : *Nouveau, Daté, Datée, Confirmée, Complétée, Corrigé, Prouvé, Identifié, Résolu, À trancher, Lieu, Prénom, Acte, Acte trouvé*. Le badge de date en légende (`23-29 août 2026`) et la mention de séance en tête — « seizième séance » à ce jour — se mettent à jour à chaque séance.
+**Apports récents.** `<span class="tag-new">…</span>` signale ce qu'a apporté la dernière séance : *Nouveau, Daté, Datée, Confirmée, Complétée, Corrigé, Prouvé, Identifié, Résolu, À trancher, Lieu, Prénom, Acte, Acte trouvé*. Le badge de date en légende (`23-30 août 2026`) et la mention de séance en tête — « dix-septième séance » à ce jour — se mettent à jour à chaque séance.
 
 **Chips de transcription** — `.chip` dans le `<p class="ref">` : nature de l'acte (`c-n`, `c-m`, `c-d`) puis qualificatifs (*Filiation*, *Cliché pâle*, *Homonyme à écarter*, `c-warn` pour les alertes).
 
@@ -64,20 +64,20 @@ Ces conventions portent du sens. Les modifier silencieusement fausse la lecture 
 
 ## 4. Structure du document réel
 
-`index.html` fait ~5 800 lignes, réparties ainsi — les bornes bougent à chaque
+`index.html` fait ~6 100 lignes, réparties ainsi — les bornes bougent à chaque
 séance, se repérer plutôt sur les repères en gras :
 
 | Lignes | Quoi | Y touche-t-on ? |
 |---|---|---|
-| 7-603 | l'apparence (CSS) | rarement |
-| 608-621 | titre, chapeau, onglets | badge de séance, compteurs |
-| 628-688 | la scène : un `<svg>` vide, rien d'autre | jamais |
-| 689-841 | le dossier : les quatorze encarts, en HTML | **oui**, en HTML |
-| 843-873 | le bas de page de l'onglet Arbre | rarement — voir plus bas |
-| 877-906 | les panneaux Frise et **Recherches**, vides : le moteur les remplit | jamais |
-| 909-2138 | les 84 transcriptions, en HTML | **oui**, en HTML |
-| **2163-4400** | **les données** | **oui — c'est ici que tout se passe** |
-| 4403-fin | le moteur, puis la vue (zoom, glissement, onglets) | jamais |
+| 7-607 | l'apparence (CSS) | rarement |
+| 612-625 | titre, chapeau, onglets | badge de séance, compteurs |
+| 632-692 | la scène : un `<svg>` vide, rien d'autre | jamais |
+| 694-848 | le dossier : les quatorze encarts, en HTML | **oui**, en HTML |
+| 850-880 | le bas de page de l'onglet Arbre | rarement — voir plus bas |
+| 884-913 | les panneaux Frise et **Recherches**, vides : le moteur les remplit | jamais |
+| 916-2175 | les 86 transcriptions, en HTML | **oui**, en HTML |
+| **2200-4654** | **les données** | **oui — c'est ici que tout se passe** |
+| 4657-fin | le moteur, puis la vue (zoom, glissement, onglets) | jamais |
 
 Quatre onglets : **Arbre · Frise · Recherches · Transcriptions**.
 
@@ -94,9 +94,9 @@ ses parents écrit à part en coordonnées littérales (`M845 1972 V2252 H705 V2
 Ajouter quelqu'un obligeait à recalculer les tracés voisins un par un, et le coût
 grandissait avec l'arbre.
 
-Aujourd'hui, deux couches. **Les données** — `PERSONNES` (39), `UNIONS` (17),
-`FILIATIONS` (4), `UNIONS_HORS_ARBRE`, `ENCARTS`, `ACTES` (87), `GENERATIONS` (10),
-`DOSSIERS` (7), `RECHERCHES` (113), `SEANCES` (5) — et **le moteur** qui les lit. `renderCards()` fabrique les fiches, `renderEncarts()` les
+Aujourd'hui, deux couches. **Les données** — `PERSONNES` (40), `UNIONS` (18),
+`FILIATIONS` (3), `UNIONS_HORS_ARBRE`, `ENCARTS`, `ACTES` (89), `GENERATIONS` (10),
+`DOSSIERS` (7), `RECHERCHES` (125), `SEANCES` (6) — et **le moteur** qui les lit. `renderCards()` fabrique les fiches, `renderEncarts()` les
 encarts de la scène, puis `layout()` mesure ce qui est réellement posé
 (`offsetLeft/offsetTop/offsetHeight`) et en déduit fils, pastilles, losanges, bandes et
 rails. **On n'écrit plus un seul tracé.** Le coût d'un ajout ne dépend plus de la taille
@@ -107,6 +107,15 @@ Les **transcriptions n'existent qu'en HTML**, dans leur onglet : il n'y a pas de
 passe par le champ `tr` de chaque acte, et `verifier.py` vérifie qu'aucun `tr` ne pointe
 dans le vide et que les deux comptes s'égalent. **Un acte transcrit = une entrée `ACTES`
 portant son `tr` = un `<article class="tr" id="…">`**, ni plus ni moins.
+
+**Une fratrie documentée appartient à la fiche.** Quand le dossier sait qui étaient les
+frères et sœurs d'une personne, cela se lit dans **sa** modale, en `divers` sous
+`dt:"Fratrie"` — pas seulement dans un encart transversal, où personne ne va le
+chercher. On ne crée pas de fiche pour autant : l'arbre suit la ligne directe. Deux
+règles de rédaction : **dire le degré de certitude** (un frère prouvé par acte et un
+frère supposé par une table ne se présentent pas de la même façon), et **écrire
+« fratrie non établie » quand elle ne l'est pas** — une modale muette laisse croire à un
+enfant unique, ce qui n'est pas la même information qu'un travail à faire.
 
 **Une personne** porte `naissance`, `deces`, `metiers[]`, `lieux[]` — et `divers[]` pour
 les rubriques qui n'entrent dans aucun de ces moules (*Variantes*, *Rang*, *Parents*,
@@ -153,7 +162,7 @@ date est incomplète, l'âge s'annonce avec `≈` ; et un âge calculé ne vient
 doubler ni contredire un âge porté par un acte.
 
 **Système de coordonnées.** La scène part de 1 760 px de large et **s'élargit
-d'elle-même** sur ce que les fiches occupent réellement — 2 800 px depuis que la branche
+d'elle-même** sur ce que les fiches occupent réellement — 3 030 px depuis que la branche
 GRILLOT descend sur le flanc droit (`STAGE_W = max(1760, maxRight + 40)` dans `layout()`).
 
 ⚠️ **Le piège qui a fait dérailler les fils.** `.wires`, le `<svg>` qui porte tous les
