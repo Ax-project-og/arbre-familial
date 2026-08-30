@@ -597,10 +597,90 @@ select{max-width:250px}
 .fr-note{font-family:var(--serif);font-size:12.4px;font-style:italic;color:var(--ink-3);
   margin:14px 0 0}
 
+/* ---------- Carte ---------- */
+.ca-intro{font-family:var(--serif);font-size:14.5px;line-height:1.55;color:var(--ink-2);
+  margin:0 0 20px;max-width:78ch;text-align:justify}
+.ca-lede{font-family:var(--serif);font-size:14px;line-height:1.55;color:var(--ink-2);
+  margin:0 0 20px;max-width:72ch}
+.ca-filtres{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 16px}
+.ca-filtres .ca-lbl{font-size:9px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--ink-3);font-weight:600;margin-right:6px}
+.ca-filtres button{font-family:var(--sans);font-size:10px;letter-spacing:.12em;
+  text-transform:uppercase;background:transparent;border:1px solid var(--rule);border-radius:2px;
+  color:var(--ink-3);padding:5px 10px;cursor:pointer}
+.ca-filtres button:hover{color:var(--ink-2);border-color:var(--ink-3)}
+.ca-filtres button.on{color:var(--paper-lite);background:var(--ink);border-color:var(--ink)}
+.ca-plan{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:34px;align-items:start}
+.ca-carte{min-width:0;overflow-x:auto}
+.ca-svg{max-width:100%;height:auto;display:block}
+.ca-riv{fill:none;stroke:var(--act-m);stroke-width:2.4;stroke-opacity:.34;
+  stroke-linejoin:round;stroke-linecap:round}
+.ca-riv-nm{font-family:var(--sans);font-size:11px;font-style:italic;letter-spacing:.06em;
+  fill:var(--act-m);fill-opacity:.7}
+.ca-echelle path{stroke:var(--ink-3);stroke-width:1.4}
+.ca-echelle text{font-family:var(--sans);font-size:9.5px;letter-spacing:.16em;
+  text-transform:uppercase;fill:var(--ink-3);text-anchor:middle}
+.ca-pt{cursor:pointer}
+.ca-halo{fill:transparent}
+.ca-dot{fill:var(--ink-3);stroke:var(--paper);stroke-width:1.5}
+.ca-pt.is-cle .ca-dot{fill:var(--ink)}
+.ca-nm{font-family:var(--sans);font-size:11.5px;letter-spacing:.02em;fill:var(--ink-2)}
+.ca-pt.is-cle .ca-nm{font-size:12.5px;fill:var(--ink);font-weight:600}
+.ca-pt:hover .ca-dot,.ca-pt:focus-visible .ca-dot{fill:var(--down)}
+.ca-pt:hover .ca-nm,.ca-pt:focus-visible .ca-nm{fill:var(--ink)}
+.ca-pt:focus-visible{outline:none}
+.ca-pt:focus-visible .ca-halo{fill:none;stroke:var(--ink);stroke-width:1.5}
+.ca-pt.is-tenu .ca-dot{fill:var(--down)}
+.ca-pt.is-tenu .ca-nm{fill:var(--ink);font-weight:600}
+.ca-pt.is-pale{opacity:.28}
+.ca-pt.is-ouvert .ca-halo{fill:var(--down-soft);fill-opacity:.55}
+.ca-pt.is-ouvert .ca-dot{fill:var(--down)}
+.ca-pt.is-ouvert .ca-nm{fill:var(--ink);font-weight:600}
+.ca-aparte{position:sticky;top:14px}
+.ca-fiche{background:var(--paper-lite);border:1px solid var(--rule);border-radius:3px;
+  padding:20px 22px;position:relative}
+.ca-fiche h4{font-family:var(--serif);font-size:17px;font-weight:600;margin:0 0 4px;
+  letter-spacing:-.01em}
+.ca-fiche h4 + h4{margin-top:22px}
+.ca-dept{font-family:var(--sans);font-size:9.5px;letter-spacing:.16em;color:var(--ink-3);
+  vertical-align:2px}
+.ca-dist{font-family:var(--sans);font-size:11px;color:var(--ink-3);margin:0 0 10px}
+.ca-res{font-family:var(--serif);font-size:12.4px;font-style:italic;color:var(--doubt);
+  border-left:2px solid var(--doubt-soft);padding-left:10px;margin:0 0 10px}
+.ca-quoi-lieu{font-family:var(--serif);font-size:13.6px;line-height:1.5;color:var(--ink-2);margin:0 0 12px}
+.ca-vide{font-family:var(--serif);font-size:12.8px;font-style:italic;color:var(--ink-3);margin:0}
+.ca-evts{list-style:none;margin:0;padding:14px 0 0;border-top:1px solid var(--rule)}
+.ca-evts li{display:flex;gap:12px;padding:7px 0;font-family:var(--serif);font-size:13px;
+  line-height:1.45;color:var(--ink-2)}
+.ca-evts li + li{border-top:1px dotted var(--rule)}
+.ca-an{flex:none;width:58px;font-family:var(--sans);font-size:10.5px;letter-spacing:.06em;
+  color:var(--ink-3);padding-top:2px}
+.ca-lien{font-family:var(--sans);font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  background:transparent;border:0;color:var(--act-m);cursor:pointer;padding:0 0 0 2px;
+  white-space:nowrap}
+.ca-lien:hover{text-decoration:underline}
+.ca-fermer{position:absolute;top:14px;right:14px;font-family:var(--sans);font-size:9.5px;
+  letter-spacing:.14em;text-transform:uppercase;background:transparent;border:0;
+  color:var(--ink-3);cursor:pointer}
+.ca-fermer:hover{color:var(--ink)}
+.ca-km-liste{list-style:none;margin:0;padding:0}
+.ca-km-liste li{display:flex;justify-content:space-between;gap:14px;padding:5px 0;
+  font-family:var(--serif);font-size:13px;color:var(--ink-2)}
+.ca-km-liste li + li{border-top:1px dotted var(--rule)}
+.ca-km{font-family:var(--sans);font-size:11.5px;color:var(--ink);flex:none}
+.ca-note{font-family:var(--serif);font-size:12.2px;font-style:italic;color:var(--ink-3);
+  margin:14px 0 0;padding-top:12px;border-top:1px solid var(--rule)}
+.ca-loin{list-style:none;margin:0;padding:0;display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px}
+.ca-loin li{background:var(--paper-lite);border:1px solid var(--rule);border-radius:3px;padding:16px 18px}
+.ca-loin h5{font-family:var(--serif);font-size:15px;font-weight:600;margin:0 0 6px}
+.ca-loin p{font-family:var(--serif);font-size:13px;line-height:1.5;color:var(--ink-2);margin:0}
+@media (max-width:1100px){ .ca-plan{grid-template-columns:1fr} .ca-aparte{position:static} }
+
 /* --- Impression : les commandes ne s'impriment pas, et l'échelle suit la
        hauteur réelle de la scène au lieu d'être écrite en dur --- */
 @media print{
-  .field,.viewnote,#panel-frise{display:none!important}
+  .field,.viewnote,#panel-frise,#panel-carte{display:none!important}
   #stage{transform:scale(var(--print-scale,0.422))!important}
   #wrap{height:var(--print-h,1450px)!important}
 }
@@ -610,13 +690,14 @@ select{max-width:250px}
 <div class="sheet">
 
   <header class="masthead">
-    <div class="eyebrow"><span>Document de travail</span><span>Recherches en cours</span><span>Mise à jour : 30 août 2026, dix-septième séance</span></div>
+    <div class="eyebrow"><span>Document de travail</span><span>Recherches en cours</span><span>Mise à jour : 30 août 2026, dix-huitième séance</span></div>
     <h1>Arbre généalogique <em>— branche maternelle</em></h1>
-    <p class="deck">Synthèse provisoire, de 1743 à aujourd'hui, de la génération <b>−2</b> à la génération <b>VII</b> : <b>quatre-vingt-six actes en main, tous transcrits</b>. La ligne directe descend de <b>Mont-le-Frânois</b> et de <b>Vars</b> — AMIOT × RENEVIER, 1803 — vers <b>Fahy-lès-Autrey</b>, où elle passe tout le XIX<sup>e</sup> siècle : PAUFARD × AMIOT en 1836, GRILLOT × PAUFARD en 1866, puis VILLETTE × GRILLOT en 1906, RIBAUT × VILLETTE en 1930 et FONTANA × RIBAUT en 1963. Deux branches y entrent de loin : les <b>CARPENTIER</b> de Baume-les-Dames et les <b>VILLETTE</b>, qui remontent à un cordonnier <b>né à Paris en 1840</b>.<br><br>
+    <p class="deck">Synthèse provisoire, de 1743 à aujourd'hui, de la génération <b>−2</b> à la génération <b>VII</b> : <b>quatre-vingt-dix actes en main, tous transcrits</b>. La ligne directe descend de <b>Mont-le-Frânois</b> et de <b>Vars</b> — AMIOT × RENEVIER, 1803 — vers <b>Fahy-lès-Autrey</b>, où elle passe tout le XIX<sup>e</sup> siècle : PAUFARD × AMIOT en 1836, GRILLOT × PAUFARD en 1866, puis VILLETTE × GRILLOT en 1906, RIBAUT × VILLETTE en 1930 et FONTANA × RIBAUT en 1963. Deux branches y entrent de loin : les <b>CARPENTIER</b> de Baume-les-Dames et les <b>VILLETTE</b>, qui remontent à un cordonnier <b>né à Paris en 1840</b>.<br><br>
       <b>Trois questions ont commandé le dossier ; deux sont refermées.</b> Celle du <b>père d'Yvonne</b> reste ouverte : née fille naturelle à Lyon le 1<sup>er</sup> octobre 1889, elle est reconnue en 1892 par <b>Victor Jean-Baptiste CARPENTIER</b>, voit cette reconnaissance <b>annulée par le tribunal de Beaune en 1897</b>, puis se fait <b>adopter par sa propre grand-mère Théolinde</b> — trois filiations successives et juridiquement distinctes. Le mariage de 1892 en donne l'explication la plus économique : Carpentier était veuf de Julie-Lucie GÉNIN, morte le 25 juin 1889, quand Yvonne a été conçue de son vivant ; mais rien n'établit sa paternité, une tradition familiale l'attribue à un palefrenier du village, et <b>seul le jugement de Beaune dira qui a agi et pourquoi</b>. Celle de la <b>fratrie de Joséphine</b> est close : elle était <b>fille unique</b> — MONJEAN, dit « beau-frère de l'épouse » en 1892, avait épousé une CARPENTIER de Trouvans, il était beau-frère de l'<i>époux</i>. Celle du <b>pharmacien</b> de la tradition orale aussi : c'était Carpentier, recensé sous le même toit à Serrigny.<br><br>
       <b>La quinzième séance refait le compte de la génération II.</b> Les cinq recensements conservés de Fahy et les tables décennales de 1813 à 1872 donnent à Claude PAUFARD et à Françoise AMIOT <b>treize enfants et non douze</b> ; onze meurent avant treize mois, dont deux qu'on croyait vivants et un treizième entièrement inconnu, mort en 1854. <b>Une seule fille atteint sûrement l'âge adulte</b>, Théolinde ; sa sœur aînée Clotilde Hortense, née en 1839, n'est dans aucune des cinq listes et dans aucune table de décès. Les mêmes sources ouvrent la maison du grand-père — <b>quatre fils tailleurs de pierre sous un même toit</b>, une sœur enfin nommée, une installation à Fahy avancée de douze ans — et découvrent Claude PAUFARD <b>cabaretier</b> avant d'être propriétaire, puis entrepreneur de travaux publics : la seule ascension sociale que ce dossier puisse suivre année par année.<br><br>
-      <b>La seizième séance fait remonter la branche GRILLOT de trois générations, et la sort du département.</b> L'acte de décès de Thomas, en 1890, nomme enfin ses parents et le dit <b>né à Ancier</b> et non à Gray — ce qui explique un siècle d'invisibilité dans les tables de la ville ; celui de son grand-père, en 1825, le dit né à <b>Champvans-lès-Dole, dans le Jura</b>. <b>Neuf personnes entrent dans l'arbre</b>, le métier de boucher se suit sur <b>cinq générations</b>, et le prénom Thomas s'explique : il vient d'un cultivateur du Magny présent au mariage de sa fille en 1809. À Gray, les tables ont livré <b>quatre maisons GRILLOT distinctes</b> dont une seule est la nôtre, et deux homonymes tombent. À Fahy, l'acte de décès de Claude PAUFARD le dit <b>cafetier jusqu'au bout</b> et ses parents « défunts » ; le recensement de 1876 montre la grand-mère AMIOT devenue pensionnaire là où elle était chef de ménage dix ans plus tôt.<br><br>
-      <b>Ce qui reste ouvert</b>, par ordre d'urgence : le <b>jugement de Beaune du 14 mai 1897</b>, l'<b>arrêt d'adoption</b> d'Yvonne et son <b>dossier de tutelle</b> de 1905-1906 ; les <b>décès de Jean-Baptiste PAUFARD et de Denise REDOUTET</b> entre 1846 et 1865, seuls actes qui nommeraient la génération d'avant ; le <b>mariage de Victor CARPENTIER avec Julie-Lucie GÉNIN</b>, que l'on cherche non plus par une ville mais par la carrière de son père, professeur au lycée de Nancy ; le sort de <b>Clotilde Hortense</b> ; et, du côté GRILLOT, les <b>registres de recrutement de la classe 1803</b>, seul moyen de savoir si Noël a servi sous l'Empire, et les <b>décès de Jacques et de Joseph GRILLOT</b>, qui diraient si les quatre maisons de Gray n'en font qu'une. <b>Le mariage de Marnay</b>, en 1833, ferme cette génération : il nomme la mère de Jeanne ÉCARNOT et date les décès de <b>Noël GRILLOT</b>, de <b>Jean Pierre ÉCARNOT</b> et de <b>Marguerite GARDOT</b>. Les deux mariés étaient orphelins ; sur six ascendants, un seul vivait — <b>Anne Pierre BERNARDOT, bouchère à Gray</b>, qui fait le voyage et signe de sa main. L'onglet <b>Recherches</b> en tient le compte, avec les pistes écartées et les recherches négatives, qui ont autant de valeur que les trouvailles.</p>
+      <b>La seizième séance fait remonter la branche GRILLOT de trois générations, et la sort du département.</b> L'acte de décès de Thomas, en 1890, nomme enfin ses parents et le dit <b>né à Ancier</b> et non à Gray — ce qui explique un siècle d'invisibilité dans les tables de la ville ; celui de son grand-père, en 1825, le dit né à <b>Champvans-lès-Dole, dans le Jura</b>. <b>Neuf personnes entrent dans l'arbre</b>, le métier de boucher se suit sur <b>cinq générations</b>, et le prénom Thomas s'explique : il vient d'un cultivateur du Magny présent au mariage de sa fille en 1809. À Gray, les tables ont livré <b>huit maisons GRILLOT distinctes</b> dont une seule est la nôtre, et deux homonymes tombent. À Fahy, l'acte de décès de Claude PAUFARD le dit <b>cafetier jusqu'au bout</b> et ses parents « défunts » ; le recensement de 1876 montre la grand-mère AMIOT devenue pensionnaire là où elle était chef de ménage dix ans plus tôt.<br><br>
+      <b>La dix-huitième séance ouvre la génération −1 des PAUFARD.</b> Le <b>mariage d'Autrey</b>, en 1811, nomme <b>Jean PAUFARD et Françoise BRUYÈRE</b>, propriétaires à Oyrières, et <b>François REDOUTET, maître tailleur de pierre à Fahy</b>, et sa femme <b>Denise [DEUREY]</b>. Il donne à Jean-Baptiste une date et un lieu de naissance — <b>Gray, le 17 août 1788</b> — et il explique enfin ce que cinq recensements montraient sans le dire : <b>l'atelier de tailleurs de pierre de Fahy est celui des REDOUTET</b>, dans lequel un gendre est entré. À Gray, cinq naissances dépouillées ferment la fratrie de Napoléon par les deux bouts — <b>Christine, l'aînée, naît dix mois après le mariage de Marnay</b> — et mettent la table décennale en défaut sur <b>trois lignes d'une seule décennie</b>, dont un millésime faux de deux ans. Le rattachement de <b>Nicolas GRILLOT</b> à l'Alfred Nicolas de 1842, tenu pour acquis, <b>redescend de prouvé à probable</b> : il se déclare trois ans plus vieux en 1874.<br><br>
+      <b>Ce qui reste ouvert</b>, par ordre d'urgence : le <b>jugement de Beaune du 14 mai 1897</b>, l'<b>arrêt d'adoption</b> d'Yvonne et son <b>dossier de tutelle</b> de 1905-1906 ; le <b>décès de Nicolas Louis GRILLOT</b>, charpentier à Gray en 1865, qui dira si la huitième maison graylaise est en réalité le frère de Thomas ; le <b>mariage de Victor CARPENTIER avec Julie-Lucie GÉNIN</b>, que l'on cherche non plus par une ville mais par la carrière de son père, professeur au lycée de Nancy ; le sort de <b>Clotilde Hortense</b> ; les <b>décès de Jean-Baptiste PAUFARD et de Denise REDOUTET</b> entre 1846 et 1865, qui ne sont plus la voie vers la génération d'avant — le mariage l'a ouverte — mais datent la fin du couple ; et, du côté GRILLOT, les <b>registres de recrutement de la classe 1803</b>, seul moyen de savoir si Noël a servi sous l'Empire, et les <b>décès de Jacques et de Joseph GRILLOT</b>, qui diraient si les quatre maisons de Gray n'en font qu'une. <b>Le mariage de Marnay</b>, en 1833, ferme cette génération : il nomme la mère de Jeanne ÉCARNOT et date les décès de <b>Noël GRILLOT</b>, de <b>Jean Pierre ÉCARNOT</b> et de <b>Marguerite GARDOT</b>. Les deux mariés étaient orphelins ; sur six ascendants, un seul vivait — <b>Anne Pierre BERNARDOT, bouchère à Gray</b>, qui fait le voyage et signe de sa main. L'onglet <b>Recherches</b> en tient le compte, avec les pistes écartées et les recherches négatives, qui ont autant de valeur que les trouvailles.</p>
   </header>
 
   <nav class="tabs" role="tablist" aria-label="Sections du document">
@@ -625,7 +706,9 @@ select{max-width:250px}
             aria-controls="panel-frise" data-panel="panel-frise">Frise <span class="count">essai</span></button>
     <button type="button" class="tab" id="tab-recherches" role="tab" aria-selected="false"
             aria-controls="panel-recherches" data-panel="panel-recherches">Recherches <span class="count" id="cptRech"></span></button>
-    <button type="button" class="tab" id="tab-transcriptions" role="tab" aria-selected="false" aria-controls="panel-transcriptions" data-panel="panel-transcriptions">Transcriptions <span class="count">86</span></button>
+    <button type="button" class="tab" id="tab-transcriptions" role="tab" aria-selected="false" aria-controls="panel-transcriptions" data-panel="panel-transcriptions">Transcriptions <span class="count">90</span></button>
+    <button type="button" class="tab" id="tab-carte" role="tab" aria-selected="false"
+            aria-controls="panel-carte" data-panel="panel-carte">Carte <span class="count" id="cptLieux"></span></button>
   </nav>
 
   <!-- ================= ONGLET ARBRE ================= -->
@@ -725,7 +808,7 @@ select{max-width:250px}
 <aside class="aside aside--firm">
         <h4>Collatéraux relevés dans les actes</h4>
         <ul class="roster roster--tight">
-          <li><span class="role">Frères de Napoléon</span><span class="who"><b>Joseph GRILLOT</b>, né le <b>2 décembre 1835 à Gray</b> <span class="q">?</span> <i>(la table décennale de Gray porte un acte au 16 décembre : quatorze jours d'écart, trop pour une déclaration — ou la date vient du dossier Léonore et l'acte est tardif, ou les deux ne désignent pas le même enfant)</i> — engagé volontaire au 1<sup>er</sup> chasseurs à 19 ans, campagne d'Afrique 1859-1861, capitaine à la Garde mobile en 1870, <b>blessé et fait prisonnier à Grosmagny le 2 novembre 1870</b>, <b>chevalier de la Légion d'honneur</b> le 1<sup>er</sup> février 1872, célibataire en 1873 · <b>Nicolas Eugène GRILLOT</b>, ≈ 1839, marchand boucher puis négociant à Gray, marié à <b>Thérèse POURCELOT</b> — dit <b>« oncle paternel »</b> de Joséphine en 1892, la parenté est prouvée · <b>François GRILLOT</b>, né le 14 février 1837, sans doute mort en bas âge<span class="tag-new">Prouvé</span></span></li>
+          <li><span class="role">Frères de Napoléon</span><span class="who"><b>Joseph GRILLOT</b>, né le <b>2 décembre 1835 à Gray</b>, <i>acte n° 175 du registre de la ville</i> — engagé volontaire au 1<sup>er</sup> chasseurs à 19 ans, campagne d'Afrique 1859-1861, capitaine à la Garde mobile en 1870, <b>blessé et fait prisonnier à Grosmagny le 2 novembre 1870</b>, <b>chevalier de la Légion d'honneur</b> le 1<sup>er</sup> février 1872, célibataire en 1873 · <b>Nicolas GRILLOT</b> — probablement l'<b>Alfred Nicolas</b> né à Gray le <b>16 février 1842</b>, fils prouvé de Thomas et de Jeanne : c'est le seul Nicolas des tables, et aucune naissance GRILLOT n'est enregistrée à Gray de 1843 à 1852. <b>Mais il se déclare trente-cinq ans en septembre 1874</b>, ce qui en ferait un homme de 1839, et le dossier le connaît sous le prénom d'Eugène et non d'Alfred. <i>Marchand de bétail puis négociant à Gray, marié à <b>Thérèse POURCELOT</b>, dit « oncle paternel » de Joséphine en 1892 — la parenté, elle, est prouvée ; c'est la date de naissance qui ne l'est pas.</i><span class="tag-new">À trancher</span> · <b>François GRILLOT</b>, né le 14 février 1837, sans doute mort en bas âge<span class="tag-new">Prouvé</span></span></li>
           <li><span class="role">Frère cadet</span><span class="who"><b>Joseph Émile GRILLOT</b>, né le <b>6 avril 1854 à Gray, fils légitime de Thomas et Jeanne</b> — filiation prouvée sur acte ; marchand boucher rue du Marché. Quatre fils de 1877 à 1882, essaimés vers Nancy et Paris<span class="tag-new">Prouvé</span></span></li>
           <li><span class="role">Cousin germain</span><span class="who"><b>Pierre Émile GRILLOT</b>, né le <b>16 novembre 1872 à Gray</b>, fils de Nicolas Eugène — c'est l'« Émile GRILLOT, 33 ans, greffier de paix » tuteur ad hoc d'Yvonne en 1906. Marié à Pressigny (Haute-Marne) le 27 octobre 1902<span class="tag-new">Identifié</span></span></li>
           <li><span class="role">Cousin de Joséphine</span><span class="who">Auguste <b>PAUFARD</b>, 41 ans en 1892 et 48 en 1899, cultivateur puis tailleur de pierres à Autrey, <i>cousin du côté maternel</i> — probablement fils de François</span></li>
@@ -737,13 +820,16 @@ select{max-width:250px}
           <li><span class="role">Écarté</span><span class="who">Alexis <b>PAUFARD</b>, 53 ans en 1906, négociant à Gray, <b>subrogé tuteur d'Yvonne</b> : ce n'est <b>pas</b> le Claude-Alexis né en 1842, <i>mort à seize jours le 26 juillet de la même année</i>. Né vers 1853, il est très probablement <b>fils de l'un des oncles</b> — François, Jean-Baptiste ou Bazile<span class="tag-new">Nouveau</span></span></li>
           <li><span class="role">Frère de Jeanne</span><span class="who"><b>Hubert ÉCARNOT</b>, trente-deux ans en avril 1833, <b>marchand boucher à Marnay</b>, premier témoin au mariage de sa sœur et signataire. Né vers 1801 — <i>le seul collatéral ÉCARNOT connu</i><span class="tag-new">Nouveau</span></span></li>
           <li><span class="role">Cousins de Jeanne</span><span class="who"><b>Étienne [DROUHARD]</b>, trente ans, marchand tanneur à Marnay, <i>cousin germain de l'épouse</i> · <b>Jean François [GLAURON]</b>, soixante ans, aubergiste, <i>cousin issu de germain par alliance</i> — tous deux témoins en 1833<span class="tag-new">Nouveau</span></span></li>
+          <li><span class="role">Oncle de Claude Alexis</span><span class="who"><b>Jean Claude PAUFARD</b>, <b>trente-huit ans</b> en février 1811 <i>(l'âge est corrigé de trente-sept à trente-huit sur l'acte même)</i>, <b>marchand résidant à Oyrières</b>, <b>frère de l'époux</b> et premier témoin à son mariage. Né vers <b>1772-1773</b>, il est l'aîné connu de la maison PAUFARD<span class="tag-new">Nouveau</span></span></li>
+          <li><span class="role">Témoins d'Autrey</span><span class="who">Non parents, mais ils datent le milieu : <b>Claude [GOUGET]</b>, quarante-trois ans, propriétaire ; <b>Joseph MARMIER</b>, trente-huit ans, chaudronnier ; <b>Toussaint GASCARD</b>, quarante-deux ans, secrétaire de la mairie — tous trois d'Autrey, dits <i>amis des époux</i><span class="tag-new">Nouveau</span></span></li>
           <li><span class="role">Cousin par alliance</span><span class="who">Joseph <b>REDOUTET</b>, cultivateur puis propriétaire à Fahy — <i>cousin germain par alliance de Françoise AMIOT</i>. <b>Quarante-trois ans en mai 1865</b>, donc né vers 1822, il est le second déclarant au décès de Claude, comme voisin<span class="tag-new">Complété</span></span></li>
         </ul>
       </aside>
 <aside class="aside aside--firm">
         <h4>Les PAUFARD de Fahy — la maison du tailleur de pierre<span class="tag-new">Nouveau</span></h4>
         <ul class="roster">
-          <li><span class="role">Les parents</span><span class="who">Jean-Baptiste <b>PAUFARD</b>, tailleur de pierre puis propriétaire, et Denise <b>REDOUTET</b> — <b>à Fahy dès 1824</b> et non depuis 1836 ; vivants au recensement de 1846, à <b>cinquante-cinq et cinquante-six ans</b><span class="tag-new">Corrigé</span></span></li>
+          <li><span class="role">Les parents</span><span class="who">Jean-Baptiste <b>PAUFARD</b>, <b>né à Gray le 17 août 1788</b>, tailleur de pierre puis propriétaire, et Denise <b>REDOUTET</b>, <b>née à Autrey le 4 avril 1791</b> — mariés <b>à Autrey-lès-Gray le 13 février 1811</b>, lui résidant à <b>Oyrières</b>, elle à <b>Fahy</b>. À Fahy dès 1824, vivants au recensement de 1846<span class="tag-new">Daté</span></span></li>
+          <li><span class="role">D'où vient l'atelier</span><span class="who">Le père de Denise, <b>François REDOUTET</b>, est <b>maître tailleur de pierre et propriétaire à Fahy</b> en 1811. Jean-Baptiste, simple tailleur de pierre à Oyrières, épouse sa fille et vient s'établir chez lui. <b>Les quatre fils du recensement de 1841 travaillent dans l'atelier de leur grand-père maternel</b>, pas dans celui de leur père<span class="tag-new">Nouveau</span></span></li>
           <li><span class="role">La sœur</span><span class="who">Françoise <b>PAUFARD</b>, née vers <b>1811-1812</b>, épouse de <b>Joseph CHATEAU</b>, cultivateur — <i>le « beau-frère CHATEAU » de l'acte de 1836 est enfin nommé par sa femme</i>. Mariage antérieur à 1835. Six enfants relevés : Alexis <i>(≈ 1835, maçon en 1861)</i>, Alphonse <i>(≈ 1840)</i>, Françoise <i>(≈ 1841)</i>, Léocadie <i>(≈ 1843)</i>, Joséphine <i>(≈ 1845)</i>, Joseph <i>(≈ 1849)</i><span class="tag-new">Nouveau</span></span></li>
           <li><span class="role">Les frères</span><span class="who"><b>François</b> <i>(≈ 1816)</i>, tailleur de pierre, plus tard à Autrey · <b>Jean-Baptiste</b>, tailleur de pierre en 1841 · <b>Bazile</b>, né le 8 octobre 1824, tailleur de pierre — <i>c'est lui dont l'enfant de 1841 porte le prénom</i> · et un « <b>François jeune</b> », tailleur de pierre lui aussi : <b>deux François sous le même toit</b>, à expliquer<span class="tag-new">Nouveau</span></span></li>
           <li><span class="role">Une inconnue <span class="q">?</span></span><span class="who">Anne <b>PAUFARD</b>, dont la table porte le décès au <b>29 mars 1824</b>. <i>Probablement une fille du couple, morte en bas âge ; l'acte le dira</i><span class="tag-new">Nouveau</span></span></li>
@@ -751,16 +837,24 @@ select{max-width:250px}
         </ul>
       </aside>
 <aside class="aside aside--firm">
-        <h4>Les GRILLOT de Gray — au moins sept maisons<span class="tag-new">Corrigé</span></h4>
+        <h4>Les GRILLOT de Gray — au moins huit maisons<span class="tag-new">Corrigé</span></h4>
         <ul class="roster">
           <li><span class="role">Le problème</span><span class="who">Le nom est fréquent à Gray, et les tables décennales portent <b>une trentaine de GRILLOT entre 1792 et 1892</b>. <b>La preuve qu'il y a plusieurs familles est arithmétique</b> : en décembre 1835, deux naissances GRILLOT sont séparées de <b>six jours</b> ; en 1826, deux autres de quatre mois. <i>Aucune mère ne peut faire cela</i>. Les maisons ci-dessous se lisent <b>en deux temps</b> — quatre au tournant du siècle, trois de plus dans les années 1830 — et une seule est la nôtre<span class="tag-new">Corrigé</span></span></li>
-          <li><span class="role">La nôtre</span><span class="who"><b>Pierre Gabriel GRILLOT × Marie Josèphe RÉMY</b>, marchands bouchers, <i>sur la place</i>. Venus de <b>Champvans-lès-Dole</b>, dans le Jura. Leur fils <b>Noël</b> meurt <b>rue de la Varosse en 1832</b>, et son fils Thomas relève la boutique<span class="tag-new">Complété</span></span></li>
+          <li><span class="role">La nôtre</span><span class="who"><b>Pierre Gabriel GRILLOT × Marie Josèphe RÉMY</b>, marchands bouchers, <i>sur la place</i>. Venus de <b>Champvans-lès-Dole</b>, dans le Jura. Leur fils <b>Noël</b> meurt <b>rue de la Varosse en 1832</b>, et son fils <b>Thomas</b> relève la boutique : <b>six enfants baptisés à Gray entre 1834 et 1854</b>, dont un capitaine et trois bouchers<span class="tag-new">Complété</span></span></li>
           <li><span class="role">Maison Jacques</span><span class="who"><b>Jacques GRILLOT, boucher × Claudine VALLON</b> — rue de la Propagande, puis rue des Marseillais, puis rue de Thionville. Enfants relevés : François <i>(1793)</i> · Vallier <i>(né à Arc, mort à cinq ans et demi en l'an IX)</i> · Noël <i>(mort à dix-huit jours en l'an IX)</i></span></li>
           <li><span class="role">Maison Marie Ferréol</span><span class="who"><b>Marie Ferréol GRILLOT × Jeanne Baptiste PREVOT</b> — place Jemmapes, puis rue Tricolore. Lui est <i>propriétaire</i> en 1798, <i>secrétaire de la mairie</i> en 1801. Enfants relevés : Anne Marie <i>(1798)</i> · Jean Baptiste <i>(1799)</i> · Anne Joseph Constantin <i>(1801)</i></span></li>
           <li><span class="role">Maison Joseph</span><span class="who"><b>Joseph GRILLOT × Anne MARCHAND</b> — connus par le seul registre matricule de leur fils <b>Nicolas</b>, né à Gray en 1777</span></li>
           <li><span class="role">Deux pièges écartés</span><span class="who">Le <b>Noël GRILLOT né à Gray en vendémiaire an IX</b> n'est pas le nôtre : il est <b>mort à dix-huit jours</b>, fils de Jacques. Et la <b>Jeanne Pauline GUILLOT</b> morte à l'hospice de Gray en nivôse an X n'est pas une GRILLOT du tout — enfant de trois mois née à Vesoul, fille de Jeanne Claude Guillot d'Authume et de père inconnu<span class="tag-new">Nouveau</span></span></li>
-          <li><span class="role">Années 1830</span><span class="who">Trois foyers de plus, contemporains du nôtre et sans lien établi avec lui : <b>François GRILLOT, manouvrier illettré</b> <i>(né ≈ 1791)</i>, et <b>Françoise THÉVENIN</b> · <b>Jean GRILLOT, paveur</b> <i>(né ≈ 1803)</i>, et <b>Anne Baptiste LÉONARD</b>, couturière née à Arc · <b>François GRILLOT × Anne PAGE</b>, parents de la Joséphine morte en 1879. <i>Trois François GRILLOT, dont l'un pourrait être le père de Thomas — mais l'acte de 1890 le donne fils de Noël : la question est close</i><span class="tag-new">Corrigé</span></span></li>
-          <li><span class="role">Hypothèse</span><span class="who"><b>Il n'y a peut-être qu'une seule souche.</b> Un boucher du Jura ne s'installe pas seul dans une ville. Jacques est boucher comme Pierre Gabriel, Joseph a un fils né à Gray dès 1777. <i>Les actes de décès de Jacques et de Joseph nommeront leurs parents : si l'un des deux est dit fils de Claude GRILLOT et Françoise CHARTON, les quatre maisons n'en font qu'une</i><span class="tag-new">À trancher</span></span></li>
+          <li><span class="role">Années 1830</span><span class="who">Trois foyers de plus, contemporains du nôtre et sans lien établi avec lui : <b>François GRILLOT, manouvrier illettré</b> <i>(né ≈ 1791)</i>, et <b>Françoise THÉVENIN</b> · <b>Jean GRILLOT, paveur</b> <i>(né ≈ 1803)</i>, et <b>Anne Baptiste LÉONARD</b>, couturière née à Arc · <b>François GRILLOT × Anne PAGE</b>, parents de la Joséphine morte en 1879. <i>Trois François GRILLOT, dont l'un pourrait être le père de Thomas — mais l'acte de 1890 le donne fils de Noël : la question est close</i>. Et un quatrième foyer : <b>Nicolas Louis GRILLOT, charpentier</b> <i>(né ≈ 1812-1813)</i>, et <b>Anne Antoinette BAILLY</b> <i>(du même âge)</i> — leur fille <b>Anne Louise</b> naît le 7 février 1842, <b>huit jours avant Alfred Nicolas</b>, fils de Thomas. Un <b>Nicolas-Louis GRILLOT meurt à Gray le 5 avril 1865</b>, ce qui est très probablement lui. <span class="warn">Ce n'est peut-être pas une maison étrangère : né vers 1812-1813, il ne figure dans aucune table de naissances de Gray — pas plus que Thomas, né à <b>Ancier</b> où leur père était boucher. Son acte de décès tranchera.</span><span class="tag-new">Nouveau</span></span></li>
+          <li><span class="role">Hypothèse</span><span class="who"><b>Il n'y a peut-être qu'une seule souche.</b> Un boucher du Jura ne s'installe pas seul dans une ville. Jacques est boucher comme Pierre Gabriel, Joseph a un fils né à Gray dès 1777. <i>Les actes de décès de Jacques et de Joseph nommeront leurs parents : si l'un des deux est dit fils de Claude GRILLOT et Françoise CHARTON, ces maisons n'en font qu'une</i><span class="tag-new">À trancher</span></span></li>
+        </ul>
+      </aside>
+<aside class="aside aside--firm">
+        <h4>À Gray, un témoin ne prouve rien<span class="tag-new">Nouveau</span></h4>
+        <ul class="roster">
+          <li><span class="role">Le constat</span><span class="who">Sur les cinq actes de Gray dépouillés cette séance, les témoins sont presque tous des <b>employés de la mairie</b> : le <b>greffier de la justice de paix</b>, le <b>concierge</b> <i>(Pierre François BEDEZ en 1825, Nicolas BELLOT en 1842, Jean-Baptiste BERNARD en 1854 — trois hommes, une même fonction)</i>, le <b>voyer de la ville</b>, l'<b>agent de police</b>, le <b>secrétaire adjoint</b>, l'<b>écrivain public</b>, le <b>caissier de la Caisse d'épargne</b>. Ce sont des témoins de service, disponibles à l'hôtel de ville<span class="tag-new">Nouveau</span></span></li>
+          <li><span class="role">La conséquence</span><span class="who"><b>À Gray, un témoin n'établit pas une relation.</b> C'est l'inverse exact de <b>Marnay en 1833</b> ou d'<b>Autrey en 1811</b>, où les témoins sont le frère, deux cousins et des voisins nommés comme tels. <i>Ne jamais tirer une parenté d'une présence à un acte graylois</i></span></li>
+          <li><span class="role">Une exception</span><span class="who"><b>Pierre Joseph VERPEAUX, agent de police</b>, déclare le décès de <b>Noël GRILLOT</b> en février 1832 — l'acte le dit expressément <b>« ami du défunt »</b>, à quarante-neuf ans. <b>Deux ans plus tard, à cinquante et un ans, il est témoin à la naissance de Christine</b>, la première fille de Thomas. Il est employé municipal, donc témoin commode ; mais l'acte de 1832 avait pris la peine de dire qu'il était l'ami. <i>Le voir revenir à la maison du fils deux ans après avoir enterré le père n'est peut-être pas un hasard de couloir</i><span class="tag-new">Nouveau</span></span></li>
         </ul>
       </aside>
 <aside class="aside aside--firm">
@@ -910,6 +1004,26 @@ select{max-width:250px}
     <div class="rech-vue" id="vue-negative"></div>
     <div class="rech-vue" id="vue-resolue"></div>
     <div class="rech-vue" id="vue-journal"></div>
+  </section>
+
+  <!-- ================= ONGLET CARTE ================= -->
+  <section class="panel" id="panel-carte" role="tabpanel" aria-labelledby="tab-carte">
+    <p class="ca-intro">Cette famille tient dans un mouchoir de poche. <b>Gray, Ancier, Vars, Fahy,
+      Autrey, Oyrières, Mont-le-Frânois, Écuelle, Champlitte, Marnay</b> : tout ce qui compte se passe
+      dans un carré d’une trentaine de kilomètres de côté, et les alliances suivent la géographie de bout
+      en bout — un boucher de Gray qui va chercher femme chez un confrère de Marnay, un tailleur de
+      pierre d’Oyrières qui vient s’installer chez son beau-père à Fahy, une famille de Mont-le-Frânois
+      qui descend sur Vars. <i>Le texte le dit à chaque page ; cette carte le montre.</i>
+      Les points sont des <b>centres de commune</b> relevés sur l’API géographique de l’État : c’est un
+      repérage, pas un document cartographique, et le tracé des rivières est schématique.</p>
+
+    <nav class="rech-nav" id="carteNav" aria-label="Échelles de la carte">
+      <button type="button" class="on" data-vue="noyau">Le pays graylois <span class="n" id="nCa-noyau"></span></button>
+      <button type="button" data-vue="couronne">La couronne régionale <span class="n" id="nCa-couronne"></span></button>
+      <button type="button" data-vue="lointain">Les lointains <span class="n" id="nCa-lointain"></span></button>
+    </nav>
+
+    <div id="carte"></div>
   </section>
 
   <!-- ================= ONGLET TRANSCRIPTIONS ================= -->
@@ -1074,7 +1188,24 @@ select{max-width:250px}
         <p class="gloss"><span class="warn">Ce n'est pas notre famille.</span> Il existait à Vars une <b>seconde lignée AMIOT</b>, celle de <b>Pierre AMIOT et Marguerite SAUVAGEOT</b>, cultivateurs, installée là bien avant l'arrivée de François en 1803. C'est elle qui explique la moitié des naissances de la table décennale. La coïncidence mérite néanmoins d'être creusée : pourquoi un cordonnier de Mont-le-Frânois vient-il épouser une fille de Vars, à trente kilomètres ? Peut-être parce qu'il y avait déjà de la parenté. <b>Hypothèse, à ne pas porter à l'arbre.</b></p>
       </article>
 
-      <p class="tr-sep">III — Oyrières, 1813</p>
+      <p class="tr-sep">III — Oyrières et Autrey-lès-Gray, 1811-1813</p>
+
+      <article class="tr" id="t-1811-mariage-de-jean-baptiste-paufard-et-de-denise-redoutet">
+        <div class="tr-head">
+          <h3>Mariage de Jean-Baptiste PAUFARD et de Denise REDOUTET</h3>
+          <span class="when">13 février 1811</span>
+        </div>
+        <p class="ref">Autrey-lès-Gray — mariages de 1811, acte n° 12 · <span class="tr-chips"><span class="chip c-m">Acte de mariage</span><span class="chip">Filiation</span><span class="chip">Génération −1 ouverte</span></span></p>
+        <blockquote>
+          L'an mil huit cent onze, le <b>treize février</b> à <b>dix</b> heures du <b>matin</b>, par-devant nous <b>Claude Hubert Roydet, adjoint au maire de la commune d'Autrey-lès-Gray</b>, pour empêchement du sieur <b>Léon Charles François [Boisset], maire</b>, remplissant en l'absence ou empêchement de ce dernier les fonctions d'officier de l'état civil de la commune dudit Autrey, département de la Haute-Saône, ont comparu :<br><br>
+          <b>Jean Baptiste Paufard, âgé de vingt-deux ans et demi, tailleur de pierre, résidant à Oyrières</b>, département de la Haute-Saône, <b>né à Gray le dix-sept août mil sept cent quatre-vingt-huit</b>, comme le constate <b>l'extrait des registres de naissance de la ville de Gray</b>, à nous représenté et dûment en forme ; <b>fils majeur de Jean Paufard, propriétaire, et de Françoise Bruyère, ses père et mère, demeurant audit Oyrières, ici présents et consentants</b>, d'une part ;<br><br>
+          Et <b>Demoiselle Denise Redoutet, âgée de dix-neuf ans et dix mois, résidant au Fahy-lès-Autrey, née audit Autrey le quatre avril mil sept cent quatre-vingt-onze</b>, comme le constate l'extrait des registres de naissance de cette commune, à nous représenté ; <b>fille mineure du sieur François Redoutet, propriétaire et maître tailleur de pierre, et de Denise [Deurey], ses père et mère, demeurant audit Fahy, ici présents et consentants</b>, d'autre part.<br><br>
+          Lesquels nous ont requis de procéder au mariage projeté entre eux, et dont <b>les publications ont été faites dans les communes d'Autrey et d'Oyrières les trois et dix février présent mois à dix heures du matin</b>, ainsi qu'il conste par les extraits des registres de publications de promesses de mariage ici représentés ; aucune opposition audit mariage ne nous ayant été signifiée, faisant droit à leur réquisition et après avoir donné lecture de toutes les pièces ci-dessus relatées et du <b>chapitre six du titre cinq du Code Napoléon, relatif aux droits et devoirs respectifs des époux</b>, nous avons demandé auxdits futurs époux, et à chacun d'eux séparément, s'ils consentaient à se prendre pour mari et pour femme ; chacun d'eux ayant répondu séparément et affirmativement, <b>nous leur avons déclaré au nom de la loi que Jean Baptiste Paufard et Denise Redoutet sont unis en mariage</b>.<br><br>
+          De quoi avons dressé acte, en présence du sieur <b>Jean Claude Paufard, âgé de trente-huit ans, marchand résidant à Oyrières, frère de l'époux</b> ; de <b>Claude [Gouget], âgé de quarante-trois ans, propriétaire</b> ; de <b>Joseph Marmier, âgé de trente-huit ans, chaudronnier</b> ; et de <b>Toussaint Gascard, âgé de quarante-deux ans, secrétaire de la mairie</b> ; tous demeurant audit Autrey, amis des époux ; qui ont signé avec nous le présent acte, ainsi que <b>François Redoutet, père de l'épouse</b>, <b>Jean Paufard et Françoise Bruyère, père et mère de l'époux</b>, et <b>l'époux</b> — <b>et non l'épouse, ni sa mère</b>, qui ont déclaré ne savoir le faire.
+          <span class="sign">Signé : Paufard — Paufard — F. Bruyer — [A.] Redoutet — [F.] Redoutet — [Gouget] — J. Marmier — Gascard — Roydet, adjoint</span>
+        </blockquote>
+        <p class="gloss"><b>L'acte que le dossier cherchait sans savoir qu'il le cherchait.</b> Toutes les séances récentes tenaient les décès de Jean-Baptiste PAUFARD et de Denise REDOUTET pour « la seule voie connue vers la génération −1 des PAUFARD ». Ce n'était pas vrai : leur mariage la donne entière, et il était accessible. <b>Quatre ascendants nouveaux d'un coup</b> — Jean PAUFARD et Françoise BRUYÈRE, propriétaires à Oyrières ; François REDOUTET, maître tailleur de pierre à Fahy, et sa femme Denise. Les quatre sont vivants, présents et consentants. <b>Deux dates de naissance exactes.</b> Jean-Baptiste est <b>né à Gray le 17 août 1788</b>, ce que confirme l'arithmétique de l'acte lui-même — vingt-deux ans et demi au 13 février 1811 — et, vingt-cinq ans plus tard, l'âge de quarante-huit ans qu'il déclare au mariage de son fils. <b>Le dossier le croyait d'Oyrières : il est graylais.</b> Denise est <b>née le 4 avril 1791</b>, mineure de dix-neuf ans et dix mois, d'où le consentement de ses parents. <b>Et l'atelier de Fahy s'explique enfin.</b> Cinq recensements montraient une maison de tailleurs de pierre sans dire d'où venait le métier ; on l'attribuait au père. Il vient de la belle-famille : <b>François REDOUTET est <i>maître</i> tailleur de pierre à Fahy</b>, et son gendre, simple ouvrier du métier à Oyrières, vient s'établir chez lui — la table décennale l'y trouve dès 1824. <b>Les quatre fils de 1841 travaillent dans l'atelier de leur grand-père maternel.</b> Du même coup, la présence des REDOUTET à Fahy tout au long du siècle — Antoine, adjoint faisant fonctions de maire en 1852 et 1854 ; Joseph, cousin germain par alliance en 1865 — cesse d'être une coïncidence de patronyme. <b>Qui signe, et qui ne signe pas.</b> Sept des neuf signent, y compris <b>Françoise BRUYÈRE</b>, la mère du marié. <b>Les deux qui ne savent pas sont la mariée et sa mère</b> — dans la maison du maître artisan, ce sont les femmes qui n'écrivent pas ; dans celle du propriétaire d'Oyrières, elles écrivent. <i>Denise ne signera pas davantage au mariage de son fils, vingt-cinq ans plus tard.</i> <span class="warn"><b>Une réserve à ne pas dissoudre.</b> L'acte dit la mariée résidant <b>au Fahy</b> et née <b>« audit Autrey »</b>, l'extrait venant des registres « de cette commune », et les publications n'ont eu lieu qu'à <b>Autrey et Oyrières</b>, jamais à Fahy. Ou l'officier a écrit vite et elle est née à Fahy ; ou <b>l'état civil de Fahy était alors tenu à Autrey</b>. La seconde hypothèse expliquerait plusieurs recherches infructueuses et se vérifie en une vue : le registre d'Autrey de 1791.</span> <i>Deux lectures restent ouvertes : le patronyme de la mère de la mariée, lu <b>[Deurey]</b>, et la signature « <b>A. Redoutet</b> » que le texte de l'acte ne justifie pas.</i></p>
+      </article>
 
       <article class="tr" id="t-1813-naissance-de-claude-paufard">
         <div class="tr-head">
@@ -1752,6 +1883,19 @@ select{max-width:250px}
         <p class="gloss"><b>L'acte le plus dense de la branche GRILLOT.</b> Il donne en une page ce que six mois de tables n'avaient pas donné : la <b>mère de Jeanne</b>, Marguerite GARDOT, dont le nom était illisible sur la vue de 1811 ; et <b>trois dates de décès</b> — Noël GRILLOT à Gray le 5 février 1832, Jean Pierre ÉCARNOT à Marnay le 1<sup>er</sup> février 1830, Marguerite GARDOT à Marnay le 20 décembre 1819. Il donne aussi à Jeanne sa date de naissance exacte, le 27 mars 1811, l'officier ayant vérifié sur ses propres registres. <b>Le mariage se fait chez elle</b>, à Marnay, et non à Gray. C'est l'usage, mais ici cela redouble un lien qui existait déjà : le père de Thomas était né à Marnay en 1783, et son fils y revient chercher femme cinquante ans plus tard. <b>Deux générations, deux fois la même commune, et deux fois le métier de boucher</b> — le père de la mariée l'était, son frère Hubert l'est encore. <span class="warn"><b>Deux orphelins.</b> Thomas a perdu son père quatorze mois plus tôt ; Jeanne a perdu sa mère à huit ans, son père à dix-huit, et l'acte constate en outre que ses quatre grands-parents sont morts. Sur les six ascendants que les deux mariés pouvaient avoir vivants, <b>un seul l'est</b> : Anne Pierre BERNARDOT, qui fait le déplacement depuis Gray, consent, et signe de sa main.</span> Et un mot vaut d'être relevé : elle n'est pas dite <i>veuve</i> mais <b>bouchère</b>. Quatorze mois après la mort de son mari, elle tient la boutique et l'officier la désigne par son métier. <i>Trois pièces sont dites annexées au registre de Marnay : l'extrait de naissance de Thomas, l'acte de décès de son père, et le certificat de publication délivré par l'adjoint de Gray. Elles y sont peut-être encore.</i></p>
       </article>
 
+      <article class="tr" id="t-1834-naissance-de-christine-grillot">
+        <div class="tr-head">
+          <h3>Naissance de Christine GRILLOT</h3>
+          <span class="when">8 février 1834</span>
+        </div>
+        <p class="ref">Gray — naissances de 1834, acte n° 26 · <span class="tr-chips"><span class="chip c-n">Acte de naissance</span><span class="chip">Filiation prouvée</span></span></p>
+        <blockquote>
+          L'an mil huit cent trente-quatre, le <b>dix</b> du mois de <b>février</b> à <b>onze</b> heures du <b>matin</b>, par-devant nous <b>maire</b> de la ville de <b>Gray</b> soussigné, officier de l'état civil, est comparu <b>M. Thomas Grillot, boucher, âgé de vingt-trois ans</b>, lequel nous a présenté un enfant du sexe <b>féminin</b>, <b>né le huit du mois de février de la présente année, à dix heures du soir, à Gray</b>, de lui présentant et de <b>dame Jeanne Escarnot, son épouse, âgée de vingt-deux ans, les deux domiciliés à Gray</b> ; et auquel enfant il a déclaré donner les prénoms et nom de <b>Christine Grillot</b> ; lesdites déclaration et présentation faites en présence de M. <b>Bonaventure [Disqueux], ex-[tailleur]</b>, domicilié à Gray, âgé de <b>quatre-vingts</b> ans, et <b>Pierre Joseph Verpeaux, agent de police</b>, domicilié à Gray, âgé de <b>cinquante et un</b> ans, et ont les présentant et témoins signé avec nous le présent acte après lecture.
+          <span class="sign">Signé : [Disqueux] — Grillot — Verpeaux — [Huguier], maire</span>
+        </blockquote>
+        <p class="gloss"><b>L'aînée, et elle était sous nos yeux.</b> Christine GRILLOT naît <b>dix mois après le mariage de Marnay</b> — le 10 avril 1833, le 8 février 1834 : la mesure exacte d'un premier enfant. La ligne « Christine, 10 février 1834 » figurait dans la table décennale de Gray depuis le premier dépouillement et avait été laissée de côté, faute de savoir à quelle maison la rattacher. <b>C'est la troisième fois dans ce dossier qu'une ligne écartée par prudence se révèle être la nôtre.</b> <b>Les deux âges sont exacts au mois près</b> — vingt-trois ans pour un homme né le 3 septembre 1810, vingt-deux pour une femme née le 27 mars 1811 —, ce qui vérifie indépendamment les dates données par l'acte de Marnay. Thomas est ici simplement <b>boucher</b> ; il sera <i>marchand boucher</i> dès l'année suivante. Et c'est la seule des cinq naissances qu'il vient déclarer lui-même : à partir de 1835, c'est la sage-femme qui ira. <b>Le second témoin n'est pas un inconnu.</b> <b>Pierre Joseph VERPEAUX, agent de police</b>, avait déclaré deux ans plus tôt le décès de <b>Noël GRILLOT</b>, le père de Thomas, et l'acte le disait alors <i>ami du défunt</i>. Il a cinquante et un ans ici, quarante-neuf là : c'est bien le même homme. <i>Une Christine GRILLOT meurt à Gray le 17 juillet 1868, à trente-quatre ans — l'âge exact. L'acte reste à ouvrir, et il dira si elle s'était mariée.</i></p>
+      </article>
+
       <article class="tr" id="t-1888-deces-de-jeanne-ecarnot">
         <div class="tr-head">
           <h3>Décès de Jeanne ÉCARNOT</h3>
@@ -1791,7 +1935,7 @@ select{max-width:250px}
           <b>1802-1812</b> — Jean Baptiste Joseph et Charles Alexis Marie, 26 nivôse an XII <i>(jumeaux)</i> · Catherine Charlotte, 16 thermidor an XIII · Anne Josephe Judith, 19 août 1807 · [Grillet] François, 12 décembre 1809 · mort-né, 27 octobre 1811.<br>
           <b>1813-1822</b> — Anne Josephe, 13 septembre 1815 · Claudine Fanette Caroline, 12 juin 1816 · Jeanne, 17 août 1818 · André, [1<sup>er</sup>] décembre 1820.<br>
           <b>1823-1832</b> — [Grillet] Bénigne, 24 septembre 1822 · Charlotte, 31 mars 1823 · Charles-Joseph-Ernest, 24 février 1826 · Joseph, 26 juin 1826 · Marguerite, 4 juin 1829 · Marguerite, 1<sup>er</sup> avril 1831.<br>
-          <b>1833-1842</b> — Françoise Adélaïde, 20 septembre 1833 · Christine, 10 février 1834 · Anne Baptiste, 10 décembre 1835 · Joseph, 16 décembre 1835 · François, 14 février 1837 · <b>François André Napoléon, 29 janvier 1838</b> · Anne Louise, 9 février 1840 · Alfred Nicolas, 17 février 1842.<br><br>
+          <b>1833-1842</b> — Françoise Adélaïde, <s>20</s> <b>30</b> septembre 1833 · <b>Christine, 10 février 1834</b> · Anne Baptiste, 10 décembre 1835 · <b>Joseph, <s>16</s> 4 décembre 1835</b> · François, 14 février 1837 · <b>François André Napoléon, 29 janvier 1838</b> · Anne Louise, 9 février <s>1840</s> <b>1842</b> · <b>Alfred Nicolas, 17 février 1842</b>.<br><br>
           <b>MARIAGES</b><br>
           <b>1792-1801</b> — Grillot [Marie] et Jean Baptiste [Prevot], 11 fructidor an V.<br>
           <b>1823-1832</b> — Grillot François, marié à Anne-Françoise [Chevenin], 2 juin 1824.<br><br>
@@ -1805,7 +1949,7 @@ select{max-width:250px}
           <b>1883-1892</b> — [Grillet] François, 4 juin 1883 · Charles Eugène Léon, 16 janvier 1883 · <b>Écarnot Jeanne, 6 août 1888</b> · <b>Thomas, 11 février 1890</b>.
           <span class="sign">—</span>
         </blockquote>
-        <p class="gloss"><b>Une ligne était sous nos yeux sans qu'on la voie.</b> Le « <b>Noël, 6 février 1832</b> » de la table des décès n'appartient pas à une maison voisine : <b>c'est le nôtre</b>, le père de Thomas, dont l'acte confirme la mort au 5 février. Cette table contient donc <b>deux ancêtres directs à sept ans d'écart</b> — Pierre Gabriel en 1825, Noël en 1832 — et l'un et l'autre avaient été écartés au motif que le nom était trop fréquent. <span class="warn">C'est l'effet pervers de la règle d'homonymie : à force de se méfier, on jette ce qu'on cherche.</span> <b>La preuve de l'homonymie reste arithmétique, et elle tient en deux lignes.</b> En décembre 1835, deux naissances GRILLOT sont séparées de <b>six jours</b> ; en 1826, deux autres de <b>quatre mois</b>. Aucune mère ne peut faire cela : il y a donc au moins deux familles, simultanément, à trente ans d'écart. Les actes l'ont confirmé depuis. <span class="warn">Un piège dont il faut se garder, parce qu'il ressemble à une preuve et n'en est pas : Marguerite naît en juin 1829, une Marguerite meurt en mars 1830, une autre naît en avril 1831. Ce n'est pas deux familles, c'est le comportement normal d'une seule qui redonne le prénom après un deuil — exactement comme les PAUFARD l'ont fait avec Clotilde.</span> <i>Trois noms voisins à ne pas verser au corpus :</i> <b>GRILLET</b> (Bénigne 1822, François 1809, François mort en 1883), ainsi que GRIFFONNET et GRISON. Et <b>GILLOT</b>, dont le bloc des décès de 1813-1822 avait d'abord été pris pour du GRILLOT : c'est une famille distincte, et <b>les décès GRILLOT de cette décennie restent entièrement à dépouiller</b> — c'est précisément la fenêtre où pourraient tomber Jacques GRILLOT et sa femme. <i>Une observation à ne pas surinterpréter :</i> aucun <b>Thomas</b> ne figure dans les naissances de 1802-1812. On sait maintenant pourquoi — il est né à Ancier —, mais cela reste le signe qu'il faut se méfier de ces tables pour établir une absence.</p>
+        <p class="gloss"><b>Une ligne était sous nos yeux sans qu'on la voie.</b> Le « <b>Noël, 6 février 1832</b> » de la table des décès n'appartient pas à une maison voisine : <b>c'est le nôtre</b>, le père de Thomas, dont l'acte confirme la mort au 5 février. Cette table contient donc <b>deux ancêtres directs à sept ans d'écart</b> — Pierre Gabriel en 1825, Noël en 1832 — et l'un et l'autre avaient été écartés au motif que le nom était trop fréquent. <span class="warn">C'est l'effet pervers de la règle d'homonymie : à force de se méfier, on jette ce qu'on cherche.</span> <b>La preuve de l'homonymie reste arithmétique, et elle tient en deux lignes.</b> En décembre 1835, deux naissances GRILLOT sont séparées de <b>six jours</b> ; en 1826, deux autres de <b>quatre mois</b>. Aucune mère ne peut faire cela : il y a donc au moins deux familles, simultanément, à trente ans d'écart. Les actes l'ont confirmé depuis. <span class="warn">Un piège dont il faut se garder, parce qu'il ressemble à une preuve et n'en est pas : Marguerite naît en juin 1829, une Marguerite meurt en mars 1830, une autre naît en avril 1831. Ce n'est pas deux familles, c'est le comportement normal d'une seule qui redonne le prénom après un deuil — exactement comme les PAUFARD l'ont fait avec Clotilde.</span> <i>Trois noms voisins à ne pas verser au corpus :</i> <b>GRILLET</b> (Bénigne 1822, François 1809, François mort en 1883), ainsi que GRIFFONNET et GRISON. Et <b>GILLOT</b>, dont le bloc des décès de 1813-1822 avait d'abord été pris pour du GRILLOT : c'est une famille distincte, et <b>les décès GRILLOT de cette décennie restent entièrement à dépouiller</b> — c'est précisément la fenêtre où pourraient tomber Jacques GRILLOT et sa femme. <i>Une observation à ne pas surinterpréter :</i> aucun <b>Thomas</b> ne figure dans les naissances de 1802-1812. On sait maintenant pourquoi — il est né à Ancier —, mais cela reste le signe qu'il faut se méfier de ces tables pour établir une absence. <span class="warn"><b>Trois lignes sur huit étaient fausses dans une seule décennie.</b> Le dépouillement des actes de 1833 à 1842 a mis en défaut la lecture de la table sur trois points : un jour (20 pour 30 septembre 1833), un <b>millésime</b> (1840 pour 1842), et une date encore inexpliquée pour Joseph, dont l'acte est du 4 et non du 16 décembre. L'avertissement de source placé en tête de cet article disait que ces tables donnent tantôt la date de l'acte, tantôt celle de la naissance ; il faut lui en ajouter un second, plus rude — <b>elles sont aussi mal lues qu'irrégulières</b>, et un millésime peut sauter de deux ans. <i>Aucune date de cet article ne doit servir de preuve. Elles servent à savoir où regarder, rien de plus.</i></span> <i>Les quatre lignes en gras de la décennie 1833-1842 sont celles que les actes rattachent à notre foyer : Christine, Joseph, Napoléon et Alfred Nicolas.</i></p>
       </article>
 
       <article class="tr" id="t-1874-naissance-d-albert-thomas-grillot">
@@ -1866,12 +2010,12 @@ select{max-width:250px}
           <h3>Naissance de Joseph GRILLOT</h3>
           <span class="when">2 décembre 1835</span>
         </div>
-        <p class="ref">Gray — naissances de 1835, acte n° 173 <i>(extrait délivré pour le service militaire)</i> · <span class="tr-chips"><span class="chip c-n">Acte de naissance</span><span class="chip">Génération I prouvée</span></span></p>
+        <p class="ref">Gray — naissances de 1835, acte n° 175 <i>(lu sur le registre original ; un extrait délivré pour le service militaire, porté n° 173, figure au dossier Léonore)</i> · <span class="tr-chips"><span class="chip c-n">Acte de naissance</span><span class="chip">Registre original</span><span class="chip">Génération I prouvée</span></span></p>
         <blockquote>
           <b>Extrait des registres de naissances de la ville de Gray (Haute-Saône).</b><br><br>L'an mil huit cent trente-cinq, le quatre du mois de décembre, à onze heures du matin, par-devant nous maire de la ville de Gray soussigné, officier de l'état civil, est comparu <b>Toussaine Cardinet, femme de Victor Bruno Cassin, accoucheuse à Gray, âgée de trente-cinq ans</b>, laquelle nous a présenté un enfant du sexe masculin <b>né le deux du mois de décembre de la présente année, à six heures du soir, à Gray</b>, qu'elle nous a déclaré être <b>fils légitime de Thomas GRILLOT, marchand boucher, âgé de vingt-cinq ans, et de Jeanne ESCARNOT son épouse, âgée de vingt-cinq ans, les deux domiciliés à Gray</b>, et auquel enfant elle a déclaré donner les prénoms et nom de <b>Joseph GRILLOT</b>. Lesdites déclaration et présentation faites en présence de M. Jean-Baptiste Bertrand, voyer de la ville, âgé de vingt-neuf ans, et [Ferdinand] Jacquinot, secrétaire adjoint, âgé de trente-deux ans, domiciliés à Gray.<br><br><i>Pour extrait conforme, délivré sur papier libre pour servir au service militaire.</i>
           <span class="sign">Signé au registre : femme Cassin née Cardinet — Bertrand — Jacquinot — [Huguier], maire</span>
         </blockquote>
-        <p class="gloss"><b>La génération I des GRILLOT est verrouillée sur pièce.</b> Thomas GRILLOT et Jeanne ESCARNOT ne reposaient jusqu'ici que sur les déclarations du mariage de 1866 ; les voici nommés dans un acte de naissance, avec leurs âges et leur domicile. Ces âges corrigent les précédents : <b>vingt-cinq ans tous les deux en décembre 1835, donc nés vers 1810</b>, et non 1812 et 1813. Leur mariage se place en <b>1833-1835</b>, et la fratrie se dessine : Joseph 1835, Napoléon janvier 1838, Nicolas vers 1839. <span class="warn">L'extrait porte « pour servir au service militaire » : il provient d'un dossier militaire, très probablement celui du légionnaire.</span> À noter que la déclarante est la sage-femme, non le père.</p>
+        <p class="gloss"><b>La génération I des GRILLOT est verrouillée sur pièce.</b> Thomas GRILLOT et Jeanne ESCARNOT ne reposaient jusqu'ici que sur les déclarations du mariage de 1866 ; les voici nommés dans un acte de naissance, avec leurs âges et leur domicile. Ces âges corrigent les précédents : <b>vingt-cinq ans tous les deux en décembre 1835, donc nés vers 1810</b>, et non 1812 et 1813. Leur mariage se place en <b>1833-1835</b>, et la fratrie se dessine : Joseph 1835, Napoléon janvier 1838, Nicolas vers 1839. <span class="warn">L'extrait porte « pour servir au service militaire » : il provient d'un dossier militaire, très probablement celui du légionnaire.</span> À noter que la déclarante est la sage-femme, non le père. <b>L'original confirme l'extrait, et corrige son numéro.</b> Le registre de Gray porte cette naissance à l'<b>acte n° 175 du 4 décembre 1835</b>, quand l'extrait du dossier militaire l'annonce au n° 173 — deux numéros d'écart, l'erreur d'un copiste. <b>Le 2 décembre, lui, est confirmé.</b> Ce qui règle la divergence signalée depuis deux séances : la table décennale de Gray porte un « Joseph, 16 décembre 1835 » qui <b>ne peut pas être cet acte-ci</b>, l'acte n° 175 étant du 4. <i>Ou la ligne de la table a été mal lue, ou elle désigne un autre enfant d'une autre maison — la table étant déjà connue pour porter tantôt la date de l'acte, tantôt celle de la naissance, et pour flotter sur les millésimes.</i> <b>La ligne est à revérifier ; le 2 décembre 1835, lui, ne l'est plus.</b></p>
       </article>
 
       <article class="tr" id="t-1879-deces-d-ernest-jean-antoine-grillot">
@@ -1895,10 +2039,10 @@ select{max-width:250px}
         </div>
         <p class="ref">Gray — naissances de 1833, acte n° 127 · <span class="tr-chips"><span class="chip c-n">Acte de naissance</span><span class="chip c-warn">Homonyme à écarter</span></span></p>
         <blockquote>
-          L'an mil huit cent trente-trois, le trente du mois de septembre, à onze heures du matin, par-devant nous maire de la ville de Gray soussigné, officier de l'état civil, est comparu <b>M. François Grillot, manouvrier, âgé de quarante-deux ans</b>, lequel nous a présenté un enfant du sexe féminin, <b>né le vingt-huit du mois de septembre de la présente année, à une heure du soir, à Gray</b>, de lui présentant et de dame <b>Françoise Thévenin, son épouse, âgée de trente-quatre ans</b>, les deux domiciliés à Gray ; et auquel enfant il a déclaré donner les prénoms et nom de <b>Françoise Adélaïde Grillot</b>. Lesdites déclaration et présentation faites en présence de M. Jean-Baptiste [Mouriou], musicien, âgé de soixante-sept ans, et Toussaint Fournerot, [serrurier] public, âgé de cinquante-sept ans, domiciliés à Gray ; et ont les témoins signé avec nous le présent acte après lecture. <b>Et non ledit François Grillot, illettré.</b>
-          <span class="sign">Signé : [Mouriou] — Fournerot — [Huguier]</span>
+          L'an mil huit cent trente-trois, le trente du mois de septembre, à onze heures du matin, par-devant nous maire de la ville de Gray soussigné, officier de l'état civil, est comparu <b>M. François Grillot, manouvrier, âgé de quarante-deux ans</b>, lequel nous a présenté un enfant du sexe féminin, <b>né le vingt-huit du mois de septembre de la présente année, à une heure du soir, à Gray</b>, de lui présentant et de dame <b>Françoise Thévenin, son épouse, âgée de trente-quatre ans</b>, les deux domiciliés à Gray ; et auquel enfant il a déclaré donner les prénoms et nom de <b>Françoise Adélaïde Grillot</b>. Lesdites déclaration et présentation faites en présence de M. Jean-Baptiste [Mouriou], musicien, âgé de soixante-sept ans, et Toussaint Fourneret, écrivain public, âgé de cinquante-sept ans, domiciliés à Gray ; et ont les témoins signé avec nous le présent acte après lecture. <b>Et non ledit François Grillot, illettré.</b>
+          <span class="sign">Signé : [Mouriou] — Fourneret — [Huguier]</span>
         </blockquote>
-        <p class="gloss"><span class="warn">Pas notre famille.</span> Un <b>troisième foyer GRILLOT</b> à Gray : François GRILLOT, manouvrier illettré né vers 1791, et Françoise THÉVENIN. À noter tout de même : ce François pourrait être le père de Thomas, et l'homonyme de 1879 était fille d'un François GRILLOT et d'Anne PAGE. Trois François, aucune preuve — <b>à garder en note, pas dans l'arbre</b>.</p>
+        <p class="gloss"><span class="warn">Pas notre famille.</span> Un <b>troisième foyer GRILLOT</b> à Gray : François GRILLOT, manouvrier illettré né vers 1791, et Françoise THÉVENIN. <b>Trois François GRILLOT vivent à Gray dans ces années-là, et aucun n'est le père de Thomas</b> — l'acte de 1890 et le mariage de 1833 le donnent fils de <b>Noël</b>. La question est close, et cette maison-ci reste sans lien établi avec la nôtre. <i>Le premier témoin, lu [Mouriou], se signe plutôt</i> <b>[Mounion]</b> <i>ou</i> <b>[Mouniou]</b> <i>: la lecture reste ouverte.</i> Quant au second, <b>écrivain public</b> et non « [serrurier] public » comme la première lecture le portait, sa présence s'explique : il signe à côté d'un père illettré.</p>
       </article>
 
       <article class="tr" id="t-1835-naissance-d-anne-baptiste-grillot">
@@ -1925,6 +2069,32 @@ select{max-width:250px}
           <span class="sign">Signé : Th. Grillot — [Ormancey] — Lavocat — [Devon]</span>
         </blockquote>
         <p class="gloss"><b>Un frère de Napoléon jusqu'ici inconnu.</b> Il naît <b>onze mois avant lui</b> — serré mais possible, sauf s'il est mort avant janvier 1838, ce qui est l'hypothèse la plus probable. Son décès est à chercher à Gray en 1837. L'acte confirme au passage les âges : Thomas et Jeanne ont tous deux vingt-six ans, donc nés en 1810 ou 1811, et l'orthographe se fixe en <b>ÉCARNOT</b>.</p>
+      </article>
+
+      <article class="tr" id="t-1842-naissance-d-anne-louise-grillot">
+        <div class="tr-head">
+          <h3>Naissance d'Anne Louise GRILLOT</h3>
+          <span class="when">7 février 1842</span>
+        </div>
+        <p class="ref">Gray — naissances de 1842, acte n° 26 · <span class="tr-chips"><span class="chip c-n">Acte de naissance</span><span class="chip c-warn">Homonyme à écarter</span></span></p>
+        <blockquote>
+          L'an mil huit cent quarante-deux, le <b>neuf</b> du mois de <b>février</b> à <b>onze</b> heures du <b>matin</b>, par-devant nous <b>adjoint</b> de la ville de <b>Gray</b>, soussigné, officier de l'état civil, est comparu <b>Nicolas Louis Grillot, charpentier, âgé de vingt-neuf ans</b>, lequel nous a présenté un enfant du sexe <b>féminin</b>, <b>né le sept du mois de février de la présente année, à cinq heures du matin, à Gray</b>, de lui présentant et de <b>Dame Anne Antoinette Bailly, son épouse, âgée de vingt-neuf ans, les deux domiciliés à Gray</b> ; et auquel enfant il a déclaré donner les prénoms et nom d'<b>Anne Louise Grillot</b> ; lesdites déclaration et présentation faites en présence de M. <b>Jean-Baptiste [Rivée], tailleur d'habits</b>, domicilié à Gray, âgé de <b>quarante-deux</b> ans, et <b>Jean Claude Dupré, huissier</b>, domicilié à Gray, âgé de <b>cinquante-cinq</b> ans, et ont les présentant et témoins signé avec nous le présent acte après lecture.
+          <span class="sign">Signé : [illisible] — Grillot — [deux signatures]</span>
+        </blockquote>
+        <p class="gloss"><b>Une huitième maison GRILLOT à Gray</b>, et la plus troublante de toutes. <b>Nicolas Louis GRILLOT, charpentier</b>, né vers 1812-1813, et <b>Anne Antoinette BAILLY</b>, du même âge : le métier n'est pas celui de la nôtre, et rien dans l'acte ne les y rattache. <b>Deux naissances GRILLOT à huit jours d'écart</b> en février 1842 — exactement le genre d'arithmétique qui a servi à ce dossier pour prouver la pluralité des foyers. <span class="warn"><b>Mais l'écarter serait aller trop vite, et cette fois dans l'autre sens.</b> Nicolas Louis est né vers 1812-1813 et <b>ne figure dans aucune table de naissances de Gray</b> — pas plus que Thomas, né en 1810, dont on sait maintenant qu'il est né à <b>Ancier</b>. Or Noël GRILLOT était <b>boucher à Ancier en 1810</b> et n'est revenu à Gray qu'ensuite. Un second fils né à Ancier vers 1812-1813 tomberait exactement dans cette fenêtre. Et Thomas nomme son fils de 1842 <b>Alfred Nicolas</b>, huit jours après la naissance de la fille d'un Nicolas Louis.</span> <i>Rien de tout cela n'est une preuve — le prénom Nicolas ne se retrouve nulle part ailleurs dans la lignée, et un charpentier n'est pas un boucher. Mais l'hypothèse est trop bien formée pour être passée sous silence : voir la recherche ouverte.</i> <b>Cet acte corrige aussi la table décennale</b>, qui portait cette naissance au <b>9 février 1840</b>. Elle est du <b>9 février 1842</b>. Le millésime avait sauté de deux ans.</p>
+      </article>
+
+      <article class="tr" id="t-1842-naissance-d-alfred-nicolas-grillot">
+        <div class="tr-head">
+          <h3>Naissance d'Alfred Nicolas GRILLOT</h3>
+          <span class="when">16 février 1842</span>
+        </div>
+        <p class="ref">Gray — naissances de 1842, acte n° 35 · <span class="tr-chips"><span class="chip c-n">Acte de naissance</span><span class="chip">Filiation prouvée</span></span></p>
+        <blockquote>
+          L'an mil huit cent quarante-deux, le <b>dix-sept</b> du mois de <b>février</b> à <b>onze</b> heures du <b>matin</b>, par-devant nous <b>adjoint</b> de la ville de <b>Gray</b>, soussigné, officier de l'état civil, est comparu <b>[Toussaine] Cardinot, épouse de Victor Brutus [Cassin], accoucheuse à Gray, âgée de quarante et un ans</b>, laquelle nous a présenté un enfant du sexe <b>masculin</b>, <b>né le seize du mois de février de la présente année, à trois heures du soir, à Gray</b>, qu'elle nous a déclaré être <b>fils légitime de Thomas Grillot, marchand boucher, âgé de trente et un ans, et de dame Jeanne Écarnot son épouse, âgée de trente ans, les deux domiciliés à Gray</b> ; et auquel enfant elle a déclaré donner les prénoms et nom d'<b>Alfred Nicolas Grillot</b> ; lesdites déclaration et présentation faites en présence de M. <b>Claude Antoine Maréchal, [greffier] de la justice de paix</b>, domicilié à Gray, âgé de <b>quarante-sept</b> ans, et <b>Nicolas Bellot, concierge de la mairie</b>, domicilié à Gray, âgé de <b>soixante-[quatre]</b> ans, et ont les présentateurs et témoins signé avec nous le présent acte après lecture.
+          <span class="sign">Signé : femme [Cassin] née [Cardinot] — Maréchal — [l'adjoint, signature illisible]</span>
+        </blockquote>
+        <p class="gloss"><b>Le dernier enfant du premier groupe.</b> Cinq naissances entre 1834 et 1842, puis rien pendant douze ans : Alfred Nicolas ferme la série. <b>Les âges sont de nouveau exacts</b> — trente et un et trente ans, au mois près. <b>C'est aussi le candidat au titre de « Nicolas Eugène ».</b> Le dossier connaît un <b>Nicolas GRILLOT</b>, marchand de bétail puis négociant à Gray, marié à Thérèse POURCELOT, dit <i>oncle paternel</i> de Joséphine en 1892 : la parenté est prouvée, la date de naissance ne l'était pas. Alfred Nicolas est le <b>seul Nicolas</b> de toutes les tables de naissances de Gray, et aucune naissance GRILLOT n'y est enregistrée de 1843 à 1852. <span class="warn">Mais en septembre 1874, <b>Nicolas se déclare trente-cinq ans</b>, ce qui ferait un homme de 1839, et Alfred Nicolas n'en aurait eu que trente-deux. Trois ans sur sa propre déclaration, et un prénom qui n'est pas le même : le rattachement est <b>probable, pas prouvé</b>.</span> <b>Deux fonctionnaires de la mairie pour témoins</b>, le greffier de la justice de paix et le concierge — comme en 1825 pour l'enterrement du bisaïeul, comme en 1854 pour la naissance du dernier-né. <i>À Gray, un témoin n'établit pas une relation.</i> <i>L'âge de la sage-femme est lu « quarante et un » ; elle en déclare trente-cinq en 1835 et cinquante-quatre en 1854, ce qui donnerait quarante-deux en 1842. L'écart d'un an est ordinaire et ne remet pas en cause son identité.</i></p>
       </article>
 
       <article class="tr" id="t-1854-naissance-de-joseph-emile-grillot">
@@ -2199,7 +2369,7 @@ select{max-width:250px}
 
 const PERSONNES = [
 {id:"francois-renevier", prenoms:"François", nom:"RENEVIER", gen:0,
- x:640, y:20, w:260, h:170, small:true,
+ x:490, y:20, w:260, h:170, small:true,
  deces:{date:"avant 1807", note:"présumé"},
  lieux:[{quoi:"Vars", incertain:true}],
  dossier:[
@@ -2207,7 +2377,7 @@ const PERSONNES = [
  ]},
 
 {id:"barbe-guignard", prenoms:"Barbe", nom:"GUIGNARD", f:true, gen:0,
- x:960, y:20, w:260, h:170, small:true,
+ x:810, y:20, w:260, h:170, small:true,
  deces:{date:"avant 1807", note:"présumé"},
  lieux:[{quoi:"Vars", incertain:true}],
  notes:[
@@ -2215,7 +2385,7 @@ const PERSONNES = [
  ]},
 
 {id:"francois-bernard-amiot", prenoms:"François Bernard", nom:"AMIOT", gen:1,
- x:170, y:300, w:260, h:200, small:true,
+ x:60, y:300, w:240, h:200, small:true,
  neuf:true, apports:["Daté"],
  deces:{date:"25/01/1803", note:"5 pluviôse an XI", neuf:"Nouveau"},
  metiers:[{quoi:"laboureur", an:1780, note:"et en 1781"}, {quoi:"propriétaire"}],
@@ -2228,7 +2398,7 @@ const PERSONNES = [
  ]},
 
 {id:"nicolle-bertault", prenoms:"Nicolle", nom:"BERTAULT", f:true, gen:1,
- x:490, y:300, w:260, h:200, small:true,
+ x:355, y:300, w:240, h:200, small:true,
  deces:{date:"1803-1839", lieu:"Mont-le-Frânois", neuf:"Lieu"},
  lieux:[{quoi:"Champlitte", an:1803}, {quoi:"Mont-le-Frânois"}],
  divers:[
@@ -2239,7 +2409,7 @@ const PERSONNES = [
  ]},
 
 {id:"claude-renevier-1743", prenoms:"Claude", nom:"RENEVIER", gen:1,
- x:830, y:300, w:260, h:200, small:true,
+ x:670, y:300, w:240, h:200, small:true,
  naissance:{date:"≈ 1743", lieu:"Vars", lieuIncertain:true},
  deces:{date:"04/08/1807", heure:"17 h", lieu:"Vars", age:"64 ans"},
  metiers:[{quoi:"propriétaire cultivateur"}],
@@ -2248,15 +2418,14 @@ const PERSONNES = [
  ]},
 
 {id:"catherine-petitot-1731", prenoms:"Catherine", nom:"PETITOT", f:true, gen:1,
- x:1150, y:300, w:260, h:200, small:true,
+ x:965, y:300, w:240, h:200, small:true,
  naissance:{date:"≈ 1731", incertain:true},
  deces:{date:"31/03/1807", heure:"7 h", lieu:"Vars", age:"76 ans", ageIncertain:true},
  dossier:[
    {type:"d", libelle:"Décès"}
  ]},
-
 {id:"francois-amiot-1780", prenoms:"François", nom:"AMIOT", gen:2,
- x:170, y:569, w:260, h:250, small:true,
+ x:170, y:629, w:260, h:250, small:true,
  neuf:true, apports:["Acte trouvé"],
  naissance:{date:"24/12/1780", lieu:"Mont-le-Frânois"},
  deces:{date:"18/03/1839", heure:"6 h", lieu:"Vars", age:"58 ans"},
@@ -2278,7 +2447,7 @@ const PERSONNES = [
  ]},
 
 {id:"barbe-renevier-1774", prenoms:"Barbe", nom:"RENEVIER", f:true, gen:2,
- x:590, y:569, w:260, h:250, small:true,
+ x:590, y:629, w:260, h:250, small:true,
  naissance:{date:"19/06/1774", lieu:"Vars"},
  deces:{date:"05/03/1818", heure:"4 h du matin", lieu:"Vars", age:"43 ans"},
  notes:[
@@ -2290,16 +2459,39 @@ const PERSONNES = [
  ]},
 
 {id:"jean-baptiste-paufard-1788", prenoms:"Jean-Baptiste", nom:"PAUFARD", gen:2,
- x:930, y:569, w:290, h:250, small:true,
+ x:930, y:629, w:290, h:250, small:true,
  neuf:true, apports:["Daté"],
- naissance:{date:"≈ 1788-1791", note:"48 ans en 1836, 55 en 1846", approx:true},
+ naissance:{date:"17/08/1788", lieu:"Gray", note:"22 ans et demi en février 1811",
+            neuf:"Daté"},
  deces:{date:"1846-1865", lieu:"Fahy-lès-Autrey", neuf:"Confirmé"},
- metiers:[{quoi:"tailleur de pierre", an:1841, neuf:"Nouveau"},
-          {quoi:"propriétaire", an:1846, neuf:"Nouveau"}],
- lieux:[{quoi:"Oyrières", an:1813},
-        {quoi:"Fahy-lès-Autrey", an:1824, note:"attesté par deux actes de 1824",
-         neuf:"Corrigé"}],
+ metiers:[{quoi:"tailleur de pierre, Oyrières", an:1811, neuf:"Nouveau"},
+          {quoi:"tailleur de pierre", an:1841},
+          {quoi:"propriétaire", an:1846}],
+ lieux:[{quoi:"Gray", an:1788, note:"il y naît"},
+        {quoi:"Oyrières", an:1811},
+        {quoi:"Fahy-lès-Autrey", an:1824, note:"attesté par deux actes de 1824"}],
+ divers:[
+   {dt:"Parents", dd:"<b>Jean PAUFARD</b>, propriétaire à Oyrières, et <b>Françoise "
+     +"BRUYÈRE</b> — présents et consentants à son mariage, tous deux signataires"
+     +"<span class=\"tag-new\">Nouveau</span>"},
+   {dt:"Fratrie", dd:"<b>Jean Claude PAUFARD</b>, trente-huit ans en 1811, <b>marchand à "
+     +"Oyrières</b>, premier témoin à son mariage — né vers 1772-1773. <i>Le reste de la "
+     +"fratrie n'est pas établi.</i><span class=\"tag-new\">Nouveau</span>"},
+   {dt:"Mariage", dd:"<b>Autrey-lès-Gray, le 13 février 1811</b>, acte n° 12 — chez la mariée"
+     +"<span class=\"tag-new\">Daté</span>"}
+ ],
  notes:[
+   {b:"<b>Il est né à Gray, pas à Oyrières.</b> L'acte de 1811 produit son extrait de "
+     +"naissance des registres de la ville de Gray : le 17 août 1788, à vingt-deux ans et "
+     +"demi de son mariage. Le dossier le tenait pour un homme d'Oyrières parce qu'il y "
+     +"résidait ; il n'y résidait que depuis l'enfance. <b>La maison PAUFARD est graylaise "
+     +"avant d'être d'Oyrières</b>, ce qui déplace d'un cran la recherche de la génération "
+     +"d'avant.", ferme:true},
+   {b:"<b>Il entre dans le métier par sa femme.</b> Tailleur de pierre à vingt-deux ans à "
+     +"Oyrières, il épouse la fille d'un <b>maître tailleur de pierre de Fahy</b> et vient "
+     +"s'établir chez son beau-père — avant 1824, la table décennale l'y trouve. L'atelier de "
+     +"quatre fils que le recensement de 1841 montre sous son toit n'est donc pas le sien : "
+     +"<b>c'est celui des REDOUTET, repris par un gendre.</b>", ferme:true},
    {b:"<b>Quatre fils tailleurs de pierre sous son toit en 1841</b> — François,"
      +" Jean-Baptiste, Bazile et un « François jeune ». Encore deux d'entre eux en 1846,"
      +" où il est dit propriétaire à cinquante-cinq ans.<span class=\"tag-new\">Recensement</span>",
@@ -2313,28 +2505,51 @@ const PERSONNES = [
    {b:"<b>Il est à Fahy dès 1824</b>, et non depuis le mariage de son fils : la table"
      +" décennale y porte la naissance de Bazile le 9 octobre 1824 et le décès d'une Anne"
      +" PAUFARD le 29 mars de la même année. La migration depuis Oyrières se place donc"
-     +" <b>entre 1813 et 1824</b>.<span class=\"tag-new\">Nouveau</span>", ferme:true}
- ]},
+     +" <b>entre 1811 et 1824</b>.", ferme:true}
+ ],
+ dossier:[{type:"m", libelle:"Mariage<span class=\"tag-new\">Nouveau</span>"},
+          {type:"x", libelle:"Naissance et décès non retrouvés"}]},
 
 {id:"denise-redoutet-1789", prenoms:"Denise", nom:"REDOUTET", f:true, gen:2,
- x:1280, y:569, w:260, h:250, small:true,
+ x:1330, y:629, w:260, h:250, small:true,
  neuf:true, apports:["Datée"],
- naissance:{date:"≈ 1789-1790", note:"47 ans en 1836, 56 en 1846", approx:true},
+ naissance:{date:"04/04/1791", lieu:"Autrey-lès-Gray", lieuIncertain:true,
+            note:"19 ans et 10 mois en février 1811", neuf:"Datée"},
  deces:{date:"1846-1865", lieu:"Fahy-lès-Autrey", neuf:"Confirmé"},
- lieux:[{quoi:"Oyrières", an:1813},
-        {quoi:"Fahy-lès-Autrey", an:1824, neuf:"Corrigé"}],
+ lieux:[{quoi:"Fahy-lès-Autrey", an:1811, note:"y réside avant son mariage"},
+        {quoi:"Oyrières", an:1813},
+        {quoi:"Fahy-lès-Autrey", an:1824}],
+ divers:[
+   {dt:"Parents", dd:"<b>François REDOUTET</b>, propriétaire et <b>maître tailleur de "
+     +"pierre</b> à Fahy, et <b>Denise [DEUREY <span class=\"q\">?</span>]</b> — présents et "
+     +"consentants à son mariage<span class=\"tag-new\">Nouveau</span>"},
+   {dt:"Mariage", dd:"<b>Autrey-lès-Gray, le 13 février 1811</b>, acte n° 12 — <b>mineure</b>, "
+     +"à dix-neuf ans et dix mois<span class=\"tag-new\">Daté</span>"},
+   {dt:"Réserve", dd:"L'acte la dit née « audit <b>Autrey</b> » alors qu'elle réside à "
+     +"<b>Fahy</b> et que les publications ne sont faites qu'à Autrey et Oyrières. "
+     +"<b>Ne pas trancher</b> : ou le lieu est à corriger en Fahy, ou l'état civil de Fahy "
+     +"était tenu à Autrey en 1791. Le registre d'Autrey de 1791 le dira"
+     +"<span class=\"tag-new\">Nouveau</span>"}
+ ],
  notes:[
    {b:"Illettrée ; présente et consentante en 1836.", ferme:true},
-   {b:"Un <b>Antoine REDOUTET</b> est adjoint faisant fonctions de maire de Fahy en 1852 et"
-     +" en 1854, et signe à ce titre les actes de décès de deux des enfants du couple."
-     +" <i>La parenté avec Denise est probable et non établie</i> — le dossier connaît déjà"
-     +" un Joseph REDOUTET, « cousin germain par alliance de Françoise AMIOT ». La famille"
-     +" REDOUTET tient à Fahy une place qu'il faudra un jour"
-     +" démêler.<span class=\"tag-new\">Recensement</span>", ferme:false}
- ]},
+   {b:"<b>Les REDOUTET sont de Fahy, et elle en est.</b> Son père y est propriétaire et "
+     +"maître tailleur de pierre en 1811. L'<b>Antoine REDOUTET</b> adjoint faisant fonctions "
+     +"de maire en 1852 et 1854, et le <b>Joseph REDOUTET</b> dit <i>cousin germain par "
+     +"alliance de Françoise AMIOT</i> en 1865, cessent d'être des homonymes commodes : ce "
+     +"sont selon toute vraisemblance ses neveux ou petits-neveux. <i>La parenté exacte reste "
+     +"à établir</i>, mais la question n'est plus de savoir s'il y en a une.", ferme:false},
+   {b:"<b>Elle est illettrée, et l'acte le dit deux fois.</b> Ni elle ni sa mère n'ont su "
+     +"signer en 1811, quand son père, son mari, son beau-père, sa belle-mère et les quatre "
+     +"témoins l'ont tous fait. Vingt-cinq ans plus tard, au mariage de son fils, elle est "
+     +"encore <i>présente et consentante</i> sans signer.", ferme:true}
+ ],
+ dossier:[{type:"m", libelle:"Mariage<span class=\"tag-new\">Nouveau</span>"},
+          {type:"x", libelle:"Naissance et décès non retrouvés"}]},
+
 
 {id:"francoise-amiot-1810", prenoms:"Françoise", nom:"AMIOT", f:true, gen:3,
- x:200, y:878, w:350, h:250,
+ x:200, y:998, w:350, h:250,
  naissance:{date:"28/11/1810", heure:"15 h", lieu:"Vars"},
  deces:{date:"30/04/1878", heure:"minuit", lieu:"Fahy-lès-Autrey", age:"67 ans"},
  metiers:[{quoi:"propriétaire"},
@@ -2365,7 +2580,7 @@ const PERSONNES = [
  ]},
 
 {id:"claude-alexis-paufard-1813", prenoms:"Claude Alexis", nom:"PAUFARD", surnom:"dit Alexis", gen:3,
- x:720, y:878, w:350, h:250,
+ x:720, y:998, w:350, h:250,
  naissance:{date:"07/06/1813", heure:"6 h", lieu:"Oyrières"},
  deces:{date:"12/05/1865", heure:"17 h", lieu:"Fahy", age:"51 ans"},
  metiers:[{quoi:"tailleur de pierre", an:1836},
@@ -2405,7 +2620,7 @@ const PERSONNES = [
  ]},
 
 {id:"jeanne-escarnot-1810", prenoms:"Jeanne", nom:"ÉCARNOT", f:true, gen:3,
- x:1150, y:913, w:290, h:180,
+ x:1150, y:1033, w:290, h:180,
  neuf:true,
  naissance:{date:"27/03/1811", lieu:"Marnay", note:"acte n° 24 de 1811", neuf:"Datée"},
  deces:{date:"05/08/1888", heure:"10 h", lieu:"Gray", age:"77 ans",
@@ -2417,6 +2632,11 @@ const PERSONNES = [
      +" et <b>Marguerite GARDOT</b>, † 20 décembre 1819<span class=\"tag-new\">Complété</span>"},
    {dt:"Fratrie", dd:"<b>Hubert ÉCARNOT</b>, marchand boucher à Marnay, né vers 1801 — témoin"
      +" à son mariage<span class=\"tag-new\">Nouveau</span>"},
+   {dt:"Enfants", dd:"<b>Christine</b>, née le 8 février 1834 · <b>Joseph</b>, né le "
+     +"2 décembre 1835 · <b>François</b>, né le 14 février 1837 <i>(table seule)</i> · "
+     +"<b>André François Napoléon</b>, né le 29 janvier 1838 · <b>Alfred Nicolas</b>, né le "
+     +"16 février 1842 · <b>Joseph Émile</b>, né le 6 avril 1854 — <b>cinq prouvés par acte "
+     +"de naissance</b>, tous à Gray<span class=\"tag-new\">Nouveau</span>"},
    {dt:"Variante", dd:"<b>ÉCARNOT</b> sur ses actes de 1811, 1833 et 1888 ;"
      +" ESCARNOT sur l'extrait de 1835 seulement"}
  ],
@@ -2431,13 +2651,24 @@ const PERSONNES = [
      +" ascendant vivant — ce sont son frère et deux cousins qui l'accompagnent."
      +"<span class=\"tag-new\">Nouveau</span>", ferme:true},
    {b:"Son décès est déclaré par son fils <b>Joseph Émile</b>, trente-quatre ans, le cadet de"
-     +" la fratrie. Thomas lui survivra dix-huit mois.", ferme:true}
+     +" la fratrie. Thomas lui survivra dix-huit mois.", ferme:true},
+   {b:"<b>Six enfants sur vingt ans, et un trou de douze au milieu.</b> Cinq naissent entre "
+     +"1834 et 1842, à raison d'une tous les deux ans ; puis plus rien jusqu'à Joseph Émile "
+     +"en 1854, quand elle a quarante-trois ans. Ce n'est pas la fin de sa fécondité, "
+     +"c'est un intervalle au milieu — et la table des naissances de Gray de 1843 à 1852 est "
+     +"vide de GRILLOT. <i>Ou le ménage a vécu ailleurs, ou il a perdu des enfants dont on "
+     +"n'a pas les actes.</i>", ferme:false},
+   {b:"<b>La même sage-femme dix-neuf ans durant.</b> <b>Toussaine CARDINET</b>, femme de "
+     +"Victor Brutus CASSIN, accoucheuse à Gray, déclare elle-même les naissances de Joseph "
+     +"en 1835, d'Alfred Nicolas en 1842 et de Joseph Émile en 1854 — trente-cinq ans, "
+     +"quarante-deux ans, cinquante-quatre ans, la même femme d'un bout à l'autre. <i>Thomas "
+     +"n'est allé lui-même à la mairie que pour Christine, en 1834.</i>", ferme:true}
  ],
  dossier:[{type:"n", libelle:"Naissance"}, {type:"m", libelle:"Mariage"},
           {type:"d", libelle:"Décès"}]},
 
 {id:"thomas-grillot-1810", prenoms:"Thomas", nom:"GRILLOT", gen:3,
- x:1600, y:913, w:350, h:180,
+ x:1600, y:1033, w:350, h:180,
  neuf:true,
  naissance:{date:"03/09/1810", heure:"8 h", lieu:"Ancier", neuf:"Daté"},
  deces:{date:"11/02/1890", heure:"10 h", lieu:"Gray", age:"80 ans",
@@ -2449,6 +2680,11 @@ const PERSONNES = [
      +" <b>Anne Pierre BERNARDOT</b>, bouchère<span class=\"tag-new\">Complété</span>"},
    {dt:"Mariage", dd:"<b>Marnay, le 10 avril 1833</b>, acte n° 29 — chez la"
      +" mariée<span class=\"tag-new\">Daté</span>"},
+   {dt:"Enfants", dd:"<b>Christine</b>, née le 8 février 1834 · <b>Joseph</b>, né le "
+     +"2 décembre 1835 · <b>François</b>, né le 14 février 1837 <i>(table seule)</i> · "
+     +"<b>André François Napoléon</b>, né le 29 janvier 1838 · <b>Alfred Nicolas</b>, né le "
+     +"16 février 1842 · <b>Joseph Émile</b>, né le 6 avril 1854 — <b>cinq prouvés par acte "
+     +"de naissance</b>, tous à Gray<span class=\"tag-new\">Nouveau</span>"},
    {dt:"Fratrie", dd:"<b>non établie</b> — ses parents se marient en 1809, il naît en 1810, son"
      +" père meurt en 1832 : <i>vingt-deux ans de vie conjugale restent à dépouiller, à Ancier"
      +" puis à Gray</i>"}
@@ -2468,7 +2704,7 @@ const PERSONNES = [
           {type:"d", libelle:"Décès"}]},
 
 {id:"theolinde-paufard-1843", prenoms:"Adélaïde Théolinde", nom:"PAUFARD", f:true, gen:4,
- x:560, y:1240, w:320, h:230,
+ x:560, y:1360, w:320, h:230,
  naissance:{date:"23/09/1843", heure:"2 h du matin", lieu:"Fahy-lès-Autrey"},
  deces:{date:"1936", incertain:true},
  metiers:[{quoi:"épicière au village", an:1905, note:"1905-1906"},
@@ -2501,7 +2737,7 @@ const PERSONNES = [
  ]},
 
 {id:"napoleon-grillot-1838", prenoms:"André François Napoléon", nom:"GRILLOT", gen:4,
- x:1050, y:1240, w:320, h:230,
+ x:1050, y:1360, w:320, h:230,
  neuf:true, apports:["Nom complet"],
  naissance:{date:"27/01/1838", lieu:"Gray"},
  deces:{date:"12/01/1900", heure:"13 h", lieu:"Fahy-lès-Autrey", age:"61 ans"},
@@ -2509,19 +2745,20 @@ const PERSONNES = [
           {quoi:"propriétaire à Fahy", an:1869},
           {quoi:"marchand de bestiaux", an:1876, note:"encore en 1878", neuf:"Corrigé"}],
  divers:[
-   {dt:"Fratrie", dd:"<b>Joseph</b> GRILLOT, né le 2 décembre 1835 à Gray"
-     +" <span class=\"q\">?</span> <i>(la table de Gray donne un acte au 16 décembre"
-     +" — divergence à trancher)</i> — <i>maréchal des"
-     +" logis chef au 1<sup>er</sup> chasseurs</i> et témoin à son mariage en 1866,"
-     +" <b>capitaine en retraite</b> et déclarant au décès de leur père en 1890 ; chevalier de"
-     +" la Légion d'honneur · <b>Nicolas Eugène</b>, ≈ 1839-1840, marchand boucher puis"
-     +" négociant à Gray, dit <i>oncle paternel</i> de Joséphine en 1892 · <b>Joseph Émile</b>,"
-     +" né le 6 avril 1854 à Gray, marchand boucher rue du Marché — les trois <b>prouvés par"
-     +" acte</b> · <b>François</b>, né le 14 février 1837, connu de la seule table décennale et"
-     +" sans doute mort en bas âge<span class=\"tag-new\">Nouveau</span>"}
+   {dt:"Fratrie", dd:"<b>Christine</b>, née le <b>8 février 1834</b>, l'aînée — dix mois après "
+     +"le mariage de Marnay ; une Christine GRILLOT meurt à Gray le 17 juillet 1868, à "
+     +"trente-quatre ans · <b>Joseph</b>, né le <b>2 décembre 1835</b>, <i>maréchal des logis "
+     +"chef au 1<sup>er</sup> chasseurs</i> et témoin à son mariage en 1866, <b>capitaine en "
+     +"retraite</b> et déclarant au décès de leur père en 1890, chevalier de la Légion "
+     +"d'honneur · <b>François</b>, né le 14 février 1837, connu de la seule table décennale "
+     +"et sans doute mort en bas âge · <b>Alfred Nicolas</b>, né le <b>16 février 1842</b> · "
+     +"<b>Joseph Émile</b>, né le 6 avril 1854, marchand boucher rue du Marché — "
+     +"<b>cinq prouvés par acte de naissance</b> sur six"
+     +"<span class=\"tag-new\">Complété</span>"}
  ],
  notes:[
-   {b:"<b>Trois frères, trois voies.</b> Napoléon reprend le métier et le déplace — boucher à"
+   {b:"<b>Cinq enfants au moins, dont une sœur, et trois voies.</b> Napoléon reprend le "
+     +"métier et le déplace — boucher à"
      +" Gray, puis marchand de bestiaux à Fahy, où il épouse une propriétaire. Joseph part à"
      +" l'armée à dix-neuf ans et en revient capitaine et décoré. Joseph Émile, le cadet, reste"
      +" boucher rue du Marché et ses quatre fils essaiment vers Nancy et Paris. En une"
@@ -2539,7 +2776,7 @@ const PERSONNES = [
  ]},
 
 {id:"victor-carpentier-1856", prenoms:"Victor Jean-Baptiste", nom:"CARPENTIER", gen:5,
- x:300, y:1722, w:350, h:250,
+ x:300, y:1842, w:350, h:250,
  neuf:true, apports:["Identifié"],
  naissance:{date:"09/10/1856", lieu:"Baume-les-Dames <i>(Doubs)</i>"},
  deces:{date:"29/10/1898", heure:"4 h", lieu:"hôpital militaire de Bourges", age:"42 ans"},
@@ -2589,7 +2826,7 @@ const PERSONNES = [
  ]},
 
 {id:"josephine-grillot-1869", prenoms:"Françoise Léonie Joséphine", nom:"GRILLOT", f:true, gen:5,
- x:820, y:1722, w:320, h:250,
+ x:820, y:1842, w:320, h:250,
  naissance:{date:"02/03/1869", heure:"20 h", lieu:"Fahy-lès-Autrey"},
  deces:{date:"08/09/1905", heure:"10 h", lieu:"Fahy-lès-Autrey", age:"36 ans"},
  divers:[
@@ -2614,7 +2851,7 @@ const PERSONNES = [
  ]},
 
 {id:"maxime-bourdeau-1863", prenoms:"Maxime", nom:"BOURDEAU", gen:5,
- x:1310, y:1747, w:290, h:200,
+ x:1310, y:1867, w:290, h:200,
  neuf:true, apports:["Daté"],
  naissance:{date:"27/10/1863", lieu:"Fahy-lès-Autrey"},
  metiers:[{quoi:"propriétaire-vigneron"}],
@@ -2626,7 +2863,7 @@ const PERSONNES = [
  ]},
 
 {id:"yvonne-grillot-1889", prenoms:"Yvonne Marguerite", nom:"GRILLOT", f:true, gen:6,
- x:560, y:2277, w:320, h:265,
+ x:560, y:2397, w:320, h:265,
  neuf:true, apports:["Datée"],
  naissance:{date:"01/10/1889", lieu:"Lyon 1<sup>er</sup>, 1 Côte des Carmélites"},
  deces:{date:"11/02/1963", lieu:"Gray-la-Ville", age:"73 ans"},
@@ -2660,7 +2897,7 @@ const PERSONNES = [
  ]},
 
 {id:"camille-villette-1877", prenoms:"Camille Jean", nom:"VILLETTE", gen:6,
- x:1050, y:2277, w:320, h:265,
+ x:1050, y:2397, w:320, h:265,
  neuf:true, apports:["Acte trouvé"],
  naissance:{date:"24/07/1877", heure:"13 h", lieu:"Selongey <i>(Côte-d'Or)</i>", note:"déclaré par son père", neuf:"Nouveau"},
  deces:{date:"21/03/1969", lieu:"Gray"},
@@ -2680,7 +2917,7 @@ const PERSONNES = [
  ]},
 
 {id:"renee-villette-1908", prenoms:"Renée Jeanne", nom:"VILLETTE", f:true, gen:7,
- x:350, y:2676, w:290, h:170,
+ x:350, y:2796, w:290, h:170,
  neuf:true, apports:["Confirmée"],
  naissance:{date:"31/01/1908", lieu:"Autrey-lès-Gray"},
  deces:{date:"18/10/2001"},
@@ -2694,7 +2931,7 @@ const PERSONNES = [
  ]},
 
 {id:"edmond-ribaut-1906", prenoms:"Edmond Henri", nom:"RIBAUT", gen:7,
- x:810, y:2676, w:290, h:170,
+ x:810, y:2796, w:290, h:170,
  neuf:true, apports:["Daté"],
  naissance:{date:"06/04/1906"},
  deces:{date:"18/01/1998", neuf:"Nouveau"},
@@ -2706,7 +2943,7 @@ const PERSONNES = [
  ]},
 
 {id:"jean-villette-1911", prenoms:"Jean Émile", nom:"VILLETTE", gen:7,
- x:1230, y:2676, w:290, h:170,
+ x:1230, y:2796, w:290, h:170,
  naissance:{date:"23/02/1911", lieu:"Autrey-lès-Gray"},
  deces:{date:"22/03/2000"},
  divers:[
@@ -2719,7 +2956,7 @@ const PERSONNES = [
  ]},
 
 {id:"simone-ribaut-1933", prenoms:"Simone Camille Henriette", nom:"RIBAUT", f:true, gen:8,
- x:350, y:2970, w:290, h:150, vivant:true,
+ x:350, y:3090, w:290, h:150, vivant:true,
  neuf:true, apports:["Complétée"],
  naissance:{date:"27/09/1933", lieu:"Gray", neuf:"Nouveau"},
  metiers:[{quoi:"directrice d'hôpital", neuf:"Nouveau"}],
@@ -2732,7 +2969,7 @@ const PERSONNES = [
  ]},
 
 {id:"marcel-fontana-1930", prenoms:"Marcel Félix", nom:"FONTANA", gen:8,
- x:810, y:2970, w:290, h:150, vivant:true,
+ x:810, y:3090, w:290, h:150, vivant:true,
  neuf:true, apports:["Daté"],
  naissance:{date:"05/10/1930", lieu:"Annecy", neuf:"Nouveau"},
  metiers:[{quoi:"professeur de lettres", neuf:"Nouveau"}],
@@ -2741,7 +2978,7 @@ const PERSONNES = [
  ]},
 
 {id:"francoise-ribaut-1944", prenoms:"Françoise", nom:"RIBAUT", f:true, gen:8,
- x:1230, y:2970, w:290, h:150, vivant:true,
+ x:1230, y:3090, w:290, h:150, vivant:true,
  neuf:true, apports:["Complétée"],
  naissance:{date:"19/01/1944", lieu:"Dijon"},
  divers:[
@@ -2754,7 +2991,7 @@ const PERSONNES = [
  ]},
 
 {id:"cecile-fontana-1966", prenoms:"Cécile Madeleine Laure", nom:"FONTANA", f:true, gen:9,
- x:700, y:3234, w:290, h:140, vivant:true,
+ x:700, y:3354, w:290, h:140, vivant:true,
  neuf:true, apports:["Datée"],
  naissance:{date:"08/03/1966", lieu:"Mantes", lieuIncertain:true},
  divers:[
@@ -2764,7 +3001,7 @@ const PERSONNES = [
  ]},
 
 {id:"angelique-fontana-1963", prenoms:"Angélique Marie Renée", nom:"FONTANA", f:true, gen:9,
- x:330, y:3234, w:290, h:140, vivant:true,
+ x:330, y:3354, w:290, h:140, vivant:true,
  neuf:true, apports:["Datée"],
  naissance:{date:"07/12/1963", lieu:"Mantes-la-Jolie"},
  divers:[
@@ -2774,7 +3011,7 @@ const PERSONNES = [
  ]},
 
 {id:"isabelle-fontana-1968", prenoms:"Isabelle Marie-Pierre", nom:"FONTANA", f:true, gen:9,
- x:1070, y:3234, w:290, h:140, vivant:true,
+ x:1070, y:3354, w:290, h:140, vivant:true,
  neuf:true, apports:["Corrigée"],
  naissance:{date:"29/03/1968", lieu:"Mantes-la-Jolie"},
  divers:[
@@ -2789,7 +3026,7 @@ const PERSONNES = [
    pas leur rang dans ce tableau. */
 
 {id:"claude-grillot", prenoms:"Claude", nom:"GRILLOT", gen:0,
- x:1560, y:20, w:260, h:170, small:true, neuf:true,
+ x:2330, y:20, w:260, h:170, small:true, neuf:true,
  naissance:{date:"avant 1745", approx:true},
  deces:{date:"avant 1825", note:"dit défunt en mars 1825"},
  notes:[
@@ -2800,7 +3037,7 @@ const PERSONNES = [
  dossier:[{type:"x", libelle:"Acte non retrouvé"}]},
 
 {id:"francoise-charton", prenoms:"Françoise", nom:"CHARTON", f:true, gen:0,
- x:1880, y:20, w:260, h:170, small:true, neuf:true,
+ x:2650, y:20, w:260, h:170, small:true, neuf:true,
  naissance:{date:"avant 1745", approx:true},
  deces:{date:"avant 1825", note:"dite défunte en mars 1825"},
  notes:[
@@ -2811,7 +3048,7 @@ const PERSONNES = [
  dossier:[{type:"x", libelle:"Acte non retrouvé"}]},
 
 {id:"pierre-gabriel-grillot-1745", prenoms:"Pierre Gabriel", nom:"GRILLOT", gen:1,
- x:1490, y:300, w:290, h:200, small:true,
+ x:2500, y:300, w:240, h:200, small:true,
  neuf:true, apports:["Nouveau"],
  naissance:{date:"≈ 1745", lieu:"[Champvans-lès-Dole] <i>(Jura)</i>", approx:true,
             lieuIncertain:true, note:"80 ans en 1825"},
@@ -2829,7 +3066,7 @@ const PERSONNES = [
  dossier:[{type:"d", libelle:"Décès"}, {type:"x", libelle:"Naissance non retrouvée"}]},
 
 {id:"marie-josephe-remy", prenoms:"Marie Josèphe", nom:"RÉMY", f:true, gen:1,
- x:1840, y:300, w:260, h:200, small:true, neuf:true,
+ x:2795, y:300, w:240, h:200, small:true, neuf:true,
  naissance:{date:"dates à établir", approx:true},
  deces:{date:"après mars 1825", approx:true, note:"statut incertain en 1832"},
  divers:[
@@ -2845,7 +3082,7 @@ const PERSONNES = [
  dossier:[{type:"x", libelle:"Acte non retrouvé"}]},
 
 {id:"thomas-bernardot", prenoms:"Thomas", nom:"BERNARDOT", gen:1,
- x:2180, y:300, w:260, h:200, small:true,
+ x:3110, y:300, w:240, h:200, small:true,
  neuf:true, apports:["Nouveau"],
  naissance:{date:"dates à établir", approx:true},
  deces:{date:"après mai 1809", approx:true},
@@ -2859,7 +3096,7 @@ const PERSONNES = [
  dossier:[{type:"x", libelle:"Acte non retrouvé"}]},
 
 {id:"pierrette-rouget", prenoms:"[Pierrette]", nom:"ROUGET", f:true, gen:1,
- x:2500, y:300, w:260, h:200, small:true,
+ x:3405, y:300, w:240, h:200, small:true,
  neuf:true, doute:true,
  naissance:{date:"dates à établir", approx:true},
  divers:[
@@ -2869,7 +3106,7 @@ const PERSONNES = [
  dossier:[{type:"x", libelle:"Acte non retrouvé"}]},
 
 {id:"jean-pierre-ecarnot-1779", prenoms:"Jean Pierre", nom:"ÉCARNOT", gen:2,
- x:1620, y:569, w:260, h:250, small:true,
+ x:1680, y:629, w:260, h:250, small:true,
  neuf:true, apports:["Nouveau"],
  naissance:{date:"≈ 1779", approx:true, note:"environ 32 ans en 1811"},
  deces:{date:"01/02/1830", lieu:"Marnay", neuf:"Daté"},
@@ -2886,7 +3123,7 @@ const PERSONNES = [
  dossier:[{type:"x", libelle:"Acte non retrouvé"}]},
 
 {id:"marguerite-gardot", prenoms:"Marguerite", nom:"GARDOT", f:true, gen:2,
- x:1940, y:569, w:260, h:250, small:true,
+ x:2000, y:629, w:260, h:250, small:true,
  neuf:true, apports:["Nouveau"],
  naissance:{date:"dates à établir", approx:true},
  deces:{date:"20/12/1819", lieu:"Marnay"},
@@ -2902,7 +3139,7 @@ const PERSONNES = [
  dossier:[{type:"x", libelle:"Acte non retrouvé"}]},
 
 {id:"noel-grillot-1783", prenoms:"Noël", nom:"GRILLOT", gen:2,
- x:2280, y:569, w:290, h:250, small:true,
+ x:2340, y:629, w:290, h:250, small:true,
  neuf:true, apports:["Nouveau"],
  naissance:{date:"29/08/1783", lieu:"Marnay"},
  deces:{date:"05/02/1832", heure:"8 h", lieu:"Gray", age:"49 ans déclarés",
@@ -2939,7 +3176,7 @@ const PERSONNES = [
           {type:"x", libelle:"Naissance non retrouvée"}]},
 
 {id:"anne-pierre-bernardot-1789", prenoms:"Anne Pierre", nom:"BERNARDOT", f:true, gen:2,
- x:2730, y:569, w:260, h:250, small:true,
+ x:2790, y:629, w:260, h:250, small:true,
  neuf:true, apports:["Nouveau"],
  naissance:{date:"≈ 11/03/1789", lieu:"Le Magny", approx:true, note:"jour de lecture incertaine"},
  deces:{date:"1833-1890", approx:true, note:"vivante en avril 1833, dite décédée en février 1890",
@@ -2957,55 +3194,144 @@ const PERSONNES = [
      +" <b>signe de sa main</b> — <i>anne peire Bernardot</i>. C'est la seule femme de cette"
      +" branche dont on ait à la fois une signature et un état.", ferme:true}
  ],
- dossier:[{type:"x", libelle:"Acte non retrouvé"}]}
+ dossier:[{type:"x", libelle:"Acte non retrouvé"}]},
+
+/* --- dix-huitième séance : la génération −1 des PAUFARD et des REDOUTET,
+   ouverte par le mariage d'Autrey-lès-Gray du 13 février 1811 --- */
+
+{id:"jean-paufard", prenoms:"Jean", nom:"PAUFARD", gen:1,
+ x:1280, y:300, w:240, h:200, small:true, neuf:true, apports:["Nouveau"],
+ naissance:{date:"dates à établir", approx:true},
+ deces:{date:"après février 1811", approx:true},
+ metiers:[{quoi:"propriétaire, Oyrières", an:1811}],
+ lieux:[{quoi:"Gray", an:1788, note:"son fils y naît"},
+        {quoi:"Oyrières", an:1811}],
+ notes:[
+   {b:"<b>Présent et consentant au mariage de son fils</b>, en février 1811, et "
+     +"<b>signataire</b> — il sait écrire. Propriétaire à Oyrières, il y a auprès de lui un "
+     +"aîné, <b>Jean Claude</b>, marchand. C'est le premier PAUFARD que le dossier atteigne.",
+    ferme:true},
+   {b:"<b>Sa famille n'est pas d'Oyrières.</b> Son fils Jean-Baptiste naît <b>à Gray</b> le "
+     +"17 août 1788 ; en 1811 le ménage est à Oyrières. Le déplacement se place donc entre "
+     +"1788 et 1811, et <b>c'est à Gray qu'il faut chercher son propre mariage</b>, vers "
+     +"1770-1772 si l'on se règle sur l'aîné.", ferme:false}
+ ],
+ dossier:[{type:"m", libelle:"Mariage de son fils<span class=\"tag-new\">Nouveau</span>"},
+          {type:"x", libelle:"Acte propre non retrouvé"}]},
+
+{id:"francoise-bruyere", prenoms:"Françoise", nom:"BRUYÈRE", f:true, gen:1,
+ x:1575, y:300, w:240, h:200, small:true, neuf:true, apports:["Nouveau"],
+ naissance:{date:"dates à établir", approx:true},
+ deces:{date:"après février 1811", approx:true},
+ lieux:[{quoi:"Oyrières", an:1811}],
+ divers:[
+   {dt:"Signature", dd:"« <b>F. Bruyer</b> » — elle signe, sans l'accent final"}
+ ],
+ notes:[
+   {b:"<b>Elle sait écrire, et sa belle-fille non.</b> À l'acte de 1811, la mère du marié "
+     +"signe de sa main tandis que la mariée et la mère de la mariée déclarent l'une et "
+     +"l'autre ne savoir le faire. C'est un renseignement social autant qu'un détail de plume.",
+    ferme:true}
+ ],
+ dossier:[{type:"m", libelle:"Mariage de son fils<span class=\"tag-new\">Nouveau</span>"},
+          {type:"x", libelle:"Acte propre non retrouvé"}]},
+
+{id:"francois-redoutet", prenoms:"François", nom:"REDOUTET", gen:1,
+ x:1890, y:300, w:240, h:200, small:true, neuf:true, apports:["Nouveau"],
+ naissance:{date:"dates à établir", approx:true},
+ deces:{date:"après février 1811", approx:true},
+ metiers:[{quoi:"<b>maître tailleur de pierre</b>, Fahy", an:1811, neuf:"Nouveau"},
+          {quoi:"propriétaire, Fahy", an:1811}],
+ lieux:[{quoi:"Fahy-lès-Autrey", an:1811}],
+ notes:[
+   {b:"<b>C'est lui l'atelier.</b> Le dossier savait depuis les recensements que les PAUFARD "
+     +"de Fahy étaient une maison de tailleurs de pierre — quatre fils au même métier sous le "
+     +"même toit en 1841 — sans savoir d'où venait le métier. Il vient d'ici : le beau-père "
+     +"est <b>maître</b> tailleur de pierre à Fahy, et son gendre, simple tailleur de pierre à "
+     +"Oyrières en 1811, vient s'installer chez lui. <b>Jean-Baptiste PAUFARD n'a pas amené le "
+     +"métier à Fahy, il y est entré par le mariage.</b>", ferme:true},
+   {b:"Il signe, et l'acte porte à côté de sa signature une seconde main, « <b>A. Redoutet</b> », "
+     +"que le texte ne justifie pas. <i>À rapprocher — sans rien conclure — de l'</i>"
+     +"<b>Antoine REDOUTET</b><i> adjoint faisant fonctions de maire de Fahy en 1852 et 1854, "
+     +"et du </i><b>Joseph REDOUTET</b><i> dit cousin germain par alliance de Françoise AMIOT "
+     +"en 1865.</i> La place des REDOUTET à Fahy commence à s'expliquer.", ferme:false}
+ ],
+ dossier:[{type:"m", libelle:"Mariage de sa fille<span class=\"tag-new\">Nouveau</span>"},
+          {type:"x", libelle:"Acte propre non retrouvé"}]},
+
+{id:"denise-deurey", prenoms:"Denise", nom:"[DEUREY]", f:true, gen:1,
+ x:2185, y:300, w:240, h:200, small:true, neuf:true, doute:true, apports:["Nouveau"],
+ naissance:{date:"dates à établir", approx:true},
+ deces:{date:"après février 1811", approx:true},
+ lieux:[{quoi:"Fahy-lès-Autrey", an:1811}],
+ divers:[
+   {dt:"Lecture", dd:"le patronyme est <b>incertain</b> : la main de l'officier d'Autrey donne "
+     +"quelque chose comme <i>Deurey</i> ou <i>Deures</i>. <b>Ne pas le durcir</b> tant qu'un "
+     +"second acte ne l'a pas confirmé"},
+   {dt:"Prénom", dd:"sa fille porte son prénom — <b>deux Denise de suite</b>"}
+ ],
+ notes:[
+   {b:"Illettrée : l'acte de 1811 précise que ni la mariée ni sa mère n'ont su signer, quand "
+     +"les quatre autres parents et témoins l'ont fait.", ferme:true}
+ ],
+ dossier:[{type:"m", libelle:"Mariage de sa fille<span class=\"tag-new\">Nouveau</span>"},
+          {type:"x", libelle:"Acte propre non retrouvé"}]}
 ];
 
 const UNIONS = [
  {id:"u-guignard-renevier", epoux:["francois-renevier", "barbe-guignard"], enfants:["claude-renevier-1743"],
   mariage:null, statut:"probable", bus:270   /* coude repris du trace manuel ; retirer pour laisser layout() decider */},
  {id:"u-amiot-bertault", epoux:["francois-bernard-amiot", "nicolle-bertault"], enfants:["francois-amiot-1780"],
-  mariage:null, statut:"probable", bus:558   /* coude descendu sous le bas reel des fiches, qui ont grandi */},
+  mariage:null, statut:"probable", bus:618   /* coude descendu sous le bas reel des fiches, qui ont grandi */},
  {id:"u-petitot-renevier", epoux:["claude-renevier-1743", "catherine-petitot-1731"], enfants:["barbe-renevier-1774"],
-  mariage:null, statut:"probable", bus:536   /* coude descendu sous le bas reel des fiches, qui ont grandi */},
+  mariage:null, statut:"probable", bus:596   /* coude descendu sous le bas reel des fiches, qui ont grandi */},
  {id:"u-amiot-renevier-1803", epoux:["francois-amiot-1780", "barbe-renevier-1774"], enfants:["francoise-amiot-1810"],
-  mariage:"26/04/1803", an:1803, acte:"6 floréal an XI", statut:"établie", pw:110, bus:845   /* coude repris du trace manuel ; retirer pour laisser layout() decider */},
+  mariage:"26/04/1803", an:1803, acte:"6 floréal an XI", statut:"établie", pw:110, bus:965   /* coude repris du trace manuel ; retirer pour laisser layout() decider */},
  {id:"u-paufard-redoutet", epoux:["jean-baptiste-paufard-1788", "denise-redoutet-1789"], enfants:["claude-alexis-paufard-1813"],
-  mariage:null, statut:"établie", bus:861   /* coude descendu sous le bas reel des fiches, qui ont grandi */},
+  mariage:"13/02/1811", an:1811, acte:"Autrey-lès-Gray, acte n° 12", statut:"établie", pw:100,
+  bus:981   /* coude descendu sous le bas reel des fiches, qui ont grandi */},
  {id:"u-amiot-paufard-1836", epoux:["francoise-amiot-1810", "claude-alexis-paufard-1813"], enfants:["theolinde-paufard-1843"],
-  mariage:"25/10/1836", an:1836, acte:"Acte n° 16", statut:"établie", pw:120, encart:"encart-fratrie-paufard-treize-enfants", bus:1222   /* coude descendu sous le bas reel des fiches, qui ont grandi */},
+  mariage:"25/10/1836", an:1836, acte:"Acte n° 16", statut:"établie", pw:120, encart:"encart-fratrie-paufard-treize-enfants", bus:1342   /* coude descendu sous le bas reel des fiches, qui ont grandi */},
  {id:"u-escarnot-grillot", epoux:["jeanne-escarnot-1810", "thomas-grillot-1810"], enfants:["napoleon-grillot-1838"],
   mariage:"10/04/1833", an:1833, acte:"Marnay, acte n° 29", statut:"établie", pw:110,
-  bus:1210   /* coude descendu sous le bas reel des fiches, qui ont grandi */},
+  bus:1330   /* coude descendu sous le bas reel des fiches, qui ont grandi */},
 
  {id:"u-ecarnot-gardot", epoux:["jean-pierre-ecarnot-1779", "marguerite-gardot"],
   enfants:["jeanne-escarnot-1810"], mariage:null, statut:"établie",
-  bus:845   /* coude sous le bas reel des fiches : a mi-chemin il les traversait */},
+  bus:965   /* coude sous le bas reel des fiches : a mi-chemin il les traversait */},
  {id:"u-grillot-paufard-1866", epoux:["theolinde-paufard-1843", "napoleon-grillot-1838"], enfants:["josephine-grillot-1869"],
-  mariage:"06/06/1866", an:1866, acte:"Acte n° 1", statut:"établie", pw:120, bus:1682   /* coude repris du trace manuel ; retirer pour laisser layout() decider */},
+  mariage:"06/06/1866", an:1866, acte:"Acte n° 1", statut:"établie", pw:120, bus:1802   /* coude repris du trace manuel ; retirer pour laisser layout() decider */},
  {id:"u-carpentier-grillot-1892", epoux:["victor-carpentier-1856", "josephine-grillot-1869"], enfants:[],
   mariage:"27/08/1892", an:1892, acte:"Acte n° 1", libelle:"1er mariage", rang:1, statut:"établie", pw:110},
  {id:"u-bourdeau-grillot-1899", epoux:["josephine-grillot-1869", "maxime-bourdeau-1863"], enfants:[],
   mariage:"30/12/1899", an:1899, acte:"Acte n° 3", libelle:"2e mariage", rang:2, statut:"établie", pw:110},
  {id:"u-grillot-villette-1906", epoux:["yvonne-grillot-1889", "camille-villette-1877"], enfants:["renee-villette-1908", "jean-villette-1911"],
-  mariage:"22/09/1906", an:1906, acte:"Acte n° 3", statut:"établie", pw:120, bus:2572   /* coude repris du trace manuel ; retirer pour laisser layout() decider */},
+  mariage:"22/09/1906", an:1906, acte:"Acte n° 3", statut:"établie", pw:120, bus:2692   /* coude repris du trace manuel ; retirer pour laisser layout() decider */},
  {id:"u-ribaut-villette-1930", epoux:["renee-villette-1908", "edmond-ribaut-1906"], enfants:["simone-ribaut-1933", "francoise-ribaut-1944"],
-  mariage:"06/09/1930", an:1930, acte:"Acte non retrouvé", libelle:"Union possible", statut:"probable", pw:172, bus:2912   /* coude descendu sous le bas reel des fiches, qui ont grandi */},
+  mariage:"06/09/1930", an:1930, acte:"Acte non retrouvé", libelle:"Union possible", statut:"probable", pw:172, bus:3032   /* coude descendu sous le bas reel des fiches, qui ont grandi */},
  {id:"u-fontana-ribaut-1963", epoux:["simone-ribaut-1933", "marcel-fontana-1930"], enfants:["cecile-fontana-1966", "angelique-fontana-1963", "isabelle-fontana-1968"],
-  mariage:"30/08/1963", an:1963, acte:"Saint-Étienne · papiers de famille", statut:"probable", pw:172, bus:3216   /* coude descendu sous le bas reel des fiches, qui ont grandi */},
+  mariage:"30/08/1963", an:1963, acte:"Saint-Étienne · papiers de famille", statut:"probable", pw:172, bus:3336   /* coude descendu sous le bas reel des fiches, qui ont grandi */},
 
 /* --- seizième séance : la remontée GRILLOT --- */
 {id:"u-grillot-charton", epoux:["claude-grillot", "francoise-charton"],
  enfants:["pierre-gabriel-grillot-1745"], mariage:null, statut:"établie"},
 
 {id:"u-grillot-remy", epoux:["pierre-gabriel-grillot-1745", "marie-josephe-remy"],
- enfants:["noel-grillot-1783"], mariage:null, statut:"établie", bus:552},
+ enfants:["noel-grillot-1783"], mariage:null, statut:"établie", bus:612},
 
 {id:"u-bernardot-rouget", epoux:["thomas-bernardot", "pierrette-rouget"],
- enfants:["anne-pierre-bernardot-1789"], mariage:null, statut:"établie", bus:552},
+ enfants:["anne-pierre-bernardot-1789"], mariage:null, statut:"établie", bus:612},
 
 {id:"u-grillot-bernardot-1809", epoux:["noel-grillot-1783", "anne-pierre-bernardot-1789"],
  enfants:["thomas-grillot-1810"], mariage:"1809", an:1809,
- acte:"publication du 7 mai 1809", statut:"établie", pw:110, bus:861}
+ acte:"publication du 7 mai 1809", statut:"établie", pw:110, bus:981},
+
+/* --- dix-huitième séance : les parents des époux de 1811 --- */
+{id:"u-paufard-bruyere", epoux:["jean-paufard", "francoise-bruyere"],
+ enfants:["jean-baptiste-paufard-1788"], mariage:null, statut:"établie", bus:605},
+
+{id:"u-redoutet-deurey", epoux:["francois-redoutet", "denise-deurey"],
+ enfants:["denise-redoutet-1789"], mariage:null, statut:"établie", bus:605}
 ];
 
 /* Filiations qui ne passent pas par une union — extension 1 de CONVERSION.md § 4.
@@ -3017,7 +3343,7 @@ const UNIONS = [
    marginales ; celle de l'adoption n'est pas encore lue, elle reste absente. */
 const FILIATIONS = [
  {enfant:"yvonne-grillot-1889", parent:"josephine-grillot-1869",
-  statut:"naturelle", ligne:true, bus:2252,
+  statut:"naturelle", ligne:true, bus:2372,
   quoi:"Fille naturelle de père inconnu",
   b:"Née à Lyon 1<sup>er</sup>, 1 Côte des Carmélites. L'acte ne nomme pas de père."},
 
@@ -3079,7 +3405,7 @@ const UNIONS_HORS_ARBRE = [
 const ENCARTS = [
 {id:"encart-fratrie-paufard-treize-enfants", titre:"Fratrie PAUFARD — treize enfants",
  apport:"Refondue",
- x:176, y:1192, w:380, h:335, doute:false,
+ x:176, y:1312, w:380, h:335, doute:false,
  union:"u-amiot-paufard-1836",   /* la fratrie de cette union : treize enfants, une seule fiche */
  enfants:[
    {who:"Françoise <b>Firmine</b>", yr:"25/09/1837 · <span class=\"died\">† 03/10/1838</span>"},
@@ -3184,6 +3510,15 @@ const ACTES = [
 {id:"a-1854-deces-de-christine-amiot-veuve-poirot", type:"d", titre:"Décès de Christine AMIOT, veuve POIROT",
  date:"3 août 1854", an:1854, tr:"t-1854-deces-de-christine-amiot-veuve-poirot",
  mentions:[]},
+
+{id:"a-1811-mariage-de-jean-baptiste-paufard-et-de-denise-redoutet", type:"m",
+ titre:"Mariage de Jean-Baptiste PAUFARD et de Denise REDOUTET",
+ date:"13 février 1811", an:1811, neuf:true,
+ tr:"t-1811-mariage-de-jean-baptiste-paufard-et-de-denise-redoutet",
+ mentions:[{qui:"jean-baptiste-paufard-1788", principal:1},
+           {qui:"denise-redoutet-1789", principal:1},
+           {qui:"jean-paufard", principal:1}, {qui:"francoise-bruyere", principal:1},
+           {qui:"francois-redoutet", principal:1}, {qui:"denise-deurey", principal:1}]},
 
 {id:"a-1813-naissance-de-claude-paufard", type:"n", titre:"Naissance de Claude PAUFARD",
  date:"7 juin 1813", an:1813, tr:"t-1813-naissance-de-claude-paufard",
@@ -3350,9 +3685,21 @@ const ACTES = [
  date:"12 décembre 1879", an:1879, tr:"t-1879-deces-de-josephine-grillot",
  mentions:[]},
 
+{id:"a-1834-naissance-de-christine-grillot", type:"n", titre:"Naissance de Christine GRILLOT",
+ date:"8 février 1834", an:1834, neuf:true, tr:"t-1834-naissance-de-christine-grillot",
+ mentions:[{qui:"thomas-grillot-1810", principal:1}, {qui:"jeanne-escarnot-1810", principal:1}]},
+
+{id:"a-1842-naissance-d-alfred-nicolas-grillot", type:"n", titre:"Naissance d'Alfred Nicolas GRILLOT",
+ date:"16 février 1842", an:1842, neuf:true, tr:"t-1842-naissance-d-alfred-nicolas-grillot",
+ mentions:[{qui:"thomas-grillot-1810", principal:1}, {qui:"jeanne-escarnot-1810", principal:1}]},
+
+{id:"a-1842-naissance-d-anne-louise-grillot", type:"n", titre:"Naissance d'Anne Louise GRILLOT",
+ date:"7 février 1842", an:1842, neuf:true, tr:"t-1842-naissance-d-anne-louise-grillot",
+ mentions:[]},
+
 {id:"a-1835-naissance-de-joseph-grillot", type:"n", titre:"Naissance de Joseph GRILLOT",
  date:"2 décembre 1835", an:1835, tr:"t-1835-naissance-de-joseph-grillot",
- mentions:[]},
+ mentions:[{qui:"thomas-grillot-1810", principal:1}, {qui:"jeanne-escarnot-1810", principal:1}]},
 
 {id:"a-1879-deces-d-ernest-jean-antoine-grillot", type:"d", titre:"Décès d'Ernest Jean Antoine GRILLOT",
  date:"3 janvier 1879", an:1879, tr:"t-1879-deces-d-ernest-jean-antoine-grillot",
@@ -4152,11 +4499,11 @@ const RECHERCHES = [
  pourquoi:"Vérifier si Angélique descend du meunier <b>CHATEAU</b>, beau-frère de Claude PAUFARD en 1836 — auquel cas le second mari de Joséphine était déjà un cousin.",
  seances:[]},
 
-{id:"deces-jean-baptiste-paufard-denise-redoutet", dossier:"grillot-paufard", priorite:"P2", statut:"afaire",
+{id:"deces-jean-baptiste-paufard-denise-redoutet", dossier:"grillot-paufard", priorite:"P3", statut:"afaire",
  titre:"Où sont morts Jean-Baptiste PAUFARD et Denise REDOUTET ?",
  ou:"Dans cet ordre — tables de décès de <b>Fahy</b> 1843-1852 et 1853-1862, <b>à la lettre R pour Denise</b>, qui y sera portée à REDOUTET et non à PAUFARD ; puis <b>Autrey-lès-Gray</b>, où vit leur fils François ; puis <b>Gray</b>, à cause de l'hospice, où l'on meurt en gardant son domicile légal ailleurs ; puis les <b>tables de successions et absences</b> du bureau de Gray, qui portent une date de décès pour tout défunt laissant des biens.",
- pourquoi:"L'acte de décès de leur fils, en mai 1865, les dit <b>défunts et domiciliés à Fahy</b> : la fenêtre 1846-1865, déduite du recensement, est confirmée par pièce. Mais <b>ils sont absents des tables de décès de la commune</b> — le dépouillement a manqué quelque chose, ou ils sont morts ailleurs en gardant leur domicile. Les deux hypothèses se testent. Leurs actes nommeraient leurs propres parents, <b>seule voie connue vers la génération −1 des PAUFARD</b>.",
- seances:["27/08/2026", "28-29/08/2026"]},
+ pourquoi:"L'acte de décès de leur fils, en mai 1865, les dit <b>défunts et domiciliés à Fahy</b> : la fenêtre 1846-1865, déduite du recensement, est confirmée par pièce. Mais <b>ils sont absents des tables de décès de la commune</b> — le dépouillement a manqué quelque chose, ou ils sont morts ailleurs en gardant leur domicile. Les deux hypothèses se testent. <b>Leurs actes ne sont plus la voie vers la génération d'avant</b> : le mariage d'Autrey de 1811 l'a ouverte, et il nomme les quatre ascendants. Ils servent maintenant à <b>dater la fin du couple</b> et à savoir <b>où</b> ils sont morts — ce qui reste utile, mais n'est plus stratégique.",
+ seances:["27/08/2026", "28-29/08/2026", "30/08/2026 · soir"]},
 
 {id:"que-devient-clotilde-hortense", dossier:"grillot-paufard", priorite:"P1", statut:"afaire",
  titre:"Que devient Clotilde Hortense PAUFARD, née le 1<sup>er</sup> janvier 1839 ?",
@@ -4351,11 +4698,13 @@ const RECHERCHES = [
  pourquoi:"L'acte de 1865 dit <b>Auguste CHATEAU, vingt-sept ans, gendre</b> de Françoise PAUFARD. Un CHATEAU a donc épousé une fille CHATEAU — mariage entre cousins. L'acte nommera la fille et éclairera la descendance de la tante.",
  seances:["28-29/08/2026"]},
 
-{id:"quatre-naissances-grillot-gray-1833-1842", dossier:"grillot-paufard", priorite:"P2", statut:"afaire",
+{id:"quatre-naissances-grillot-gray-1833-1842", dossier:"grillot-paufard", statut:"resolue",
  titre:"Les quatre naissances GRILLOT de Gray de 1833 à 1842 : lesquelles sont de Thomas ?",
- ou:"Gray, actes de naissance — <b>Alfred Nicolas, 17 février 1842</b> en priorité, puis <b>Anne Louise, 9 février 1840</b>, <b>Christine, 10 février 1834</b>, <b>Françoise Adélaïde, 20 septembre 1833</b>.",
- pourquoi:"Trois raisons convergent. <b>Nicolas Eugène</b>, frère de Napoléon, est porté « ≈ 1839 » sans acte, et aucun Nicolas ne naît à Gray cette année-là : l'Alfred Nicolas de 1842 est le seul candidat plausible. <b>Christine</b>, née dix mois après le mariage de 1833, serait l'aînée de la fratrie si elle est de Thomas — et une Christine GRILLOT meurt à Gray en 1868, à trente-quatre ans. Enfin, <b>cinq de ces naissances tombent en janvier ou février</b> sur neuf années, ce qui suggère un même foyer plutôt que deux. <i>Quatre actes suffisent à fermer la fratrie de Napoléon par les deux bouts.</i>",
- seances:["30/08/2026"]},
+ ou:"Gray, actes de naissance de 1833, 1834, 1842 × 2, plus la reprise de Joseph 1835 sur le registre original.",
+ pourquoi:"<b>Nicolas Eugène</b>, frère de Napoléon, était porté « ≈ 1839 » sans acte ; <b>Christine</b>, née dix mois après le mariage de 1833, serait l'aînée si elle est de Thomas. <i>Quatre actes suffisaient à fermer la fratrie de Napoléon par les deux bouts.</i>",
+ resultat:"<b>Deux sur quatre.</b> <b>Christine, née le 8 février 1834</b>, et <b>Alfred Nicolas, né le 16 février 1842</b>, sont de Thomas et de Jeanne — les âges déclarés concordent au mois près dans les trois actes. Françoise Adélaïde est de <b>François GRILLOT et de Françoise THÉVENIN</b> ; Anne Louise, de <b>Nicolas Louis GRILLOT, charpentier, et d'Anne Antoinette BAILLY</b> — une <b>huitième maison</b> graylaise. La fratrie de Napoléon compte désormais <b>six enfants, cinq prouvés par acte</b>, et <b>Christine en est l'aînée</b>.",
+ piece:"a-1834-naissance-de-christine-grillot",
+ seances:["30/08/2026", "30/08/2026 · soir"]},
 
 {id:"ou-etaient-thomas-et-jeanne-1842-1854", dossier:"grillot-paufard", priorite:"P2", statut:"afaire",
  titre:"Où étaient Thomas et Jeanne entre 1842 et 1854 ?",
@@ -4401,6 +4750,80 @@ const RECHERCHES = [
  resultat:"Elle n'y figure pas.",
  consequence:"Elle n'est pas morte nourrisson, ce qui restait l'explication la plus simple de son absence du recensement de 1841. <b>Elle a donc quitté le foyer très tôt et vécu ailleurs.</b> La piste reste entière et se déplace vers les autres ménages de Fahy, puis vers les mariages d'Autrey et de Gray.",
  seances:["30/08/2026"]},
+
+{id:"mariage-paufard-redoutet-1811", dossier:"grillot-paufard", statut:"resolue",
+ titre:"Où et quand Jean-Baptiste PAUFARD a-t-il épousé Denise REDOUTET ?",
+ ou:"Autrey-lès-Gray, mariages de 1811 — chez la mariée, qui résidait à Fahy.",
+ pourquoi:"Aucun acte ne datait cette union, et la génération −1 des PAUFARD était entièrement inconnue. <i>Le dossier cherchait cette génération par les décès du couple ; c'était le mariage qu'il fallait.</i>",
+ resultat:"<b>À Autrey-lès-Gray, le 13 février 1811</b>, acte n° 12. L'acte donne <b>quatre ascendants nouveaux</b> — Jean PAUFARD et Françoise BRUYÈRE, propriétaires à Oyrières ; François REDOUTET, maître tailleur de pierre à Fahy, et Denise [DEUREY] —, les dates de naissance exactes des deux époux, le lieu de naissance de Jean-Baptiste — <b>Gray</b>, et non Oyrières —, un frère aîné, et <b>l'origine de l'atelier de tailleurs de pierre de Fahy</b>, qui est celui des REDOUTET.",
+ piece:"a-1811-mariage-de-jean-baptiste-paufard-et-de-denise-redoutet",
+ seances:["30/08/2026 · soir"]},
+
+{id:"date-naissance-joseph-grillot-1835", dossier:"grillot-paufard", statut:"resolue",
+ titre:"La date de naissance de Joseph GRILLOT, le capitaine",
+ ou:"Gray, naissances de 1835 — le registre original, après l'extrait du dossier Léonore.",
+ pourquoi:"L'extrait militaire donnait le 2 décembre 1835 à l'acte n° 173 ; la table décennale de Gray portait un « Joseph, 16 décembre 1835 ». <b>Quatorze jours d'écart, et deux numéros</b> : il fallait l'original.",
+ resultat:"<b>Le 2 décembre 1835</b>, confirmé sur le registre de Gray, <b>acte n° 175 du 4 décembre</b>. L'extrait annonçait le n° 173 — l'erreur d'un copiste. La divergence se résout <b>contre la table</b>. <i>Reste à savoir ce qu'est ce « 16 décembre ».</i>",
+ piece:"a-1835-naissance-de-joseph-grillot",
+ seances:["30/08/2026 · soir"]},
+
+{id:"deces-nicolas-louis-grillot-1865", dossier:"grillot-paufard", priorite:"P1", statut:"afaire",
+ titre:"Le décès de Nicolas Louis GRILLOT, charpentier, à Gray le 5 avril 1865",
+ ou:"Gray, décès de 1865 — la ligne « Nicolas-Louis, 5 avril 1865 » figure à la table décennale 1863-1872.",
+ pourquoi:"<b>C'est l'acte le plus rentable ouvert par cette séance.</b> Un acte de décès nomme les parents du défunt. Si Nicolas Louis, né vers 1812-1813, est dit <b>fils de Noël GRILLOT et d'Anne Pierre BERNARDOT</b>, alors la « huitième maison GRILLOT de Gray » n'en est pas une : c'est <b>le frère de Thomas</b>, et la fratrie de Thomas — entièrement inconnue à ce jour — s'ouvre par son cadet. S'il est fils d'un autre, la maison est étrangère et l'affaire est classée. <i>Une vue tranche une question ouverte depuis le début du dossier.</i>",
+ seances:["30/08/2026 · soir"]},
+
+{id:"mariage-nicolas-grillot-therese-pourcelot", dossier:"grillot-paufard", priorite:"P1", statut:"afaire",
+ titre:"Le mariage de Nicolas GRILLOT et de Thérèse POURCELOT, avant novembre 1872",
+ ou:"Gray d'abord, mariages 1860-1872 ; puis les communes voisines si la mariée n'est pas d'ici.",
+ pourquoi:"<b>C'est le seul acte qui donnera sa date de naissance exacte</b>, et donc qui dira s'il est ou non l'<b>Alfred Nicolas</b> né à Gray le 16 février 1842. Trois ans séparent l'âge qu'il déclare en 1874 de celui qu'aurait Alfred Nicolas, et le prénom diffère aussi. <i>Tant que ce mariage n'est pas lu, le rattachement reste probable et non prouvé, et il faut l'écrire ainsi partout.</i>",
+ seances:["30/08/2026 · soir"]},
+
+{id:"fahy-commune-distincte-1791", dossier:"grillot-paufard", priorite:"P1", statut:"afaire",
+ titre:"Fahy-lès-Autrey était-elle commune distincte en 1791 ?",
+ ou:"La notice de Fahy-lès-Autrey dans <i>Des villages de Cassini aux communes d'aujourd'hui</i> (EHESS), qui donne l'histoire administrative de chaque commune ; puis, comme vérification directe, <b>le registre des naissances d'Autrey-lès-Gray de 1791</b>, où l'on doit trouver ou non la naissance de Denise REDOUTET au 4 avril.",
+ pourquoi:"L'acte de 1811 dit la mariée <b>résidant à Fahy</b> et <b>née « audit Autrey »</b>, son extrait de naissance venant des registres de la commune où l'on marie, et <b>les publications n'ont été faites qu'à Autrey et Oyrières</b>, jamais à Fahy. Si Fahy n'était pas encore commune distincte, <b>tous les actes de Fahy antérieurs à sa création sont au registre d'Autrey</b> — et plusieurs recherches menées « à Fahy » sur des dates anciennes ont pu échouer pour cette seule raison. <b>C'est une question de méthode qui conditionne d'autres recherches, pas une curiosité.</b> <i>Elle se règle en deux vues et il faut la régler tôt.</i>",
+ seances:["30/08/2026 · soir"]},
+
+{id:"deces-christine-grillot-1868", dossier:"grillot-paufard", priorite:"P2", statut:"afaire",
+ titre:"Le décès de Christine GRILLOT, à Gray le 17 juillet 1868",
+ ou:"Gray, décès de 1868 ; la ligne est à la table décennale 1863-1872.",
+ pourquoi:"L'âge concorde exactement — trente-quatre ans pour une femme née le 8 février 1834. L'acte confirmera qu'il s'agit bien de l'aînée de Thomas et de Jeanne, et <b>dira si elle s'était mariée</b> : une sœur mariée de Napoléon signifierait une <b>descendance collatérale entière</b>, jusqu'ici invisible.",
+ seances:["30/08/2026 · soir"]},
+
+{id:"mariage-jean-paufard-francoise-bruyere", dossier:"grillot-paufard", priorite:"P2", statut:"afaire",
+ titre:"Le mariage de Jean PAUFARD et de Françoise BRUYÈRE, à Gray, vers 1770-1775",
+ ou:"Registres paroissiaux de <b>Gray</b> — le fils cadet y naît en 1788, l'aîné Jean Claude vers 1772-1773. Chercher aussi les <b>naissances PAUFARD à Gray entre 1770 et 1795</b>, qui donneront la fratrie complète.",
+ pourquoi:"C'est la porte de la <b>génération −2 côté PAUFARD</b>, et elle vient de s'ouvrir. Jean-Baptiste étant né à Gray, le couple y était établi en 1788 ; il faut savoir depuis quand, d'où il venait, et combien d'enfants il a eus. <i>C'est désormais la branche la moins profonde du dossier, et la plus facile à creuser.</i>",
+ seances:["30/08/2026 · soir"]},
+
+{id:"les-redoutet-de-fahy", dossier:"grillot-paufard", priorite:"P2", statut:"afaire",
+ titre:"Les REDOUTET de Fahy : la maison du maître tailleur de pierre",
+ ou:"Naissances de <b>Fahy</b> (ou d'Autrey, voir la recherche sur la commune de 1791) entre 1785 et 1800 pour la fratrie de Denise ; puis le mariage de François REDOUTET avec Denise [DEUREY], vers 1785-1790 ; puis l'identification d'<b>Antoine REDOUTET</b>, adjoint faisant fonctions de maire en 1852-1854, et de <b>Joseph REDOUTET</b>, quarante-trois ans en 1865.",
+ pourquoi:"Trois REDOUTET traversent le dossier sans qu'on sache comment ils s'articulent, et l'on sait maintenant que la famille tient à Fahy <b>un atelier et des biens</b>. <b>Le lien entre les trois est presque certainement un lien de sang</b> : le nommer donnerait à la branche maternelle son premier réseau local documenté. <i>Et le patronyme de la mère de Denise, lu [DEUREY], sera confirmé ou corrigé du même coup.</i>",
+ seances:["30/08/2026 · soir"]},
+
+{id:"joseph-grillot-16-decembre-1835", dossier:"grillot-paufard", priorite:"P3", statut:"afaire",
+ titre:"Le « Joseph, 16 décembre 1835 » de la table décennale de Gray",
+ ou:"Gray, naissances de décembre 1835, actes postérieurs au n° 177.",
+ pourquoi:"Notre Joseph est à l'acte n° 175 du 4 décembre. Ou la ligne de la table est mal lue, ou <b>un troisième GRILLOT naît à Gray en décembre 1835</b> — après Joseph le 2 et Anne Baptiste le 8. Trois naissances en seize jours seraient un argument de plus sur la pluralité des maisons. <i>Question d'hygiène, pas d'enjeu.</i>",
+ seances:["30/08/2026 · soir"]},
+
+{id:"table-naissances-gray-1833-1842-fausse", dossier:"grillot-paufard", statut:"negative",
+ titre:"La table décennale des naissances de Gray, 1833-1842, est fausse sur trois lignes",
+ ou:"Gray, table décennale des naissances 1833-1842, confrontée aux actes eux-mêmes.",
+ resultat:"Trois lignes sur huit sont fausses : Françoise Adélaïde, <b>30</b> et non 20 septembre 1833 ; Anne Louise, <b>1842</b> et non 1840 ; Joseph, acte du <b>4</b> et non du 16 décembre 1835.",
+ consequence:"L'avertissement de source de l'article des tables, qui ne portait que sur l'irrégularité des dates <i>(acte ou naissance selon les lignes)</i>, doit être doublé : <b>ces tables sont aussi mal lues qu'irrégulières, et un millésime peut se déplacer de deux ans</b>. <i>Aucune date qui en soit tirée ne doit servir de preuve, ni servir à établir une absence.</i>",
+ piece:"a-1792-1892-les-grillot-dans-les-tables-decennales-de-gray",
+ seances:["30/08/2026 · soir"]},
+
+{id:"francois-grillot-pere-de-thomas", dossier:"grillot-paufard", statut:"caduque",
+ titre:"L'hypothèse « François GRILLOT, père de Thomas »",
+ ou:"Elle survivait dans la glose de la naissance de Françoise Adélaïde, en 1833.",
+ resultat:"Sans objet.",
+ consequence:"L'acte de décès de 1890 et le mariage de Marnay donnent tous deux Thomas <b>fils de Noël</b>. <b>Trois François GRILLOT vivent à Gray dans ces années-là, et aucun n'est son père.</b> <i>La phrase est supprimée de la glose, non nuancée : la question est close, et cette maison-là reste sans lien établi avec la nôtre.</i>",
+ piece:"a-1833-naissance-de-francoise-adelaide-grillot",
+ seances:["30/08/2026 · soir"]},
 
 {id:"aucune-naissance-grillot-gray-1843-1852", dossier:"grillot-paufard", statut:"negative",
  titre:"Aucune naissance GRILLOT à Gray entre 1843 et 1852",
@@ -4637,6 +5060,21 @@ const SEANCES = [
    {grp:"Recherches négatives"},
    {quoi:"<b>Successions du bureau de Gray</b> — rien entre 1824 et 1944"},
    {quoi:"<b>Décès de Fahy 1839</b> — Clotilde Hortense absente"}
+  ]},
+
+ {date:"30/08/2026 · soir", titre:"Dix-huitième séance — Autrey 1811, et les naissances de Gray",
+  actes:[
+   {grp:"Autrey-lès-Gray"},
+   {quoi:"<b>Mariage 1811, acte n° 12</b> — Jean-Baptiste PAUFARD × Denise REDOUTET "
+        +"<i>(quatre ascendants nouveaux)</i>"},
+   {grp:"Gray — naissances"},
+   {quoi:"<b>1834, acte n° 26</b> — Christine GRILLOT, l'aînée"},
+   {quoi:"<b>1835, acte n° 175</b> — Joseph GRILLOT, sur le registre original"},
+   {quoi:"<b>1842, acte n° 35</b> — Alfred Nicolas GRILLOT"},
+   {quoi:"<b>1842, acte n° 26</b> — Anne Louise GRILLOT <i>(huitième maison)</i>"},
+   {quoi:"<b>1833, acte n° 127</b> — Françoise Adélaïde GRILLOT <i>(homonyme, relu)</i>"},
+   {grp:"Rectifications"},
+   {quoi:"<b>Table des naissances 1833-1842</b> — trois lignes fausses sur huit"}
   ]}
 ];
 
@@ -4651,6 +5089,252 @@ const GENERATIONS = [
  {num:"V", yrs:"1906 · 1911", bande:false},
  {num:"VI", yrs:"1933 · 1944", bande:true},
  {num:"VII", yrs:"dates à établir", bande:false}
+];
+
+/* ------------------------------------------------------------------
+   Les lieux — l'onglet Carte.
+
+   Cette famille tient dans un mouchoir de poche : tout ce qui compte se
+   passe dans un carré d'une trentaine de kilomètres de côté, et les
+   alliances suivent la géographie de bout en bout. Le texte le dit à
+   chaque page ; cette table sert à le montrer.
+
+   ⚠ Les coordonnées sont celles du CENTRE DE LA COMMUNE, relevées sur
+   l'API géographique de l'État (le code INSEE est donné en regard). Deux
+   anciennes communes — Mont-le-Frânois, fondue dans Framont en 1972, et
+   Montarlot-lès-Champlitte, rattachée à Champlitte — n'y figurent plus
+   comme communes : leur position vient de Wikidata et porte la mention
+   `ancienne`. Ce sont des repères, pas des adresses : aucune rue, aucune
+   maison n'est située ici.
+
+   Rien n'est déduit du texte des fiches. Le moteur est aveugle à la prose
+   (CLAUDE.md § 4 bis) : ce que la carte montre, c'est ce qui est écrit ici.
+   `evts` renvoie à une transcription par son `tr`, à une fiche par son `qui`.
+   ------------------------------------------------------------------ */
+const LIEUX = [
+
+/* ---------- le noyau : la carte que l'on voit en ouvrant l'onglet ---------- */
+
+{id:"gray", nom:"Gray", dept:"70", insee:"70279", lat:47.4310, lon:5.6153,
+ niveau:"noyau", cle:true, familles:["GRILLOT","ÉCARNOT","PAUFARD"],
+ quoi:"La ville du dossier. Cinq générations de bouchers GRILLOT, sur la place puis rue de la Varosse et rue du Marché.",
+ evts:[
+  {an:"1788", quoi:"Naissance de <b>Jean-Baptiste PAUFARD</b>, le 17 août — l'extrait en est produit au mariage d'Autrey", qui:"jean-baptiste-paufard-1788"},
+  {an:"1825", quoi:"Décès de <b>Pierre Gabriel GRILLOT</b>, né dans le Jura", tr:"t-1825-deces-de-pierre-gabriel-grillot", qui:"pierre-gabriel-grillot-1745"},
+  {an:"1832", quoi:"Décès de <b>Noël GRILLOT</b>, rue de la Varosse", tr:"t-1832-deces-de-noel-grillot", qui:"noel-grillot-1783"},
+  {an:"1834", quoi:"Naissance de <b>Christine</b>, l'aînée de Thomas et de Jeanne", tr:"t-1834-naissance-de-christine-grillot"},
+  {an:"1835", quoi:"Naissance de <b>Joseph</b>, le futur capitaine", tr:"t-1835-naissance-de-joseph-grillot"},
+  {an:"1838", quoi:"Naissance d'<b>André François Napoléon GRILLOT</b>", qui:"napoleon-grillot-1838"},
+  {an:"1842", quoi:"Naissance d'<b>Alfred Nicolas</b>", tr:"t-1842-naissance-d-alfred-nicolas-grillot"},
+  {an:"1854", quoi:"Naissance de <b>Joseph Émile</b>, le cadet", tr:"t-1854-naissance-de-joseph-emile-grillot"},
+  {an:"1888", quoi:"Décès de <b>Jeanne ÉCARNOT</b>", tr:"t-1888-deces-de-jeanne-ecarnot", qui:"jeanne-escarnot-1810"},
+  {an:"1890", quoi:"Décès de <b>Thomas GRILLOT</b>, rue des Verreries", tr:"t-1890-deces-de-thomas-grillot", qui:"thomas-grillot-1810"},
+  {an:"1792-1892", quoi:"Les GRILLOT dans les tables décennales — <b>huit maisons distinctes</b>, dont une seule est la nôtre", tr:"t-1792-1892-les-grillot-dans-les-tables-decennales-de-gray"}
+ ]},
+
+{id:"fahy-les-autrey", nom:"Fahy-lès-Autrey", dept:"70", insee:"70225", lat:47.5138, lon:5.4806,
+ niveau:"noyau", cle:true, familles:["PAUFARD","REDOUTET","AMIOT","GRILLOT","VILLETTE"],
+ quoi:"<b>Le foyer de la ligne pendant tout le XIX<sup>e</sup> siècle.</b> L'atelier de tailleurs de pierre est celui des REDOUTET ; un gendre PAUFARD y entre en 1811.",
+ evts:[
+  {an:"1811", quoi:"<b>François REDOUTET</b> y est propriétaire et <b>maître tailleur de pierre</b> ; sa fille Denise y réside", qui:"francois-redoutet"},
+  {an:"1836", quoi:"Mariage <b>PAUFARD × AMIOT</b>", tr:"t-1836-mariage-de-claude-paufard-et-de-francoise-am"},
+  {an:"1841-1866", quoi:"Les PAUFARD aux cinq recensements — <b>quatre fils tailleurs de pierre</b> sous un même toit", tr:"t-1841-1866-les-paufard-aux-recensements-de-fahy"},
+  {an:"1813-1872", quoi:"Les PAUFARD aux tables décennales — <b>treize enfants</b>, onze morts avant treize mois", tr:"t-1813-1872-les-paufard-dans-les-tables-decennales-de-fahy"},
+  {an:"1866", quoi:"Mariage <b>GRILLOT × PAUFARD</b>", tr:"t-1866-mariage-de-napoleon-grillot-et-d-adelaide-th"},
+  {an:"1878", quoi:"Décès de <b>Françoise AMIOT</b>", tr:"t-1878-deces-de-francoise-amiot", qui:"francoise-amiot-1810"},
+  {an:"1905", quoi:"Décès de <b>Joséphine GRILLOT</b>", tr:"t-1905-deces-de-francoise-leonie-josephine-grillot", qui:"josephine-grillot-1869"},
+  {an:"1906", quoi:"Mariage <b>VILLETTE × GRILLOT</b>", tr:"t-1906-mariage-de-camille-jean-villette-et-d-yvonne"}
+ ]},
+
+{id:"autrey-les-gray", nom:"Autrey-lès-Gray", dept:"70", insee:"70041", lat:47.4609, lon:5.4808,
+ niveau:"noyau", cle:true, familles:["PAUFARD","REDOUTET","VILLETTE"],
+ quoi:"La commune où l'on marie, et l'étude de M<sup>e</sup> MOREAU. Le fils François PAUFARD y vit.",
+ evts:[
+  {an:"1811", quoi:"<b>Mariage de Jean-Baptiste PAUFARD et de Denise REDOUTET</b>, le 13 février — la pièce maîtresse : quatre ascendants nouveaux", tr:"t-1811-mariage-de-jean-baptiste-paufard-et-de-denise-redoutet"},
+  {an:"1892", quoi:"Le contrat de mariage CARPENTIER × GRILLOT au répertoire du notaire", tr:"t-1892-contrat-de-mariage-carpentier-grillot"},
+  {an:"1911", quoi:"Le ménage VILLETTE au recensement", tr:"t-1911-le-menage-villette-au-recensement"}
+ ]},
+
+{id:"vars", nom:"Vars", dept:"70", insee:"70523", lat:47.5380, lon:5.5223,
+ niveau:"noyau", cle:true, familles:["AMIOT","RENEVIER"],
+ quoi:"Les RENEVIER, et le ménage AMIOT après 1803.",
+ evts:[
+  {an:"1803", quoi:"Mariage <b>AMIOT × RENEVIER</b>", tr:"t-1803-mariage-de-francois-amiot-et-de-barbe-renevi"},
+  {an:"1807", quoi:"Décès de <b>Catherine PETITOT</b> le 31 mars, et de <b>Claude RENEVIER</b> le 5 août", tr:"t-1807-deces-de-claude-renevier", qui:"claude-renevier-1743"},
+  {an:"1810", quoi:"Naissance de <b>Françoise AMIOT</b>", tr:"t-1810-naissance-de-francoise-amiot", qui:"francoise-amiot-1810"},
+  {an:"1818", quoi:"Décès de <b>Barbe RENEVIER</b>", tr:"t-1818-deces-de-barbe-renevier", qui:"barbe-renevier-1774"},
+  {an:"1839", quoi:"Décès de <b>François AMIOT</b>", tr:"t-1839-deces-de-francois-amiot", qui:"francois-amiot-1780"}
+ ]},
+
+{id:"oyrieres", nom:"Oyrières", dept:"70", insee:"70402", lat:47.5285, lon:5.5736,
+ niveau:"noyau", cle:true, familles:["PAUFARD"],
+ quoi:"Les PAUFARD de 1811 : Jean le père, Jean Claude l'aîné marchand, Jean-Baptiste tailleur de pierre avant son mariage.",
+ evts:[
+  {an:"1811", quoi:"<b>Jean PAUFARD</b> y est propriétaire, et son fils aîné <b>Jean Claude</b> marchand — les publications de mariage s'y font", qui:"jean-paufard"},
+  {an:"1813", quoi:"Naissance de <b>Claude PAUFARD</b>", tr:"t-1813-naissance-de-claude-paufard", qui:"claude-alexis-paufard-1813"}
+ ]},
+
+{id:"mont-le-franois", nom:"Mont-le-Frânois", dept:"70", insee:"70252", lat:47.5722, lon:5.5778,
+ niveau:"noyau", ancienne:"fondue dans <b>Framont</b> en 1972 ; la position est celle de Framont",
+ familles:["AMIOT"],
+ quoi:"Le berceau AMIOT, et les BERTAULT.",
+ evts:[
+  {an:"1780", quoi:"Baptême de <b>François AMIOT</b>, le 24 décembre", tr:"t-1780-bapteme-de-francois-amiot", qui:"francois-amiot-1780"},
+  {an:"1781", quoi:"Baptême où <b>Françoise AMYOT</b> est marraine — les DENERVAUX, piste la plus courte vers la génération d'avant", tr:"t-1781-bapteme-ou-francoise-amyot-est-marraine"}
+ ]},
+
+{id:"ancier", nom:"Ancier", dept:"70", insee:"70018", lat:47.4444, lon:5.6367,
+ niveau:"noyau", cle:true, familles:["GRILLOT"],
+ quoi:"Noël GRILLOT y est boucher au sortir de son mariage. <i>C'est ce village qui explique un siècle d'invisibilité des GRILLOT dans les tables de Gray.</i>",
+ evts:[
+  {an:"1810", quoi:"<b>Naissance de Thomas GRILLOT</b>, le 3 septembre", tr:"t-1810-naissance-de-thomas-grillot", qui:"thomas-grillot-1810"}
+ ]},
+
+{id:"marnay", nom:"Marnay", dept:"70", insee:"70334", lat:47.2945, lon:5.7713,
+ niveau:"noyau", cle:true, familles:["ÉCARNOT","GRILLOT"],
+ quoi:"Les ÉCARNOT, bouchers. <b>Le boucher de Gray va chercher femme chez un confrère, deux générations de suite.</b>",
+ evts:[
+  {an:"1783", quoi:"Naissance de <b>Noël GRILLOT</b>", qui:"noel-grillot-1783"},
+  {an:"1811", quoi:"Naissance de <b>Jeanne ÉCARNOT</b>", tr:"t-1811-naissance-de-jeanne-ecarnot", qui:"jeanne-escarnot-1810"},
+  {an:"1833", quoi:"<b>Mariage de Thomas GRILLOT et de Jeanne ÉCARNOT</b>, le 10 avril — chez la mariée", tr:"t-1833-mariage-de-thomas-grillot-et-de-jeanne-ecarnot"}
+ ]},
+
+{id:"champlitte", nom:"Champlitte", dept:"70", insee:"70122", lat:47.6310, lon:5.4993,
+ niveau:"noyau", familles:["AMIOT"],
+ quoi:"Nicolle BERTAULT, et un Jean-Baptiste AMYOT à trancher.",
+ evts:[
+  {an:"—", quoi:"Naissance d'<b>Agathe BERTAUT</b>, acte n° 69 — <i>vue incomplète, lecture en cours</i>", tr:"t-naissance-d-agathe-bertaut"}
+ ]},
+
+{id:"arc-les-gray", nom:"Arc-lès-Gray", dept:"70", insee:"70026", lat:47.4620, lon:5.5828,
+ niveau:"noyau", familles:["GRILLOT"],
+ quoi:"La maison Jacques GRILLOT ; Anne Baptiste LÉONARD y naît. <i>Aucun lien établi avec la nôtre.</i>",
+ evts:[]},
+
+{id:"gray-la-ville", nom:"Gray-la-Ville", dept:"70", insee:"70280", lat:47.4391, lon:5.5705,
+ niveau:"noyau", familles:["GRILLOT","VILLETTE"],
+ quoi:"Décès d'Yvonne, en 1963.",
+ evts:[{an:"1963", quoi:"Décès d'<b>Yvonne Marguerite GRILLOT</b> — <i>mention seule, acte non retrouvé</i>", qui:"yvonne-grillot-1889"}]},
+
+{id:"ecuelle", nom:"Écuelle", dept:"70", insee:"70211", lat:47.5527, lon:5.5474,
+ niveau:"noyau", familles:["RENEVIER"],
+ quoi:"Origine probable des PETITOT, à cinq kilomètres de Vars. <i>Hypothèse, pas encore vérifiée.</i>",
+ evts:[]},
+
+{id:"montarlot-les-champlitte", nom:"Montarlot-lès-Champlitte", dept:"70", lat:47.6428, lon:5.5142,
+ niveau:"noyau", ancienne:"rattachée à <b>Champlitte</b> ; position d'après Wikidata",
+ familles:["PAUFARD"],
+ quoi:"Joseph GACONNET, instituteur, cousin germain de Théolinde du côté paternel par alliance.",
+ evts:[]},
+
+/* ---------- la couronne : la vue régionale ---------- */
+
+{id:"besancon", nom:"Besançon", dept:"25", insee:"25056", lat:47.2602, lon:6.0123,
+ niveau:"couronne", familles:["CARPENTIER"],
+ quoi:"La pharmacie CARPENTIER, et la mort de Julie-Lucie GÉNIN.",
+ evts:[{an:"1889", quoi:"Décès de <b>Julie-Lucie GÉNIN</b>, le 25 juin", tr:"t-1889-deces-de-julie-lucie-genin"}]},
+
+{id:"baume-les-dames", nom:"Baume-les-Dames", dept:"25", insee:"25047", lat:47.3492, lon:6.3426,
+ niveau:"couronne", familles:["CARPENTIER"],
+ quoi:"Le berceau CARPENTIER.",
+ evts:[
+  {an:"1853", quoi:"Naissance de <b>Marie Antoinette Éléonore CARPENTIER</b>", tr:"t-1853-naissance-de-marie-antoinette-eleonore-carpentier"},
+  {an:"1856", quoi:"Naissance de <b>Victor Jean-Baptiste CARPENTIER</b>, le 9 octobre", tr:"t-1856-naissance-de-victor-jean-baptiste-carpentier", qui:"victor-carpentier-1856"}
+ ]},
+
+{id:"trouvans", nom:"Trouvans", dept:"25", insee:"25572", lat:47.4197, lon:6.3479,
+ niveau:"couronne", familles:["CARPENTIER"],
+ quoi:"Les CARPENTIER propriétaires — et le village de l'épouse de MONJEAN, ce qui a résolu la fratrie de Joséphine.",
+ evts:[]},
+
+{id:"dijon", nom:"Dijon", dept:"21", insee:"21231", lat:47.3319, lon:5.0322,
+ niveau:"couronne", familles:[],
+ quoi:"Chef-lieu de la Côte-d'Or : les archives où se cherchent Beaune et Serrigny.",
+ evts:[]},
+
+{id:"beaune", nom:"Beaune", dept:"21", insee:"21054", lat:47.0272, lon:4.8421,
+ niveau:"couronne", familles:["CARPENTIER","GRILLOT"],
+ quoi:"<b>Le tribunal civil qui annule la reconnaissance d'Yvonne, le 14 mai 1897.</b> Le jugement lui-même n'est pas lu.",
+ evts:[{an:"1897", quoi:"Jugement d'annulation de la reconnaissance — <i>pièce recherchée, la plus urgente du dossier</i>", qui:"yvonne-grillot-1889"}]},
+
+{id:"serrigny", nom:"Serrigny", dept:"21", insee:"21606", lat:47.0672, lon:4.9156,
+ niveau:"couronne", ancienne:"aujourd'hui <b>Ladoix-Serrigny</b>",
+ familles:["CARPENTIER","GRILLOT"],
+ quoi:"Le ménage CARPENTIER — et le « pharmacien » de la tradition orale, recensé sous le même toit.",
+ evts:[{an:"1896", quoi:"Le ménage CARPENTIER au recensement", tr:"t-1896-le-menage-carpentier-au-recensement-de-serri"}]},
+
+{id:"selongey", nom:"Selongey", dept:"21", insee:"21599", lat:47.6040, lon:5.1984,
+ niveau:"couronne", familles:["VILLETTE"],
+ quoi:"Les VILLETTE.",
+ evts:[
+  {an:"1877", quoi:"Naissance de <b>Camille Jean VILLETTE</b>", tr:"t-1877-naissance-de-camille-jean-villette", qui:"camille-villette-1877"},
+  {an:"1892", quoi:"Décès d'<b>Émile Adolphe VILLETTE</b>, le cordonnier né à Paris", tr:"t-1892-deces-d-emile-adolphe-villette"}
+ ]},
+
+{id:"champvans-les-dole", nom:"Champvans-lès-Dole", dept:"39", insee:"39101", lat:47.1017, lon:5.4167,
+ niveau:"couronne", ancienne:"la commune s'appelle <b>Champvans</b> ; la lecture « lès-Dole » vient de l'acte de 1825 et reste <b>incertaine</b>",
+ familles:["GRILLOT"],
+ quoi:"<b>L'origine jurassienne des GRILLOT</b>, connue du seul acte de décès de Pierre Gabriel en 1825.",
+ evts:[{an:"1825", quoi:"L'acte de décès de <b>Pierre Gabriel GRILLOT</b> l'y dit né", tr:"t-1825-deces-de-pierre-gabriel-grillot", qui:"pierre-gabriel-grillot-1745"}]},
+
+{id:"peintre", nom:"Peintre", dept:"39", insee:"39409", lat:47.1988, lon:5.4721,
+ niveau:"couronne", familles:[],
+ quoi:"Naissance de Joseph Alexandre MONJEAN — <i>le « beau-frère » de 1892, qui l'était de l'époux et non de l'épouse</i>.",
+ evts:[
+  {an:"1844", quoi:"Naissance de <b>Joseph Alexandre MONJEAN</b>, le 23 décembre", tr:"t-1844-naissance-de-joseph-alexandre-monjean"},
+  {an:"1865-1910", quoi:"Ses états de services", tr:"t-1880-etats-de-services-de-joseph-alexandre-monjean"}
+ ]},
+
+{id:"vesoul", nom:"Vesoul", dept:"70", insee:"70550", lat:47.6323, lon:6.1523,
+ niveau:"couronne", familles:[],
+ quoi:"Chef-lieu de la Haute-Saône : les archives départementales, d'où vient la plus grande part du dossier.",
+ evts:[]},
+
+{id:"langres", nom:"Langres", dept:"52", insee:"52269", lat:47.8597, lon:5.3364,
+ niveau:"couronne", familles:[],
+ quoi:"L'État-Major de la Place, où MONJEAN finit sa carrière.",
+ evts:[]},
+
+{id:"pressigny", nom:"Pressigny", dept:"52", insee:"52406", lat:47.7465, lon:5.6687,
+ niveau:"couronne", familles:["GRILLOT"],
+ quoi:"Mariage de Pierre Émile GRILLOT, le 27 octobre 1902 — le tuteur ad hoc d'Yvonne.",
+ evts:[{an:"1872", quoi:"<i>Il naît à Gray</i> — sa fiche renvoie ici pour son mariage", tr:"t-1872-naissance-de-pierre-emile-grillot"}]},
+
+/* ---------- les lointains : une liste, pas une carte ---------- */
+
+{id:"paris", nom:"Paris", niveau:"lointain", familles:["VILLETTE"],
+ quoi:"Naissance d'<b>Émile Adolphe VILLETTE</b> en 1840 — le cordonnier d'où descend toute la branche.", evts:[]},
+{id:"lyon", nom:"Lyon", niveau:"lointain", familles:["GRILLOT","CARPENTIER"],
+ quoi:"<b>Naissance d'Yvonne</b>, 1<sup>er</sup> octobre 1889, 1 Côte des Carmélites ; la reconnaissance de 1892 y est portée en marge.",
+ evts:[{an:"1889", quoi:"Naissance d'<b>Yvonne Marguerite GRILLOT</b>, et ses mentions marginales de 1892, 1897 et 1963", tr:"t-1889-naissance-d-yvonne-marguerite-grillot", qui:"yvonne-grillot-1889"}]},
+{id:"nancy", nom:"Nancy", niveau:"lointain", familles:[],
+ quoi:"Le professeur GÉNIN, par la carrière duquel on cherche le mariage de Victor CARPENTIER.", evts:[]},
+{id:"saint-mihiel", nom:"Saint-Mihiel", niveau:"lointain", familles:[],
+ quoi:"Naissance de Julie-Lucie GÉNIN.", evts:[]},
+{id:"mantes-la-jolie", nom:"Mantes-la-Jolie", niveau:"lointain", familles:[],
+ quoi:"Génération VII.", evts:[]},
+{id:"saint-etienne", nom:"Saint-Étienne", niveau:"lointain", familles:[],
+ quoi:"Mariage FONTANA × RIBAUT, 1963 — <i>d'après les papiers de famille</i>.", evts:[]},
+{id:"annecy", nom:"Annecy", niveau:"lointain", familles:[], quoi:"Génération VII.", evts:[]},
+{id:"bourges", nom:"Bourges", niveau:"lointain", familles:["CARPENTIER"],
+ quoi:"L'hôpital militaire où meurt Victor CARPENTIER, le 29 octobre 1898.",
+ evts:[{an:"1898", quoi:"Décès de <b>Victor Jean-Baptiste CARPENTIER</b>", tr:"t-1898-deces-de-victor-jean-baptiste-carpentier", qui:"victor-carpentier-1856"}]},
+{id:"belley", nom:"Belley", niveau:"lointain", familles:[],
+ quoi:"La garnison de MONJEAN, capitaine au 133<sup>e</sup>.", evts:[]},
+{id:"grosmagny", nom:"Grosmagny", niveau:"lointain", familles:["GRILLOT"],
+ quoi:"<b>Joseph GRILLOT y est blessé et fait prisonnier, le 2 novembre 1870.</b>",
+ evts:[{an:"1872", quoi:"Le dossier de Légion d'honneur en fait le récit", tr:"t-1872-le-dossier-de-legion-d-honneur-de-joseph-gri"}]}
+];
+
+/* Les deux rivières, en tracé SCHÉMATIQUE : la ligne passe par le centre de
+   communes riveraines, ce n'est pas le lit du fleuve. Elle ne sert qu'à
+   orienter l'œil — Gray est sur la Saône, Marnay sur l'Ognon, et c'est ce
+   que la carte doit rendre lisible. */
+const RIVIERES = [
+ {nom:"La Saône", ancre:0, pts:[[47.5935,5.8117],[47.5339,5.7668],[47.5438,5.6959],[47.4973,5.6990],
+                       [47.4789,5.6351],[47.4310,5.6153],[47.4288,5.5213],[47.3676,5.4590],
+                       [47.3377,5.4640],[47.3019,5.4150]]},
+ {nom:"L'Ognon", ancre:1, pts:[[47.2945,5.7713],[47.2911,5.5714],[47.3019,5.4150]]}
 ];
 
 
@@ -5971,6 +6655,230 @@ function renderFrise() {
     if (r) ouvrir(r.dataset.id);
   });
 }
+
+/* ------------------------------------------------------------
+   6. La carte — le pays graylois
+
+   Un SVG écrit en chaîne, comme la frise : aucune dépendance externe,
+   aucun appel réseau, le fichier reste unique et autonome. La projection
+   est équirectangulaire, avec la seule correction qui compte à cette
+   échelle — le méridien se resserre en cos(latitude), faute de quoi la
+   carte s'étire d'est en ouest de moitié et les distances mentent.
+   ------------------------------------------------------------ */
+
+const CARTE = { vue: 'noyau', famille: null, lieu: null };
+
+/* Les distances ne sont pas écrites à la main : elles se calculent sur les
+   coordonnées affichées, de sorte qu'un chiffre ne puisse jamais contredire
+   un point. À vol d'oiseau, de centre de commune à centre de commune. */
+function distanceKm(a, b) {
+  const r = Math.PI / 180, R = 6371;
+  const dla = (b.lat - a.lat) * r, dlo = (b.lon - a.lon) * r;
+  const h = Math.sin(dla / 2) * Math.sin(dla / 2)
+          + Math.cos(a.lat * r) * Math.cos(b.lat * r) * Math.sin(dlo / 2) * Math.sin(dlo / 2);
+  return 2 * R * Math.asin(Math.sqrt(h));
+}
+
+function lieuPar(id) { return LIEUX.filter(l => l.id === id)[0]; }
+
+const CA_FAMILLES = ['AMIOT', 'PAUFARD', 'REDOUTET', 'GRILLOT', 'ÉCARNOT', 'VILLETTE', 'CARPENTIER'];
+
+function carteSvg(niveau) {
+  const pts = LIEUX.filter(l => l.niveau === niveau);
+  const riv = niveau === 'noyau' ? RIVIERES : [];
+  let laMin = 90, laMax = -90, loMin = 180, loMax = -180;
+  const voir = (la, lo) => {
+    laMin = Math.min(laMin, la); laMax = Math.max(laMax, la);
+    loMin = Math.min(loMin, lo); loMax = Math.max(loMax, lo);
+  };
+  pts.forEach(l => voir(l.lat, l.lon));
+  riv.forEach(r => r.pts.forEach(p => voir(p[0], p[1])));
+  const m = 0.03;
+  laMin -= m; laMax += m; loMin -= m; loMax += m;
+
+  const k = Math.cos((laMin + laMax) / 2 * Math.PI / 180);
+  const S = Math.min(700 / ((loMax - loMin) * k), 780 / (laMax - laMin));
+  /* Les libellés partent à droite du point, sauf dans le tiers droit de la
+     carte où ils partent à gauche : la marge n'a pas à être la même des
+     deux côtés, et une marge symétrique creusait un vide à l'ouest. */
+  const MG = 26, MD = 150, MV = 30;
+  const W = Math.round((loMax - loMin) * k * S) + MG + MD;
+  const H = Math.round((laMax - laMin) * S) + MV * 2;
+  const X = lo => MG + (lo - loMin) * k * S;
+  const Y = la => MV + (laMax - la) * S;
+
+  let g = '';
+
+  /* l'échelle : une barre de dix kilomètres, mesurée sur la projection */
+  const dixKm = 10 / 111.195 * S;
+  g += '<g class="ca-echelle">'
+     + '<path d="M' + MG + ' ' + (H - 14) + ' h' + dixKm.toFixed(1) + '"/>'
+     + '<text x="' + (MG + dixKm / 2).toFixed(1) + '" y="' + (H - 20) + '">10 km</text>'
+     + '</g>';
+
+  riv.forEach(r => {
+    g += '<path class="ca-riv" d="M'
+       + r.pts.map(p => X(p[1]).toFixed(1) + ' ' + Y(p[0]).toFixed(1)).join(' L') + '"/>'
+    const an = r.pts[r.ancre != null ? r.ancre : r.pts.length - 1];
+    g += '<text class="ca-riv-nm" x="' + (X(an[1]) + 8).toFixed(1)
+       + '" y="' + (Y(an[0]) + 14).toFixed(1) + '">' + r.nom + '</text>';
+  });
+
+  pts.slice()
+     .sort((a, b) => a.lat - b.lat)                /* le nord se dessine en dernier */
+     .forEach(l => {
+    const x = X(l.lon), y = Y(l.lat);
+    const tenu = !CARTE.famille || (l.familles || []).indexOf(CARTE.famille) >= 0;
+    const cls = 'ca-pt'
+      + (l.cle ? ' is-cle' : '')
+      + (CARTE.famille ? (tenu ? ' is-tenu' : ' is-pale') : '')
+      + (CARTE.lieu === l.id ? ' is-ouvert' : '');
+    const droite = x < W * 0.66;
+    g += '<g class="' + cls + '" data-lieu="' + l.id + '" tabindex="0" role="button"'
+       + ' aria-label="' + l.nom + '">'
+       + '<circle class="ca-halo" cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="13"/>'
+       + '<circle class="ca-dot" cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="'
+       + (l.cle ? 5.5 : 3.5) + '"/>'
+       + '<text class="ca-nm" x="' + (x + (droite ? 10 : -10)).toFixed(1) + '" y="'
+       + (y + 4).toFixed(1) + '" text-anchor="' + (droite ? 'start' : 'end') + '">'
+       + l.nom + '</text></g>';
+  });
+
+  return '<svg class="ca-svg" viewBox="0 0 ' + W + ' ' + H + '"'
+       + ' width="' + W + '" height="' + H + '" role="img" '
+       + 'aria-label="Carte de repérage — ' + (niveau === 'noyau' ? 'le pays graylois' : 'la couronne régionale') + '">'
+       + g + '</svg>';
+}
+
+/* le panneau de droite : soit le lieu ouvert, soit les deux légendes */
+function carteAparte() {
+  const l = CARTE.lieu ? lieuPar(CARTE.lieu) : null;
+  if (l) {
+    const evts = (l.evts || []).map(e =>
+      '<li><span class="ca-an">' + e.an + '</span><span class="ca-quoi">' + e.quoi
+      + (e.tr ? ' <button type="button" class="ca-lien" data-tr="' + e.tr + '">Lire la pièce &rarr;</button>' : '')
+      + (e.qui && P[e.qui] ? ' <button type="button" class="ca-lien" data-p="' + e.qui + '">Sa fiche &rarr;</button>' : '')
+      + '</span></li>').join('');
+    const gray = lieuPar('gray');
+    const d = (l.lat && l.id !== 'gray') ? distanceKm(l, gray) : null;
+    return '<div class="ca-fiche">'
+      + '<button type="button" class="ca-fermer" data-fermer="1">Fermer</button>'
+      + '<h4>' + l.nom + (l.dept ? ' <span class="ca-dept">' + l.dept + '</span>' : '') + '</h4>'
+      + (d != null ? '<p class="ca-dist">à <b>' + d.toFixed(1).replace('.', ',') + ' km</b> de Gray, à vol d\'oiseau</p>' : '')
+      + (l.ancienne ? '<p class="ca-res">' + l.ancienne + '</p>' : '')
+      + '<p class="ca-quoi-lieu">' + l.quoi + '</p>'
+      + (evts ? '<ul class="ca-evts">' + evts + '</ul>'
+              : '<p class="ca-vide">Aucune pièce transcrite ne s\'y rattache pour l\'instant.</p>')
+      + '</div>';
+  }
+
+  const noyau = LIEUX.filter(x => x.niveau === 'noyau');
+  let dMax = 0, pa = null, pb = null;
+  noyau.forEach(a => noyau.forEach(b => {
+    const d = distanceKm(a, b);
+    if (d > dMax) { dMax = d; pa = a; pb = b; }
+  }));
+  const paires = [['gray', 'fahy-les-autrey'], ['fahy-les-autrey', 'autrey-les-gray'],
+                  ['gray', 'vars'], ['gray', 'oyrieres'], ['gray', 'ancier'],
+                  ['gray', 'marnay'], ['vars', 'mont-le-franois']];
+  const tab = paires.map(p => {
+    const a = lieuPar(p[0]), b = lieuPar(p[1]);
+    return '<li><span class="ca-paire">' + a.nom + ' – ' + b.nom + '</span>'
+         + '<span class="ca-km">' + distanceKm(a, b).toFixed(1).replace('.', ',') + ' km</span></li>';
+  }).join('');
+
+  return '<div class="ca-fiche">'
+    + '<h4>Tout tient dans trente kilomètres</h4>'
+    + '<p class="ca-quoi-lieu">De <b>' + pa.nom + '</b> à <b>' + pb.nom + '</b>, les deux points les plus '
+    + 'éloignés du noyau, il y a <b>' + dMax.toFixed(0) + ' kilomètres</b>, et six générations n\'en sont '
+    + 'pas sorties. Les deux seuls apports lointains — les <b>CARPENTIER</b> du Doubs et les '
+    + '<b>VILLETTE</b> de Paris — entrent tous deux par mariage et tard, au XIX<sup>e</sup> siècle finissant.</p>'
+    + '<h4>Les alliances suivent les routes, et les métiers</h4>'
+    + '<p class="ca-quoi-lieu">Le boucher de Gray va chercher femme chez un confrère de <b>Marnay</b>, '
+    + 'deux générations de suite. Le tailleur de pierre d\'<b>Oyrières</b> épouse la fille du maître '
+    + 'tailleur de pierre de <b>Fahy</b> et vient s\'installer chez lui. La famille de '
+    + '<b>Mont-le-Frânois</b> descend sur <b>Vars</b>, puis sur <b>Fahy</b>. <i>Ce ne sont pas des '
+    + 'déplacements au hasard : à chaque fois, on épouse le métier autant que la personne.</i></p>'
+    + '<h4>Quelques distances</h4>'
+    + '<ul class="ca-km-liste">' + tab + '</ul>'
+    + '<p class="ca-note">Calculées sur les coordonnées de la carte, à vol d\'oiseau et de centre de '
+    + 'commune à centre de commune — la route en fait toujours davantage. <b>Cliquez un point</b> '
+    + 'pour lire ce qui s\'y est passé.</p>'
+    + '</div>';
+}
+
+function carteLointains() {
+  return '<ul class="ca-loin">' + LIEUX.filter(l => l.niveau === 'lointain').map(l =>
+    '<li><h5>' + l.nom + '</h5><p>' + l.quoi + '</p>'
+    + (l.evts || []).map(e => (e.tr
+        ? '<button type="button" class="ca-lien" data-tr="' + e.tr + '">' + e.an + ' — lire la pièce &rarr;</button>'
+        : '')).join('')
+    + '</li>').join('') + '</ul>';
+}
+
+function peindreCarte() {
+  const c = document.getElementById('carte');
+  if (!c) return;
+
+  const filtres = '<div class="ca-filtres"><span class="ca-lbl">Colorer par patronyme</span>'
+    + CA_FAMILLES.map(f => '<button type="button" data-fam="' + f + '"'
+        + (CARTE.famille === f ? ' class="on"' : '') + '>' + f + '</button>').join('')
+    + '<button type="button" data-fam=""' + (CARTE.famille ? '' : ' class="on"') + '>Tous</button></div>';
+
+  if (CARTE.vue === 'lointain') {
+    c.innerHTML = '<p class="ca-lede">Dix lieux hors du pays graylois, où le dossier ne passe '
+      + 'qu\'une fois. <i>Ils n\'ont pas besoin d\'être situés, seulement mentionnés : les porter sur '
+      + 'une carte obligerait à dézoomer sur six cents kilomètres et écraserait la zone utile.</i></p>'
+      + carteLointains();
+    return;
+  }
+  c.innerHTML = filtres
+    + '<div class="ca-plan"><div class="ca-carte">' + carteSvg(CARTE.vue) + '</div>'
+    + '<aside class="ca-aparte">' + carteAparte() + '</aside></div>';
+}
+
+function renderCarte() {
+  const c = document.getElementById('carte');
+  if (!c) return;
+
+  ['noyau', 'couronne', 'lointain'].forEach(v => {
+    const n = document.getElementById('nCa-' + v);
+    if (n) n.textContent = LIEUX.filter(l => l.niveau === v).length;
+  });
+
+  const cpt = document.getElementById('cptLieux');
+  if (cpt) cpt.textContent = LIEUX.length;
+
+  const nav = document.getElementById('carteNav');
+  if (nav) nav.addEventListener('click', e => {
+    const b = e.target.closest('button[data-vue]');
+    if (!b) return;
+    [].forEach.call(nav.querySelectorAll('button'), o => o.classList.toggle('on', o === b));
+    CARTE.vue = b.dataset.vue;
+    CARTE.lieu = null;
+    peindreCarte();
+  });
+
+  /* un seul écouteur pour tout le panneau : points, filtres, renvois */
+  document.getElementById('panel-carte').addEventListener('click', e => {
+    const tr = e.target.closest('[data-tr]');
+    if (tr) { versTranscription(tr.dataset.tr); return; }
+    const fi = e.target.closest('[data-p]');
+    if (fi) { ouvrir(fi.dataset.p); return; }
+    const fa = e.target.closest('[data-fam]');
+    if (fa) { CARTE.famille = fa.dataset.fam || null; peindreCarte(); return; }
+    if (e.target.closest('[data-fermer]')) { CARTE.lieu = null; peindreCarte(); return; }
+    const pt = e.target.closest('[data-lieu]');
+    if (pt) { CARTE.lieu = (CARTE.lieu === pt.dataset.lieu) ? null : pt.dataset.lieu; peindreCarte(); }
+  });
+  document.getElementById('panel-carte').addEventListener('keydown', e => {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    const pt = e.target.closest('[data-lieu]');
+    if (pt) { e.preventDefault(); CARTE.lieu = pt.dataset.lieu; peindreCarte(); }
+  });
+
+  peindreCarte();
+}
 </script>
 
 <script>
@@ -6092,6 +7000,7 @@ function renderFrise() {
   renderQui();
   renderRecherches();
   renderFrise();
+  renderCarte();
   majParente();
   function poser(){ layout(); render(); calque(); audit(); }
   poser();
