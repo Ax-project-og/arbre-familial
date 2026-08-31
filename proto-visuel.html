@@ -1,0 +1,1977 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prototype visuel — Arbre généalogique, branche maternelle</title>
+<meta name="description" content="Prototype de refonte visuelle du dossier généalogique de la branche maternelle, 1743 à aujourd'hui.">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#122335">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23122335'/><path d='M16 6l6 10-6 10-6-10z' fill='none' stroke='%23E4D3AC' stroke-width='1.6'/><path d='M16 16v10M10 26h12' fill='none' stroke='%23A97D2E' stroke-width='1.6'/></svg>">
+
+<!-- ============================================================
+     PROTOTYPE VISUEL — INDÉPENDANT
+     Ne remplace pas index.html. Sert de maquette de direction.
+     Les contenus marqués .ph (soulignés en pointillés dorés)
+     sont des placeholders à remplacer par les vraies données.
+     Les polices sont chargées depuis Google Fonts : si le site
+     final doit rester autonome, remplacer par la pile système
+     (Iowan Old Style / Palatino) déjà utilisée dans index.html.
+     ============================================================ -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;0,6..96,600;1,6..96,400&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Archivo:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* ---------- 1. JETONS ---------- */
+:root{
+  /* papier & encre */
+  --parchemin:#EFEBE0;
+  --parchemin-clair:#F8F5ED;
+  --carte:#FCFAF4;
+  --encre:#1B3050;
+  --encre-2:#4E6484;
+  /* #8A99AF tombait à 2,4:1 sur le parchemin : illisible aux tailles
+     auxquelles il sert (étiquettes de 8 à 10 px). Assombri à 4,5:1.
+     L'ancienne valeur reste sous --encre-4, pour les filets seulement. */
+  --encre-3:#5D6C85;
+  --encre-4:#8A99AF;
+  --nuit:#122335;
+
+  /* accents */
+  --laiton:#A97D2E;        /* filets, bordures, chiffres display */
+  --laiton-txt:#8A6420;    /* même laiton assombri : 4,5:1, pour les textes */
+  --laiton-clair:#E4D3AC;
+  --grenat:#8E2C2E;
+  --grenat-clair:#C08682;
+
+  /* code documentaire (repris d'index.html) */
+  --act-n:#3C6E52;
+  --act-d:#6B4C7A;
+  --act-m:#2C6E8E;
+
+  --filet:#D5CDB9;
+  --filet-fort:#B6AC93;
+
+  --display:"Bodoni Moda",Didot,"Bodoni MT","Times New Roman",serif;
+  --serif:"EB Garamond","Iowan Old Style","Palatino Linotype",Georgia,serif;
+  --sans:"Archivo",ui-sans-serif,-apple-system,"Segoe UI",Arial,sans-serif;
+
+  --tiroir:456px;
+  --max:1240px;
+  --tete:74px;             /* hauteur du bandeau collant, une seule fois */
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; background:var(--parchemin); color:var(--encre);
+  font-family:var(--serif); font-size:17px; line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+/* grain de papier, très léger */
+body::before{
+  content:""; position:fixed; inset:0; z-index:0; pointer-events:none; opacity:.5;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/><feColorMatrix type='saturate' values='0'/></filter><rect width='180' height='180' filter='url(%23n)' opacity='.055'/></svg>");
+}
+.shell{position:relative; z-index:1}
+
+a{color:inherit}
+h1,h2,h3,h4{margin:0; font-weight:500}
+
+/* un seul anneau de focus, partout */
+:focus-visible{outline:2px solid var(--laiton); outline-offset:2px}
+.masthead :focus-visible,.bande--nuit :focus-visible,.tiroir-tete :focus-visible,
+.tiroir-nav :focus-visible,footer :focus-visible{outline-color:var(--laiton-clair)}
+
+/* lien d'évitement */
+.saut{position:absolute;left:12px;top:-60px;z-index:60;background:#F3EFE4;color:var(--encre);
+  padding:10px 16px;font-family:var(--sans);font-size:13px;border:1px solid var(--encre);transition:top .18s}
+.saut:focus{top:12px}
+
+/* utilitaires */
+.wrap{max-width:var(--max); margin:0 auto; padding:0 32px}
+.eyebrow{
+  font-family:var(--sans); font-size:10px; font-weight:600;
+  letter-spacing:.2em; text-transform:uppercase; color:var(--laiton-txt);
+}
+.ph{
+  border-bottom:1px dotted var(--laiton);
+  color:inherit;
+}
+body.sans-ph .ph{border-bottom-color:transparent}
+.hors-jeu{display:none!important}
+[hidden]{display:none!important}
+.filet-double{border-top:1px solid var(--filet-fort); border-bottom:3px double var(--filet-fort); height:5px}
+
+/* ---------- 2. EN-TÊTE ---------- */
+.masthead{
+  background:var(--nuit); color:#F3EFE4;
+  border-bottom:3px solid var(--laiton);
+  position:sticky; top:0; z-index:30;
+}
+.masthead .wrap{display:flex; align-items:center; gap:28px; height:var(--tete)}
+.marque{display:flex; align-items:center; gap:13px; margin-right:auto}
+.blason{
+  width:38px;height:38px;flex:none;border:1px solid rgba(228,211,172,.5);
+  border-radius:2px;display:grid;place-items:center;color:var(--laiton-clair);
+}
+.marque h1{font-family:var(--display); font-size:20px; letter-spacing:.01em; line-height:1}
+.marque p{margin:3px 0 0; font-family:var(--sans); font-size:10.5px; letter-spacing:.18em; white-space:nowrap;
+  text-transform:uppercase; color:rgba(228,211,172,.72)}
+
+.onglets{display:flex; gap:4px}
+.onglets button{
+  background:none;border:0;cursor:pointer;color:rgba(243,239,228,.72);
+  font-family:var(--sans);font-size:12.5px;letter-spacing:.09em;text-transform:uppercase;
+  padding:9px 14px;border-bottom:2px solid transparent;white-space:nowrap;
+  transition:color .18s,border-color .18s;
+}
+.onglets button:hover{color:#fff}
+.onglets button[aria-selected="true"]{color:#fff;border-bottom-color:var(--laiton-txt)}
+.onglets .compte{
+  font-size:10.5px;color:var(--laiton-clair);margin-left:6px;
+  border:1px solid rgba(228,211,172,.35);border-radius:2px;padding:1px 4px;letter-spacing:.06em;
+}
+.chercher{position:relative}
+.chercher input{
+  background:rgba(255,255,255,.07);border:1px solid rgba(228,211,172,.28);color:#F3EFE4;
+  font-family:var(--serif);font-size:14px;padding:8px 12px 8px 34px;width:210px;border-radius:2px;
+}
+.chercher input::placeholder{color:rgba(243,239,228,.6)}
+.chercher input:focus{outline:2px solid var(--laiton);outline-offset:1px}
+.chercher svg{position:absolute;left:11px;top:9px;color:rgba(228,211,172,.6);pointer-events:none}
+.chercher .decompte{position:absolute;right:0;top:calc(100% + 6px);font-family:var(--sans);
+  font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--laiton-clair);white-space:nowrap}
+#basculePh{font:inherit;letter-spacing:inherit;text-transform:inherit;background:none;border:0;
+  border-bottom:1px dotted rgba(228,211,172,.6);color:var(--laiton-clair);padding:0 0 1px;
+  cursor:pointer;margin-left:auto}
+#basculePh:hover{color:#fff}
+
+/* ---------- 3. FRONTISPICE ---------- */
+.frontispice{padding:56px 0 4px}
+.frontispice .grille{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:56px;align-items:start}
+.datation{display:flex;gap:18px;align-items:center;margin-bottom:22px}
+.datation span:not(:first-child){padding-left:18px;border-left:1px solid var(--filet-fort)}
+.datation span{font-family:var(--sans);font-size:10px;letter-spacing:.17em;
+  text-transform:uppercase;color:var(--encre-3)}
+
+.titre-doc{
+  font-family:var(--display);font-size:clamp(40px,5.4vw,68px);line-height:1.02;
+  letter-spacing:-.012em;font-weight:500;
+}
+.titre-doc em{display:block;font-style:italic;font-size:.52em;color:var(--encre-2);
+  margin-top:12px;letter-spacing:0}
+.chapo{
+  font-size:19.5px;line-height:1.66;color:var(--encre);margin:26px 0 0;max-width:60ch;
+}
+.chapo b{font-weight:600}
+.chapo .lettrine{
+  float:left;font-family:var(--display);font-size:62px;line-height:.82;
+  padding:6px 12px 0 0;color:var(--laiton);font-weight:500;
+}
+
+/* cartouche des compteurs */
+.cartouche{
+  background:var(--carte);border:1px solid var(--filet-fort);
+  box-shadow:0 1px 0 var(--filet);position:relative;padding:26px 24px 20px;
+}
+.cartouche::after{content:"";position:absolute;inset:5px;border:1px solid var(--filet);pointer-events:none}
+.cartouche h4{font-family:var(--sans);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--laiton-txt);text-align:center;margin-bottom:18px}
+.compteurs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px;background:var(--filet)}
+.compteurs div{background:var(--carte);padding:14px 8px;text-align:center}
+.compteurs .n{font-family:var(--display);font-size:32px;line-height:1;display:block}
+.compteurs .l{font-family:var(--sans);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--encre-2);display:block;margin-top:7px}
+.cartouche .note{font-size:14px;font-style:italic;color:var(--encre-2);text-align:center;
+  margin:16px 0 0;line-height:1.5}
+
+/* ---------- 4. SIGNATURE : LA LIGNE DIRECTE ---------- */
+.ligne{padding:64px 0 8px}
+.section-tete{display:flex;align-items:baseline;gap:16px;margin-bottom:6px}
+.section-tete h2{font-family:var(--display);font-size:29px;letter-spacing:-.01em}
+.section-tete p{margin:0;font-size:15.5px;font-style:italic;color:var(--encre-2)}
+.section-rule{border-top:1px solid var(--filet-fort);margin:14px 0 34px}
+
+.chaine{display:flex;align-items:stretch;gap:0;overflow-x:auto;padding-bottom:10px}
+.maillon{flex:1 1 0;min-width:158px;text-align:center;position:relative;padding:0 6px}
+.maillon .an{
+  font-family:var(--display);font-size:25px;letter-spacing:.01em;display:block;
+}
+.maillon .rond{
+  display:block;margin:10px auto 12px;width:100%;position:relative;height:11px;
+}
+.maillon .rond::before{content:"";position:absolute;top:5px;left:0;right:0;border-top:1px solid var(--filet-fort)}
+.maillon:first-child .rond::before{left:50%}
+.maillon:last-child .rond::before{right:50%}
+.maillon .rond i{
+  position:absolute;left:50%;top:0;transform:translateX(-50%);
+  width:11px;height:11px;border:1.5px solid var(--laiton);border-radius:50%;
+  background:var(--parchemin);
+}
+.maillon .noms{font-size:15px;line-height:1.42;display:block}
+.maillon .noms b{font-weight:600;letter-spacing:.02em}
+.maillon .lieu{
+  font-family:var(--sans);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--encre-3);display:block;margin-top:7px;
+}
+.maillon .gen{
+  font-family:var(--sans);font-size:10px;letter-spacing:.16em;color:var(--laiton-txt);
+  display:block;margin-bottom:8px;
+}
+.chaine .maillon{opacity:0;transform:translateY(8px);animation:monte .55s ease forwards}
+@keyframes monte{to{opacity:1;transform:none}}
+
+/* ---------- 5. LE RÉCIT ---------- */
+.recit{padding:60px 0}
+.recit .colonnes{display:grid;grid-template-columns:minmax(0,1fr) 262px;gap:52px;align-items:start}
+.chapitre{margin-bottom:44px}
+.chapitre h3{
+  font-family:var(--display);font-size:23px;margin-bottom:4px;
+}
+.chapitre .situe{
+  font-family:var(--sans);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--encre-3);margin:0 0 14px;
+}
+.chapitre p{margin:0 0 14px;max-width:66ch}
+.chapitre p b{font-weight:600}
+.chapitre p:last-child{margin-bottom:0}
+
+/* marginalia */
+.marge{position:sticky;top:calc(var(--tete) + 30px)}
+.note-marge{
+  border-left:2px solid var(--laiton);padding:2px 0 2px 16px;margin-bottom:30px;
+}
+.note-marge h5{font-family:var(--sans);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--laiton-txt);margin:0 0 7px;font-weight:600}
+.note-marge p{margin:0;font-size:14.5px;line-height:1.55;color:var(--encre-2)}
+.note-marge.doute{border-left-color:var(--grenat)}
+.note-marge.doute h5{color:var(--grenat)}
+
+/* ---------- 6. LES BRANCHES ---------- */
+.branches{padding:8px 0 60px}
+.grille-branches{display:grid;grid-template-columns:repeat(auto-fit,minmax(206px,1fr));gap:1px;
+  background:var(--filet);border:1px solid var(--filet-fort)}
+.branche{
+  background:var(--carte);padding:22px 20px 20px;cursor:pointer;
+  transition:background .2s;position:relative;text-align:left;border:0;font:inherit;color:inherit;
+  display:block;width:100%;
+}
+.branche:hover{background:#fff}
+.branche:focus-visible{outline:2px solid var(--laiton);outline-offset:-2px}
+.branche h4{font-family:var(--display);font-size:20px;letter-spacing:.04em}
+.branche .berceau{font-family:var(--sans);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--laiton-txt);margin:6px 0 12px}
+.branche p{margin:0;font-size:14.5px;line-height:1.52;color:var(--encre-2)}
+.branche .pied{margin-top:14px;padding-top:11px;border-top:1px solid var(--filet);
+  display:flex;justify-content:space-between;font-family:var(--sans);font-size:10px;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--encre-3)}
+
+/* ---------- 7. CE QUI RESTE OUVERT ---------- */
+.ouvert{background:var(--parchemin-clair);border-top:1px solid var(--filet-fort);
+  border-bottom:1px solid var(--filet-fort);padding:54px 0}
+.pistes{list-style:none;margin:0;padding:0;border-top:1px solid var(--filet)}
+.pistes li{display:grid;grid-template-columns:34px 1fr 148px;gap:18px;align-items:baseline;
+  padding:15px 0;border-bottom:1px solid var(--filet)}
+.pistes .rang{font-family:var(--display);font-size:19px;color:var(--laiton-txt)}
+.pistes .quoi b{font-weight:600}
+.pistes .quoi span{display:block;font-size:14.5px;color:var(--encre-2);margin-top:3px}
+.prio{
+  justify-self:start;font-family:var(--sans);font-size:10px;font-weight:600;letter-spacing:.14em;
+  text-transform:uppercase;padding:4px 9px;border:1px solid;border-radius:2px;white-space:nowrap;
+}
+.prio.haute{color:var(--grenat);border-color:var(--grenat-clair);background:rgba(142,44,46,.05)}
+.prio.moyenne{color:var(--laiton-txt);border-color:var(--laiton-clair);background:rgba(169,125,46,.06)}
+.prio.basse{color:var(--encre-3);border-color:var(--filet-fort)}
+
+/* ---------- 8. PIED ---------- */
+footer{background:var(--nuit);color:rgba(243,239,228,.8);padding:44px 0 34px;
+  border-top:3px solid var(--laiton);margin-top:0}
+.pied-grille{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:36px}
+footer h5{font-family:var(--sans);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--laiton-clair);margin:0 0 12px}
+footer ul{list-style:none;margin:0;padding:0;font-size:14.5px;line-height:1.9}
+footer .marque p:first-child{color:#F3EFE4}
+footer .legal{margin-top:30px;padding-top:16px;border-top:1px solid rgba(228,211,172,.18);
+  display:flex;flex-wrap:wrap;gap:8px 22px;align-items:baseline;
+  font-family:var(--sans);font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+  color:rgba(243,239,228,.6)}
+
+/* ---------- 9. TIROIR (fiche personne) ---------- */
+.voile{position:fixed;inset:0;background:rgba(18,35,53,.42);opacity:0;pointer-events:none;
+  transition:opacity .25s;z-index:39}
+body.tiroir-ouvert .voile{opacity:1;pointer-events:auto}
+.tiroir{
+  position:fixed;top:0;right:0;bottom:0;width:var(--tiroir);max-width:100%;z-index:40;
+  background:var(--carte);border-left:1px solid var(--filet-fort);
+  box-shadow:-16px 0 44px rgba(18,35,53,.14);
+  transform:translateX(101%);visibility:hidden;
+  transition:transform .3s cubic-bezier(.4,0,.2,1),visibility .3s;
+  display:flex;flex-direction:column;
+}
+body.tiroir-ouvert .tiroir{transform:none;visibility:visible}
+.tiroir-tete{padding:22px 26px 0;background:var(--nuit);color:#F3EFE4;position:relative}
+.tiroir-tete .fermer{position:absolute;top:14px;right:16px;background:none;border:0;
+  color:rgba(243,239,228,.7);font-size:24px;line-height:1;cursor:pointer}
+.tiroir-tete .fermer:hover{color:#fff}
+.tiroir-tete .gen{font-family:var(--sans);font-size:10.5px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--laiton-clair);margin:0 0 8px}
+.tiroir-tete h2{font-family:var(--display);font-size:27px;line-height:1.12;font-weight:500}
+.tiroir-tete h2 b{font-weight:600;letter-spacing:.03em}
+.tiroir-tete .dates{font-family:var(--serif);font-style:italic;font-size:15px;
+  color:rgba(243,239,228,.75);margin:6px 0 0}
+.tiroir-tete .lien{
+  margin:16px 0 0;padding:10px 0;border-top:1px solid rgba(228,211,172,.25);
+  font-size:14.5px;color:rgba(243,239,228,.9);
+}
+.tiroir-tete .lien b{color:var(--laiton-clair);font-weight:600}
+
+/* mini-nav interne : l'amélioration par rapport au long scroll actuel */
+.tiroir-nav{display:flex;gap:0;background:var(--nuit);padding:0 26px;
+  border-top:1px solid rgba(228,211,172,.2);overflow-x:auto}
+.tiroir-nav a{
+  font-family:var(--sans);font-size:10px;letter-spacing:.13em;text-transform:uppercase;
+  color:rgba(243,239,228,.6);text-decoration:none;padding:11px 13px 10px;
+  border-bottom:2px solid transparent;white-space:nowrap;
+}
+.tiroir-nav a:first-child{padding-left:0}
+.tiroir-nav a:hover,.tiroir-nav a.actif{color:#fff;border-bottom-color:var(--laiton-txt)}
+
+.tiroir-corps{overflow-y:auto;padding:26px 26px 60px;flex:1;scroll-behavior:smooth}
+.dsec{margin-bottom:30px;scroll-margin-top:12px}
+.dsec > h3{
+  font-family:var(--sans);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--laiton-txt);padding-bottom:7px;border-bottom:1px solid var(--filet-fort);margin-bottom:14px;
+}
+/* chronologie */
+.chrono{list-style:none;margin:0;padding:0}
+.chrono li{display:grid;grid-template-columns:14px minmax(0,1fr);gap:12px;padding:9px 0;
+  border-bottom:1px solid rgba(27,48,80,.09)}
+.chrono li:last-child{border-bottom:0}
+.chrono .pastille{width:9px;height:9px;border-radius:2px;margin-top:7px}
+.p-n{background:var(--act-n)} .p-d{background:var(--act-d)} .p-m{background:var(--act-m)}
+.p-x{background:transparent;border:1px dashed var(--grenat-clair)}
+.chrono .quoi{font-family:var(--sans);font-size:10px;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--encre-3);display:block;margin-bottom:2px}
+.chrono .txt{font-size:15px;line-height:1.45}
+.chrono .txt em{font-style:italic;color:var(--encre-2)}
+
+/* filiations successives */
+.filiations{list-style:none;margin:0;padding:0;position:relative}
+.filiations li{padding:0 0 16px 20px;position:relative;border-left:2px solid var(--filet-fort);
+  margin-left:4px}
+.filiations li:last-child{padding-bottom:0}
+.filiations li::before{content:"";position:absolute;left:-6px;top:6px;width:9px;height:9px;
+  background:var(--laiton);border-radius:50%;border:2px solid var(--carte)}
+.filiations li.doute{border-left-style:dashed;border-left-color:var(--grenat-clair)}
+.filiations li.doute::before{background:var(--grenat)}
+.filiations .t{font-family:var(--sans);font-size:10px;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--encre-3);display:block;margin-bottom:3px}
+.filiations .b{font-size:15px;line-height:1.48;display:block}
+
+/* notes */
+.dnotes{list-style:none;margin:0;padding:0}
+.dnotes li{font-size:15px;line-height:1.5;padding:0 0 12px 15px;border-left:2px solid var(--filet-fort);
+  margin-bottom:12px}
+.dnotes li:last-child{margin-bottom:0}
+.dnotes li.doute{border-left-color:var(--grenat)}
+
+/* dossier / actes */
+.actes{list-style:none;margin:0;padding:0}
+.actes li{border-top:1px solid rgba(27,48,80,.1)}
+.actes li:first-child{border-top:0}
+.actes button{display:flex;align-items:baseline;gap:11px;width:100%;text-align:left;
+  background:none;border:0;font:inherit;color:inherit;padding:10px 0;cursor:pointer}
+.actes button:hover{background:rgba(169,125,46,.05)}
+.actes .sq{width:9px;height:9px;border-radius:2px;flex:none;transform:translateY(-1px)}
+.actes .lb{font-size:14.8px;line-height:1.4;flex:1}
+.actes .lb .role{display:block;font-family:var(--sans);font-size:9.5px;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--encre-3);margin-top:3px}
+.actes .go{font-family:var(--sans);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--laiton-txt);white-space:nowrap}
+.actes li.manquant .lb{color:var(--grenat)}
+
+/* parenté */
+.parente{list-style:none;margin:0;padding:0}
+.parente li{display:grid;grid-template-columns:88px minmax(0,1fr);gap:14px;padding:9px 0;
+  border-bottom:1px solid rgba(27,48,80,.08);font-size:15px}
+.parente li:last-child{border-bottom:0}
+.parente .role{font-family:var(--sans);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--encre-3);padding-top:4px}
+.parente a{color:var(--encre);text-decoration:none;border-bottom:1px solid var(--laiton-clair);cursor:pointer}
+.parente a:hover{border-bottom-color:var(--laiton-txt)}
+.parente .quoi{color:var(--encre-3)}
+
+/* ---------- 10. PANNEAUX ---------- */
+.panneau{display:none}
+.panneau.is-active{display:block}
+.tete-panneau{padding:44px 0 0}
+.tete-panneau h2{font-family:var(--display);font-size:clamp(30px,4vw,44px);letter-spacing:-.012em}
+.tete-panneau p{margin:10px 0 0;font-size:17.5px;color:var(--encre-2);max-width:70ch}
+
+/* ---- barre d'outils (arbre) ---- */
+.barre{
+  display:flex;flex-wrap:wrap;gap:32px;align-items:flex-end;
+  background:var(--parchemin-clair);border:1px solid var(--filet-fort);
+  padding:18px 22px;margin:28px 0 22px;
+}
+.barre h6{font-family:var(--sans);font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--laiton-txt);margin:0 0 10px;font-weight:600}
+.legende{display:flex;gap:20px;flex-wrap:wrap}
+.leg{display:flex;align-items:flex-start;gap:7px;font-size:12.5px;line-height:1.35;color:var(--encre-2)}
+.pave{width:22px;height:0;border-top:2px solid var(--encre);margin-top:7px;flex:none}
+.pave.pointille{border-top-style:dashed;border-top-color:var(--grenat-clair)}
+.dot{width:9px;height:9px;border-radius:2px;flex:none;margin-top:4px}
+.dot.p-x{background:transparent;border:1px dashed var(--grenat-clair)}
+.outils{margin-left:auto;display:flex;gap:6px;align-items:center}
+.outils select,.outils input{font-family:var(--serif);font-size:14px;padding:6px 9px;
+  border:1px solid var(--filet-fort);background:var(--carte);color:var(--encre);border-radius:2px}
+.seg{display:flex;border:1px solid var(--filet-fort);border-radius:2px;overflow:hidden}
+.seg button{font-family:var(--sans);font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;
+  padding:7px 13px;border:0;background:var(--carte);color:var(--encre-2);cursor:pointer}
+.seg button+button{border-left:1px solid var(--filet-fort)}
+.seg button.on{background:var(--encre);color:var(--parchemin-clair)}
+.btn-fin{font-family:var(--sans);font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;
+  padding:7px 12px;border:1px solid var(--filet-fort);background:var(--carte);color:var(--encre-2);
+  cursor:pointer;border-radius:2px}
+.btn-fin:hover{border-color:var(--laiton-txt);color:var(--laiton-txt)}
+
+/* ---- scène de l'arbre ---- */
+.scene-cadre{border:1px solid var(--filet-fort);background:
+  linear-gradient(var(--parchemin-clair),var(--parchemin-clair));overflow:auto;padding:8px}
+.scene{position:relative;width:1120px;height:740px;margin:0 auto}
+.scene svg{position:absolute;inset:0;width:100%;height:100%}
+.fil{fill:none;stroke:var(--filet-fort);stroke-width:1.6}
+.fil-doute{fill:none;stroke:var(--grenat-clair);stroke-width:1.6;stroke-dasharray:5 4}
+
+.fiche{
+  position:absolute;left:var(--x);top:var(--y);width:210px;min-height:150px;
+  background:var(--carte);border:1px solid var(--encre);border-left:3px solid var(--encre);
+  border-radius:2px;padding:12px 14px 11px;cursor:pointer;text-align:left;font:inherit;color:inherit;
+  box-shadow:0 1px 0 rgba(27,48,80,.12),0 8px 18px -14px rgba(27,48,80,.6);
+  transition:transform .18s,box-shadow .18s;display:flex;flex-direction:column;
+}
+.fiche:hover{transform:translateY(-2px);box-shadow:0 1px 0 rgba(27,48,80,.2),0 14px 24px -14px rgba(27,48,80,.7)}
+.fiche:focus-visible{outline:2px solid var(--laiton);outline-offset:2px}
+.fiche.femme{border-left-color:var(--grenat)}
+.fiche.doute{border-style:dashed;border-color:var(--grenat-clair);background:rgba(252,250,244,.6)}
+.fiche.souche{border-width:2px;border-left-width:4px}
+.fgen{font-family:var(--sans);font-size:9.5px;letter-spacing:.17em;text-transform:uppercase;color:var(--encre-3)}
+.fiche .nm{font-family:var(--serif);font-size:16px;line-height:1.2;margin:6px 0 3px;font-weight:400}
+.fiche .nm b{font-weight:600;letter-spacing:.03em}
+.fdates{font-family:var(--serif);font-size:13.5px;font-style:italic;color:var(--encre-2);margin:0}
+.fmeta{font-size:13px;line-height:1.38;color:var(--encre-2);margin:8px 0 0}
+.fpieces{display:flex;gap:5px;margin-top:auto;padding-top:10px}
+.fmore{font-family:var(--sans);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--encre-3);margin-top:8px}
+.fiche:hover .fmore{color:var(--laiton-txt)}
+.jalon{position:absolute;left:var(--x);top:var(--y);background:var(--laiton);color:#fff;
+  font-family:var(--sans);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;padding:2px 6px;
+  border-radius:2px}
+
+.alliance{position:absolute;left:var(--x);top:var(--y);width:34px;text-align:center}
+.alliance i{display:inline-block;width:15px;height:15px;border:1.5px solid var(--laiton);
+  border-radius:50%;background:var(--parchemin-clair);vertical-align:middle}
+.alliance i+i{margin-left:-6px}
+.alliance b{display:block;font-family:var(--sans);font-size:10px;letter-spacing:.1em;
+  color:var(--laiton-txt);margin-top:4px;font-weight:600}
+
+/* ---- recherches ---- */
+.sous-nav{display:flex;flex-wrap:wrap;gap:2px;border-bottom:1px solid var(--filet-fort);margin:26px 0 30px}
+.sous-nav button{font-family:var(--sans);font-size:11px;letter-spacing:.13em;text-transform:uppercase;
+  background:none;border:0;padding:11px 16px;color:var(--encre-3);cursor:pointer;
+  border-bottom:2px solid transparent;margin-bottom:-1px}
+.sous-nav button:hover{color:var(--encre)}
+.sous-nav button.on{color:var(--encre);border-bottom-color:var(--laiton-txt)}
+.sous-nav .compte{font-size:10.5px;color:var(--laiton-txt);margin-left:6px}
+
+.vue-rech{display:none}
+.vue-rech.on{display:block}
+
+.piste{
+  background:var(--carte);border:1px solid var(--filet-fort);border-left:3px solid var(--laiton);
+  padding:20px 22px;margin-bottom:14px;
+}
+.piste.haute{border-left-color:var(--grenat)}
+.piste.basse{border-left-color:var(--filet-fort)}
+.piste.close{border-left-color:var(--act-n);background:var(--parchemin-clair)}
+.piste-tete{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:10px}
+.piste-tete h4{font-family:var(--display);font-size:20px;flex:1;min-width:220px;max-width:58ch}
+.piste .cote{font-family:var(--sans);font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--encre-3);margin:0 0 12px}
+.piste dl{display:grid;grid-template-columns:128px minmax(0,1fr);gap:6px 18px;margin:0}
+.piste dt{font-family:var(--sans);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--encre-3);padding-top:5px}
+.piste dd{margin:0;font-size:15.3px;line-height:1.5;max-width:76ch}
+.piste dd b{font-weight:600}
+.sceau{font-family:var(--sans);font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--act-n);border:1px solid var(--act-n);border-radius:2px;padding:3px 8px}
+.sceau.negatif{color:var(--encre-3);border-color:var(--filet-fort)}
+.sceau.ecarte{color:var(--grenat);border-color:var(--grenat-clair)}
+.reponse{margin-top:14px;padding-top:12px;border-top:1px solid var(--filet);
+  font-size:15.3px;line-height:1.52;max-width:82ch}
+.reponse b{font-weight:600}
+.reponse .quoi{font-family:var(--sans);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--act-n);display:block;margin-bottom:4px}
+.piste.negatif .reponse .quoi{color:var(--encre-3)}
+.piste.ecarte .reponse .quoi{color:var(--grenat)}
+
+/* ---- transcriptions ---- */
+.tr-grille{display:grid;grid-template-columns:296px minmax(0,1fr);gap:34px;align-items:start;margin-top:26px}
+.tr-liste{border:1px solid var(--filet-fort);background:var(--carte);position:sticky;
+  top:calc(var(--tete) + 24px);max-height:calc(100vh - var(--tete) - 48px);overflow-y:auto}
+.tr-filtre{padding:12px 14px;border-bottom:1px solid var(--filet-fort);background:var(--parchemin-clair);
+  position:sticky;top:0}
+.tr-filtre input{width:100%;font-family:var(--serif);font-size:14px;padding:7px 10px;
+  border:1px solid var(--filet-fort);background:var(--carte);border-radius:2px;color:var(--encre)}
+.tr-liste ul{list-style:none;margin:0;padding:0}
+.tr-liste li+li{border-top:1px solid var(--filet)}
+.tr-liste button{display:flex;gap:10px;width:100%;text-align:left;background:none;border:0;
+  font:inherit;color:inherit;padding:12px 14px;cursor:pointer;align-items:flex-start}
+.tr-liste button:hover{background:rgba(169,125,46,.06)}
+.tr-liste button.on{background:rgba(27,48,80,.06);box-shadow:inset 3px 0 0 var(--laiton)}
+.tr-liste .sq{width:9px;height:9px;border-radius:2px;flex:none;margin-top:5px}
+.tr-liste .ti{font-size:14.6px;line-height:1.35}
+.tr-liste .an{display:block;font-family:var(--sans);font-size:9.5px;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--encre-3);margin-top:3px}
+
+.acte{background:var(--carte);border:1px solid var(--filet-fort);padding:30px 34px 34px}
+.acte-tete{border-bottom:3px double var(--filet-fort);padding-bottom:16px;margin-bottom:22px}
+.acte-tete .quoi{font-family:var(--sans);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--laiton-txt);margin:0 0 8px}
+.acte-tete h3{font-family:var(--display);font-size:27px;line-height:1.15}
+.acte-tete .ref{font-family:var(--sans);font-size:10.5px;letter-spacing:.1em;color:var(--encre-3);
+  margin:10px 0 0;display:flex;gap:16px;flex-wrap:wrap}
+.acte-corps{display:grid;grid-template-columns:minmax(0,1fr) 232px;gap:32px;align-items:start}
+.vue-acte{border:1px solid var(--filet-fort);background:var(--parchemin);aspect-ratio:3/4;
+  display:grid;place-items:center;text-align:center;padding:16px;color:var(--encre-3);
+  font-family:var(--sans);font-size:10px;letter-spacing:.14em;text-transform:uppercase;line-height:1.9}
+.texte-acte{font-size:16.5px;line-height:1.78;hyphens:auto}
+.texte-acte p{margin:0 0 14px}
+.texte-acte .incertain{color:var(--grenat);border-bottom:1px dotted var(--grenat-clair)}
+.texte-acte .lettrine{float:left;font-family:var(--display);font-size:52px;line-height:.85;
+  padding:5px 10px 0 0;color:var(--laiton)}
+.apprend{margin-top:26px;border-top:1px solid var(--filet-fort);padding-top:18px}
+.apprend h5{font-family:var(--sans);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--laiton-txt);margin:0 0 12px}
+.apprend ul{list-style:none;margin:0;padding:0;display:grid;gap:11px}
+.apprend li{display:grid;grid-template-columns:16px minmax(0,1fr);gap:11px;font-size:15.3px;line-height:1.5}
+.apprend li::before{content:"◆";color:var(--laiton-txt);font-size:10px;line-height:1.9}
+
+/* ---------- 11. RESPONSIVE ---------- */
+@media (max-width:980px){
+  .frontispice .grille,.recit .colonnes{grid-template-columns:minmax(0,1fr);gap:36px}
+  .compteurs{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .cartouche{max-width:520px}
+  .tr-grille{grid-template-columns:minmax(0,1fr)}
+  .tr-liste{max-height:340px}
+  .acte-corps{grid-template-columns:minmax(0,1fr)}
+  .vue-acte{max-width:280px;margin-bottom:16px}
+  .chaine{overflow:visible;padding-left:6px}
+  .marge{position:static;display:grid;grid-template-columns:1fr 1fr;gap:22px}
+  .pied-grille{grid-template-columns:1fr 1fr}
+  .chaine{flex-direction:column;gap:0}
+  .maillon{text-align:left;min-width:0;padding:16px 0 16px 26px;border-left:1px solid var(--filet-fort)}
+  .maillon .rond{position:absolute;left:-6px;top:22px;width:11px;margin:0}
+  .maillon .rond::before{display:none}
+}
+/* L'en-tête réclame 1 060 px pour tenir sur une ligne. En dessous il passe
+   sur deux et cesse d'être collant, faute de hauteur constante. */
+@media (max-width:1080px){
+  .masthead{position:static}
+  .masthead .wrap{height:auto;flex-wrap:wrap;padding-top:12px;padding-bottom:8px;gap:12px}
+  .onglets{order:3;width:100%;overflow-x:auto;scrollbar-width:none}
+  .onglets::-webkit-scrollbar{display:none}
+  .chercher{flex:1;min-width:150px}
+  .chercher input{width:100%}
+  .marge{position:static}
+  .tr-liste{position:static;max-height:none}
+}
+@media (max-width:720px){
+  .wrap{padding:0 20px}
+  .marque p{white-space:normal}
+  .pistes li{grid-template-columns:26px 1fr;gap:12px}
+  .prio{grid-column:2}
+  .marge{grid-template-columns:1fr}
+  .tiroir{width:100%}
+  .compteurs{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .piste dl{grid-template-columns:minmax(0,1fr);gap:2px 0}
+  .piste dt{padding-top:10px}
+  .parente li{grid-template-columns:minmax(0,1fr);gap:2px}
+  .parente .role{padding-top:0}
+  .datation{flex-wrap:wrap;gap:4px 14px}
+  .datation span:not(:first-child){padding-left:0;border-left:0}
+  .outils{margin-left:0;width:100%;flex-wrap:wrap}
+  .colonnes--pleine .page{padding:26px 22px 28px}
+  .chapitre{padding-left:0}
+  .chapitre h3::before{position:static;display:block;width:auto;text-align:left;
+    font-size:20px;margin-bottom:2px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+}
+
+/* ============================================================
+   12. RELIEF — hiérarchie entre les registres d'information.
+   Chaque type de contenu a désormais son propre support :
+   page de garde encadrée, bande gravée sombre, page imprimée,
+   fiches en relief, feuillets de marge.
+   ============================================================ */
+:root{
+  --ombre-legere:0 1px 1px rgba(27,48,80,.04), 0 6px 16px -12px rgba(27,48,80,.45);
+  --ombre-carte:0 1px 2px rgba(27,48,80,.06), 0 16px 34px -22px rgba(27,48,80,.7);
+}
+
+/* --- bandes --- */
+.bande--garde{
+  background:linear-gradient(180deg,#F8F5ED 0%,#F4F1E7 100%);
+  border-bottom:1px solid var(--filet-fort);
+  box-shadow:inset 0 -14px 22px -20px rgba(27,48,80,.35);
+  padding:60px 0 64px;
+}
+.bande--claire{background:var(--parchemin-clair);border-top:1px solid var(--filet-fort);
+  border-bottom:1px solid var(--filet-fort)}
+.bande--fond{background:var(--parchemin)}
+
+/* --- en-têtes de rubrique : numérotées, doublement filetées --- */
+#p-accueil .section-tete{
+  display:block;margin-bottom:0;
+}
+#p-accueil .section-tete h2{
+  display:inline-block;font-size:32px;
+}
+#p-accueil .section-tete p{
+  display:inline;margin-left:14px;font-size:16px;
+}
+#p-accueil .section-tete::before{
+  content:"";display:block;width:44px;border-top:3px solid var(--laiton);margin-bottom:14px;
+}
+#p-accueil .section-rule{
+  border-top:1px solid var(--filet-fort);border-bottom:0;position:relative;margin:16px 0 40px;
+}
+#p-accueil .section-rule::after{
+  content:"";position:absolute;left:0;top:2px;width:100%;border-top:1px solid var(--filet);
+}
+
+/* --- FRONTISPICE : titre plus dense, cartouche vraiment posé --- */
+.titre-doc{letter-spacing:-.022em}
+.titre-doc em{
+  font-size:.42em;color:var(--encre-2);margin-top:14px;
+  padding-top:14px;border-top:1px solid var(--filet-fort);display:block;max-width:16em;
+}
+.chapo{
+  font-size:18.5px;border-left:0;hyphens:auto;
+}
+.frontispice .grille{gap:64px}
+.cartouche{
+  box-shadow:var(--ombre-carte);
+  background:linear-gradient(180deg,#FFFDF8,#FBF8F1);
+}
+.cartouche::before{
+  content:"";position:absolute;left:0;right:0;top:0;height:4px;background:var(--laiton);
+}
+.cartouche::after{inset:9px 9px 9px 9px;top:13px;border-color:var(--laiton-clair)}
+.compteurs{background:var(--laiton-clair)}
+.compteurs div{background:linear-gradient(180deg,#FFFDF8,#FBF8F1)}
+.cartouche .compteurs{border:0}
+
+/* --- LIGNE DIRECTE : bande gravée, fond nuit --- */
+.bande--nuit{
+  background:
+    radial-gradient(120% 140% at 50% 0%, #1A3049 0%, var(--nuit) 62%);
+  color:#F3EFE4;padding:58px 0 62px;
+  border-top:3px solid var(--laiton);border-bottom:3px solid var(--laiton);
+  box-shadow:inset 0 18px 30px -28px #000, inset 0 -18px 30px -28px #000;
+  margin-top:0;
+}
+.bande--nuit .section-tete h2{color:#FBF8F1}
+.bande--nuit .section-tete p{color:rgba(243,239,228,.62)}
+.bande--nuit .section-tete::before{border-top-color:var(--laiton-clair)}
+.bande--nuit .section-rule{border-top-color:rgba(228,211,172,.32)}
+.bande--nuit .section-rule::after{border-top-color:rgba(228,211,172,.14)}
+.bande--nuit .maillon .an{color:#FBF8F1}
+.bande--nuit .maillon .noms{color:rgba(243,239,228,.94)}
+.bande--nuit .maillon .gen{color:var(--laiton-clair);opacity:.8}
+.bande--nuit .maillon .lieu{color:rgba(243,239,228,.5)}
+.bande--nuit .maillon .rond::before{border-top-color:rgba(228,211,172,.4)}
+.bande--nuit .maillon .rond i{background:var(--nuit);border-color:var(--laiton-clair);
+  box-shadow:0 0 0 4px rgba(228,211,172,.08)}
+.bande--nuit .maillon:hover .rond i{background:var(--laiton-clair)}
+.bande--nuit .ph{border-bottom-color:rgba(228,211,172,.55)}
+.maillon{padding:0 10px;transition:transform .2s}
+.maillon:hover{transform:translateY(-3px)}
+.maillon .noms b{letter-spacing:.05em}
+
+/* --- RÉCIT : la page imprimée d'un côté, les feuillets de l'autre --- */
+.recit{padding:64px 0 68px}
+.recit .colonnes{gap:44px;grid-template-columns:1fr 286px}
+.page{
+  background:var(--carte);border:1px solid var(--filet-fort);
+  box-shadow:var(--ombre-carte);padding:44px 52px 40px;
+  counter-reset:chap;
+}
+.chapitre{position:relative;padding-left:58px;margin-bottom:38px;padding-bottom:34px;
+  border-bottom:1px solid var(--filet)}
+.chapitre:last-child{margin-bottom:0;padding-bottom:0;border-bottom:0}
+.chapitre h3::before{
+  counter-increment:chap;content:counter(chap,upper-roman);
+  position:absolute;left:0;top:-2px;width:42px;text-align:right;
+  font-family:var(--display);font-size:27px;color:var(--laiton);opacity:.6;line-height:1;
+}
+.chapitre h3{font-size:25px}
+.chapitre .situe{border-bottom:1px solid var(--filet);padding-bottom:10px}
+
+/* feuillets de marge : posés sur le fond, pas dans la page */
+.note-marge{
+  background:var(--carte);border:1px solid var(--filet-fort);border-left:3px solid var(--laiton);
+  box-shadow:var(--ombre-legere);padding:15px 17px 16px;margin-bottom:18px;
+}
+.note-marge.doute{border-left-color:var(--grenat)}
+.note-marge h5{margin-bottom:8px}
+.note-marge p{font-size:14px;max-width:52ch}
+
+/* --- BRANCHES : vraies fiches détachées --- */
+.grille-branches{background:transparent;border:0;gap:16px}
+.branche{
+  border:1px solid var(--filet-fort);box-shadow:var(--ombre-legere);
+  transition:transform .18s, box-shadow .18s;padding:24px 22px 20px;
+}
+.branche:hover{transform:translateY(-3px);box-shadow:var(--ombre-carte);background:var(--carte)}
+.branche h4{border-bottom:1px solid var(--filet);padding-bottom:9px}
+.branche .berceau{margin-top:9px}
+
+/* --- CE QUI RESTE OUVERT : rangs numérotés en relief --- */
+.ouvert{background:linear-gradient(180deg,#F4F1E7,#EFEBE0);padding:60px 0 66px}
+.pistes{border-top:0}
+.pistes li{
+  background:var(--carte);border:1px solid var(--filet-fort);box-shadow:var(--ombre-legere);
+  border-bottom:1px solid var(--filet-fort);
+  grid-template-columns:52px 1fr 152px;gap:20px;align-items:center;
+  padding:16px 20px;margin-bottom:10px;transition:box-shadow .18s,transform .18s;
+}
+.pistes li:hover{transform:translateY(-2px);box-shadow:var(--ombre-carte)}
+.pistes .rang{
+  font-family:var(--display);font-size:20px;color:var(--laiton-txt);
+  width:38px;height:38px;display:grid;place-items:center;
+  border:1px solid var(--laiton-clair);border-radius:50%;background:rgba(169,125,46,.06);
+}
+.pistes li:nth-child(-n+3) .rang{background:rgba(142,44,46,.06);border-color:var(--grenat-clair);color:var(--grenat)}
+
+/* --- ARBRE : la scène doit ressembler à une table, pas à du vide --- */
+.scene-cadre{
+  background:
+    linear-gradient(180deg,#F6F3EA,#F1EDE3);
+  box-shadow:inset 0 2px 14px -8px rgba(27,48,80,.35);
+  padding:18px;
+}
+.fiche{box-shadow:var(--ombre-legere)}
+.fiche:hover{box-shadow:var(--ombre-carte)}
+.barre{box-shadow:var(--ombre-legere);background:var(--carte)}
+
+/* --- RECHERCHES & TRANSCRIPTIONS : mêmes règles de relief --- */
+.piste{box-shadow:var(--ombre-legere);transition:box-shadow .18s}
+.piste:hover{box-shadow:var(--ombre-carte)}
+.tr-liste,.acte{box-shadow:var(--ombre-carte)}
+.tete-panneau{padding:46px 0 0;border-bottom:0}
+.tete-panneau h2::after{
+  content:"";display:block;width:44px;border-top:3px solid var(--laiton);margin-top:16px;
+}
+
+@media (max-width:980px){
+  .page{padding:30px 26px}
+  .chapitre{padding-left:44px}
+  .recit .colonnes{grid-template-columns:1fr}
+}
+
+/* --- ajustements : ligne directe resserrée, récit en pleine largeur --- */
+.bande--nuit{padding:38px 0 40px;border-top-width:2px;border-bottom-width:2px}
+.bande--nuit .section-tete::before{width:36px;border-top-width:2px;margin-bottom:10px}
+.bande--nuit .section-tete h2{font-size:26px}
+.bande--nuit .section-rule{margin:12px 0 26px}
+.bande--nuit .maillon .gen{font-size:9.5px;margin-bottom:6px}
+.bande--nuit .maillon .an{font-size:21px}
+.bande--nuit .maillon .rond{margin:7px auto 9px;height:9px}
+.bande--nuit .maillon .rond i{width:9px;height:9px}
+.bande--nuit .maillon .rond::before{top:4px}
+.bande--nuit .maillon .noms{font-size:14px}
+.bande--nuit .maillon .lieu{font-size:10.5px;margin-top:5px}
+
+/* Le récit en pleine largeur donnait des lignes de 150 signes. Il garde
+   désormais une colonne de livre, centrée sur le parchemin : c'est la page
+   qui est à la mesure du texte, et non le texte qui flotte dans la page.
+   Les caps en `ch` sont levés, sinon la ligne de situation — en sans de
+   10,5 px — se retrouvait bornée à 409 px sous un titre de 850. */
+.colonnes--pleine{grid-template-columns:1fr!important;max-width:884px;margin:0 auto}
+.colonnes--pleine .page{padding:46px 56px 42px}
+.colonnes--pleine .chapitre p{max-width:none;hyphens:auto}
+.colonnes--pleine .chapitre .situe{max-width:none}
+/* le titre de section s'aligne sur la page, sinon il flotte 180 px à sa gauche */
+.recit .section-tete,.recit .section-rule{max-width:884px;margin-left:auto;margin-right:auto}
+
+/* le bandeau des notes, en tête de l'onglet Recherches */
+.fil-seance{margin:30px 0 6px}
+.fil-seance h3{font-family:var(--display);font-size:20px;margin-bottom:16px;
+  padding-bottom:10px;border-bottom:1px solid var(--filet-fort)}
+.marge--rangee{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+  gap:14px;position:static}
+.marge--rangee .note-marge{margin-bottom:0}
+
+@media (max-width:980px){ .colonnes--pleine .page{padding:30px 26px} }
+
+/* ---------- 13. IMPRESSION ----------
+   Un dossier généalogique finit sur papier. Fonds de nuit neutralisés,
+   ombres et outils supprimés, chapitres insécables, tous les panneaux
+   sortis à la suite plutôt que le seul onglet ouvert. */
+@media print{
+  @page{margin:16mm}
+  body{background:#fff;font-size:11pt;line-height:1.45}
+  body::before,.saut,.chercher,.onglets,.voile,.tiroir,.outils,.seg,.sous-nav,
+  .hint,.tr-filtre,.fmore,#basculePh{display:none!important}
+  .masthead,footer,.bande--nuit{background:#fff!important;color:#000!important;
+    border-color:#000!important;box-shadow:none!important;position:static!important}
+  .masthead .marque p,.bande--nuit .section-tete p,.maillon .lieu{color:#333!important}
+  .bande--nuit .section-tete h2,.maillon .an,.maillon .noms,footer h5,footer,.legal,
+  footer .marque p{color:#000!important}
+  .bande--nuit .maillon .rond i{background:#fff!important;border-color:#000!important}
+  .page,.cartouche,.piste,.branche,.note-marge,.acte,.tr-liste,.pistes li,.barre,.fiche{
+    box-shadow:none!important;background:#fff!important;border-color:#999!important}
+  .panneau{display:block!important;break-before:page}
+  .panneau:first-of-type{break-before:auto}
+  .vue-rech{display:block!important}
+  .chapitre,.piste,.branche,.pistes li,.note-marge,.dsec{break-inside:avoid}
+  h2,h3,h4{break-after:avoid}
+  .chaine{flex-direction:column}
+  .tr-grille,.acte-corps,.recit .colonnes{display:block}
+}
+</style>
+</head>
+<body>
+<a class="saut" href="#contenu">Aller au contenu</a>
+<div class="shell">
+
+<!-- ============ EN-TÊTE ============ -->
+<header class="masthead">
+  <div class="wrap">
+    <div class="marque">
+      <span class="blason" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3">
+          <path d="M12 21V11M12 11l-4-3M12 11l4-3M8 8a3 3 0 1 1 3-3 3 3 0 0 1 5 2 3 3 0 0 1 0 4 3 3 0 0 1-4 2 3 3 0 0 1-4-5z"/>
+          <path d="M8 21h8"/>
+        </svg>
+      </span>
+      <div>
+        <h1>Arbre généalogique</h1>
+        <p>Branche maternelle · 1743 — aujourd'hui</p>
+      </div>
+    </div>
+
+    <nav class="onglets" role="tablist" aria-label="Sections du document">
+      <button role="tab" aria-selected="true" id="t-accueil" aria-controls="p-accueil">Accueil</button>
+      <button role="tab" aria-selected="false" tabindex="-1" id="t-arbre" aria-controls="p-arbre">Arbre</button>
+      <button role="tab" aria-selected="false" tabindex="-1" id="t-frise" aria-controls="p-frise">Frise</button>
+      <button role="tab" aria-selected="false" tabindex="-1" id="t-recherches" aria-controls="p-recherches">Recherches <span class="compte ph">14</span></button>
+      <button role="tab" aria-selected="false" tabindex="-1" id="t-transcriptions" aria-controls="p-transcriptions">Transcriptions <span class="compte">86</span></button>
+    </nav>
+
+    <div class="chercher">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>
+      </svg>
+      <input type="search" id="q" placeholder="Nom, lieu, métier…" aria-label="Chercher dans le dossier"
+             aria-describedby="qCompte">
+      <span class="decompte" id="qCompte" role="status"></span>
+    </div>
+  </div>
+</header>
+
+<main id="contenu">
+
+<!-- ============================================================
+     PANNEAU 1 — ACCUEIL
+     ============================================================ -->
+<div class="panneau is-active" id="p-accueil" role="tabpanel" aria-labelledby="t-accueil">
+
+<!-- ============ FRONTISPICE ============ -->
+<section class="frontispice bande bande--garde">
+  <div class="wrap">
+    <div class="datation">
+      <span>Document de travail</span>
+      <span>Dix-septième séance</span>
+      <span>30 août 2026</span>
+    </div>
+
+    <div class="grille">
+      <div>
+        <h2 class="titre-doc">La branche maternelle<em>De Mont-le-Frânois à aujourd'hui</em></h2>
+
+        <p class="chapo">
+          <span class="lettrine">S</span>ept générations tiennent dans quatre villages. La ligne directe part de
+          <b>Mont-le-Frânois</b> et de <b>Vars</b>, s'installe à <b>Fahy-lès-Autrey</b> où elle passe
+          tout le XIX<sup>e</sup> siècle, et n'en sort qu'au XX<sup>e</sup>. Deux branches y entrent de loin :
+          les <b>CARPENTIER</b> de Baume-les-Dames, et les <b>VILLETTE</b>, qui remontent à un cordonnier
+          né à Paris en 1840. Quatre-vingt-six actes sont en main, tous transcrits.
+        </p>
+      </div>
+
+      <aside class="cartouche">
+        <h4>État du dossier</h4>
+        <div class="compteurs">
+          <div><span class="n ph">128</span><span class="l">Personnes</span></div>
+          <div><span class="n">86</span><span class="l">Actes transcrits</span></div>
+          <div><span class="n">9</span><span class="l">Générations</span></div>
+          <div><span class="n ph">14</span><span class="l">Pistes ouvertes</span></div>
+        </div>
+        <p class="note">De la génération <b>−2</b> à la génération <b>VII</b>.<br>
+          Dernier apport : <span class="ph">Marnay et Gray</span>, 30 août.</p>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SIGNATURE : LA LIGNE DIRECTE ============ -->
+<section class="ligne bande--nuit">
+  <div class="wrap">
+    <div class="section-tete">
+      <h2>La ligne directe</h2>
+      <p>six alliances, cent soixante ans, quatre communes</p>
+    </div>
+    <div class="section-rule"></div>
+
+    <div class="chaine">
+      <div class="maillon" style="animation-delay:.05s">
+        <span class="gen">GÉN. I</span>
+        <span class="an">1803</span>
+        <span class="rond"><i></i></span>
+        <span class="noms"><b>AMIOT</b> × <b>RENEVIER</b></span>
+        <span class="lieu">Mont-le-Frânois</span>
+      </div>
+      <div class="maillon" style="animation-delay:.13s">
+        <span class="gen">GÉN. II</span>
+        <span class="an">1836</span>
+        <span class="rond"><i></i></span>
+        <span class="noms"><b>PAUFARD</b> × <b>AMIOT</b></span>
+        <span class="lieu">Fahy-lès-Autrey</span>
+      </div>
+      <div class="maillon" style="animation-delay:.21s">
+        <span class="gen">GÉN. III</span>
+        <span class="an">1866</span>
+        <span class="rond"><i></i></span>
+        <span class="noms"><b>GRILLOT</b> × <b>PAUFARD</b></span>
+        <span class="lieu">Fahy-lès-Autrey</span>
+      </div>
+      <div class="maillon" style="animation-delay:.29s">
+        <span class="gen">GÉN. IV</span>
+        <span class="an">1906</span>
+        <span class="rond"><i></i></span>
+        <span class="noms"><b>VILLETTE</b> × <b>GRILLOT</b></span>
+        <span class="lieu ph">Fahy-lès-Autrey</span>
+      </div>
+      <div class="maillon" style="animation-delay:.37s">
+        <span class="gen">GÉN. V</span>
+        <span class="an">1930</span>
+        <span class="rond"><i></i></span>
+        <span class="noms"><b>RIBAUT</b> × <b>VILLETTE</b></span>
+        <span class="lieu ph">Lieu à confirmer</span>
+      </div>
+      <div class="maillon" style="animation-delay:.45s">
+        <span class="gen">GÉN. VI</span>
+        <span class="an">1963</span>
+        <span class="rond"><i></i></span>
+        <span class="noms"><b>FONTANA</b> × <b>RIBAUT</b></span>
+        <span class="lieu ph">Lieu à confirmer</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LE RÉCIT ============ -->
+<section class="recit bande--claire">
+  <div class="wrap">
+    <div class="section-tete">
+      <h2>Le récit</h2>
+      <p>ce que le dossier raconte, dans l'ordre où on l'a appris</p>
+    </div>
+    <div class="section-rule"></div>
+
+    <div class="colonnes colonnes--pleine">
+      <div class="page">
+        <article class="chapitre">
+          <h3>Le berceau</h3>
+          <p class="situe">Mont-le-Frânois &amp; Vars · 1743 — 1836</p>
+          <p>La souche est paysanne et tient sur deux villages voisins. <b>Bernard AMYOT</b>,
+            laboureur, et <b>Nicolle BERTAUT</b> ouvrent le dossier ; leurs parents manquent
+            encore, mais le registre paroissial est accessible pour 1781. Le mariage
+            <b>AMIOT × RENEVIER</b>, en 1803, est le premier acte que l'on tienne en main
+            et le point d'où tout descend.</p>
+          <p><span class="ph">Deux paragraphes à écrire ici : ce que les tables décennales
+            disent de la génération −1, et ce que la succession de Barbe AMIOT pourrait
+            trancher.</span></p>
+        </article>
+
+        <article class="chapitre">
+          <h3>Fahy-lès-Autrey, tout un siècle</h3>
+          <p class="situe">1836 — 1906 · cinq recensements, trois mariages</p>
+          <p>La famille s'installe à Fahy et n'en bouge plus pendant soixante-dix ans.
+            Les cinq recensements conservés et les tables décennales de 1813 à 1872 donnent à
+            <b>Claude PAUFARD</b> et à <b>Françoise AMIOT</b> treize enfants et non douze.
+            Onze meurent avant treize mois, dont deux qu'on croyait vivants et un treizième
+            entièrement inconnu, mort en 1854. <b>Une seule fille atteint sûrement l'âge
+            adulte</b> : Théolinde.</p>
+          <p>Les mêmes listes ouvrent la maison du grand-père : <b>quatre fils tailleurs de
+            pierre sous un même toit</b>, une sœur enfin nommée, une installation à Fahy
+            avancée de douze ans. Claude PAUFARD y est <b>cabaretier</b> avant d'être
+            propriétaire, puis entrepreneur de travaux publics — la seule ascension sociale
+            que ce dossier puisse suivre année par année.</p>
+        </article>
+
+        <article class="chapitre">
+          <h3>Les GRILLOT sortent du département</h3>
+          <p class="situe">Champvans-lès-Dole, Ancier, Gray · 1743 — 1890</p>
+          <p>L'acte de décès de <b>Thomas GRILLOT</b>, en 1890, nomme enfin ses parents et le
+            dit <b>né à Ancier</b> et non à Gray — ce qui explique un siècle d'invisibilité
+            dans les tables de la ville. Celui de son grand-père, en 1825, le dit né à
+            <b>Champvans-lès-Dole, dans le Jura</b>. Neuf personnes entrent d'un coup dans
+            l'arbre, et le métier de boucher se suit sur <b>cinq générations</b>.</p>
+          <p>Le mariage de <b>Marnay</b>, en 1833, ferme cette génération : les deux mariés
+            étaient orphelins, et sur six ascendants un seul vivait encore —
+            <b>Anne Pierre BERNARDOT, bouchère à Gray</b>, qui fait le voyage et signe de sa main.</p>
+        </article>
+
+        <article class="chapitre">
+          <h3>L'énigme d'Yvonne</h3>
+          <p class="situe">Lyon, Serrigny, Beaune · 1889 — 1906</p>
+          <p>Née fille naturelle à Lyon le 1<sup>er</sup> octobre 1889, elle est reconnue en 1892
+            par <b>Victor Jean-Baptiste CARPENTIER</b>, voit cette reconnaissance
+            <b>annulée par le tribunal de Beaune en 1897</b>, puis se fait <b>adopter par sa
+            propre grand-mère Théolinde</b> : trois filiations successives et juridiquement
+            distinctes pour une même personne.</p>
+          <p>Le mariage de 1892 en donne l'explication la plus économique — Carpentier était
+            veuf de Julie-Lucie GÉNIN, morte le 25 juin 1889, quand Yvonne a été conçue de son
+            vivant. Mais rien n'établit sa paternité, une tradition familiale l'attribue à un
+            palefrenier du village, et <b>seul le jugement de Beaune dira qui a agi et pourquoi</b>.</p>
+        </article>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ LES BRANCHES ============ -->
+<section class="branches bande--fond">
+  <div class="wrap">
+    <div class="section-tete">
+      <h2>Les branches</h2>
+      <p>cliquez pour ouvrir la fiche de tête de branche</p>
+    </div>
+    <div class="section-rule"></div>
+
+    <div class="grille-branches">
+      <button class="branche" data-fiche="yvonne">
+        <h4>CARPENTIER</h4>
+        <p class="berceau">Baume-les-Dames · Trouvans</p>
+        <p>Entrée tardive et contestée dans la ligne : une reconnaissance, une annulation,
+          une adoption.</p>
+        <div class="pied"><span class="ph">9 personnes</span><span class="ph">12 actes</span></div>
+      </button>
+      <button class="branche" data-fiche="yvonne">
+        <h4>GRILLOT</h4>
+        <p class="berceau">Champvans-lès-Dole · Gray</p>
+        <p>Bouchers sur cinq générations. Remontée de trois générations à la seizième séance.</p>
+        <div class="pied"><span class="ph">21 personnes</span><span class="ph">24 actes</span></div>
+      </button>
+      <button class="branche" data-fiche="yvonne">
+        <h4>PAUFARD</h4>
+        <p class="berceau">Fahy-lès-Autrey</p>
+        <p>Cabaretier, puis propriétaire, puis entrepreneur. Treize enfants, deux survivants.</p>
+        <div class="pied"><span class="ph">18 personnes</span><span class="ph">19 actes</span></div>
+      </button>
+      <button class="branche" data-fiche="yvonne">
+        <h4>AMIOT</h4>
+        <p class="berceau">Mont-le-Frânois · Vars</p>
+        <p>La souche. Laboureurs. Deux générations manquent encore au-dessus de Bernard.</p>
+        <div class="pied"><span class="ph">15 personnes</span><span class="ph">11 actes</span></div>
+      </button>
+      <button class="branche" data-fiche="yvonne">
+        <h4>VILLETTE</h4>
+        <p class="berceau">Paris, 1840</p>
+        <p>Un cordonnier né à Paris qui remonte dans un dossier entièrement rural.</p>
+        <div class="pied"><span class="ph">12 personnes</span><span class="ph">9 actes</span></div>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CE QUI RESTE OUVERT ============ -->
+<section class="ouvert">
+  <div class="wrap">
+    <div class="section-tete">
+      <h2>Ce qui reste ouvert</h2>
+      <p>par ordre d'urgence — le détail est dans l'onglet Recherches</p>
+    </div>
+    <div class="section-rule"></div>
+
+    <ol class="pistes">
+      <li>
+        <span class="rang">1</span>
+        <span class="quoi"><b>Le jugement de Beaune du 14 mai 1897</b>
+          <span>Seule pièce qui dira qui a demandé l'annulation de la reconnaissance, et pourquoi.
+            Archives départementales de la Côte-d'Or, série U.</span></span>
+        <span class="prio haute">Priorité haute</span>
+      </li>
+      <li>
+        <span class="rang">2</span>
+        <span class="quoi"><b>L'arrêt d'adoption d'Yvonne et son dossier de tutelle, 1905-1906</b>
+          <span>Établirait la troisième filiation et nommerait le conseil de famille.</span></span>
+        <span class="prio haute">Priorité haute</span>
+      </li>
+      <li>
+        <span class="rang">3</span>
+        <span class="quoi"><b>Les décès de Jean-Baptiste PAUFARD et de Denise REDOUTET, 1846-1865</b>
+          <span>Seuls actes qui nommeraient la génération d'avant.</span></span>
+        <span class="prio haute">Priorité haute</span>
+      </li>
+      <li>
+        <span class="rang">4</span>
+        <span class="quoi"><b>Le mariage de Victor CARPENTIER avec Julie-Lucie GÉNIN</b>
+          <span>Cherché non plus par une ville mais par la carrière de son père, professeur au
+            lycée de Nancy.</span></span>
+        <span class="prio moyenne">Priorité moyenne</span>
+      </li>
+      <li>
+        <span class="rang">5</span>
+        <span class="quoi"><b>Les registres de recrutement de la classe 1803</b>
+          <span>Seul moyen de savoir si Noël GRILLOT a servi sous l'Empire.</span></span>
+        <span class="prio moyenne">Priorité moyenne</span>
+      </li>
+      <li>
+        <span class="rang">6</span>
+        <span class="quoi"><b>Le sort de Clotilde Hortense PAUFARD, née en 1839</b>
+          <span>Absente des cinq recensements et de toutes les tables de décès.</span></span>
+        <span class="prio basse">Priorité basse</span>
+      </li>
+      <li>
+        <span class="rang">7</span>
+        <span class="quoi"><b>Les décès de Jacques et de Joseph GRILLOT</b>
+          <span>Diraient si les quatre maisons GRILLOT de Gray n'en font qu'une.</span></span>
+        <span class="prio basse">Priorité basse</span>
+      </li>
+    </ol>
+  </div>
+</section>
+
+</div><!-- /p-accueil -->
+
+
+<!-- ============================================================
+     PANNEAU 2 — ARBRE
+     ============================================================ -->
+<div class="panneau" id="p-arbre" role="tabpanel" aria-labelledby="t-arbre" hidden>
+  <div class="wrap">
+    <div class="tete-panneau">
+      <h2>L'arbre</h2>
+      <p>Deux générations sont montrées ici à titre d'exemple. Cliquez sur une fiche pour ouvrir
+        le tiroir. Les contenus sont des placeholders.</p>
+    </div>
+
+    <div class="barre">
+      <div>
+        <h6>Fiabilité</h6>
+        <div class="legende">
+          <div class="leg"><span class="pave"></span>Information établie</div>
+          <div class="leg"><span class="pave pointille"></span>À confirmer</div>
+        </div>
+      </div>
+      <div>
+        <h6>Actes en main</h6>
+        <div class="legende">
+          <div class="leg"><span class="dot p-n"></span>Naissance</div>
+          <div class="leg"><span class="dot p-m"></span>Mariage</div>
+          <div class="leg"><span class="dot p-d"></span>Décès</div>
+          <div class="leg"><span class="dot p-x"></span>Non retrouvé</div>
+        </div>
+      </div>
+      <div>
+        <h6>Point de vue</h6>
+        <select aria-label="Personne servant de point de vue">
+          <option>Marie FONTANA — génération VII</option>
+          <option>Yvonne CARPENTIER — génération V</option>
+        </select>
+      </div>
+      <div>
+        <h6>Affichage</h6>
+        <div class="seg">
+          <button class="on" type="button">Arbre</button>
+          <button type="button">Preuves</button>
+          <button type="button">Nouveautés</button>
+        </div>
+      </div>
+      <div class="outils">
+        <button class="btn-fin" type="button">−</button>
+        <button class="btn-fin" type="button">Ajuster</button>
+        <button class="btn-fin" type="button">+</button>
+        <button class="btn-fin" type="button" onclick="window.print()">Imprimer</button>
+      </div>
+    </div>
+
+    <div class="scene-cadre">
+      <div class="scene">
+        <svg viewBox="0 0 1120 740" aria-hidden="true">
+          <!-- descente des deux couples de la génération III -->
+          <path class="fil" d="M275,148 V250 H405 V300"/>
+          <path class="fil" d="M845,148 V250 H665 V300"/>
+          <!-- descente du couple de la génération IV vers ses trois enfants -->
+          <path class="fil" d="M535,388 V500 M275,500 H665 M275,500 V545 M535,500 V545"/>
+          <path class="fil-doute" d="M665,500 H795 M795,500 V545"/>
+        </svg>
+
+        <!-- ---- GÉNÉRATION III ---- -->
+        <article role="button" class="fiche souche" style="--x:40px;--y:60px" data-fiche="yvonne" tabindex="0">
+          <span class="fgen">Génération III</span>
+          <h4 class="nm">Prénom <b>NOM</b></h4>
+          <p class="fdates">1810 — 1890</p>
+          <p class="fmeta ph">Métier · commune de naissance, puis commune de décès</p>
+          <div class="fpieces"><span class="dot p-n"></span><span class="dot p-m"></span><span class="dot p-d"></span></div>
+          <span class="fmore">Voir la fiche →</span>
+        </article>
+
+        <span class="alliance" style="--x:258px;--y:118px"><i></i><i></i><b>1836</b></span>
+
+        <article role="button" class="fiche femme" style="--x:300px;--y:60px" data-fiche="yvonne" tabindex="0">
+          <span class="fgen">Génération III</span>
+          <h4 class="nm">Prénom <b>NOM</b></h4>
+          <p class="fdates">1814 — 1885</p>
+          <p class="fmeta ph">Sans profession · commune</p>
+          <div class="fpieces"><span class="dot p-n"></span><span class="dot p-m"></span><span class="dot p-x"></span></div>
+          <span class="fmore">Voir la fiche →</span>
+        </article>
+
+        <article role="button" class="fiche" style="--x:610px;--y:60px" data-fiche="yvonne" tabindex="0">
+          <span class="fgen">Génération III</span>
+          <h4 class="nm">Prénom <b>NOM</b></h4>
+          <p class="fdates">1808 — 1879</p>
+          <p class="fmeta ph">Métier · commune</p>
+          <div class="fpieces"><span class="dot p-n"></span><span class="dot p-m"></span><span class="dot p-d"></span></div>
+          <span class="fmore">Voir la fiche →</span>
+        </article>
+
+        <span class="alliance" style="--x:828px;--y:118px"><i></i><i></i><b>1838</b></span>
+        <span class="jalon" style="--x:930px;--y:44px">Nouveau · 30 août</span>
+
+        <article role="button" class="fiche femme doute" style="--x:870px;--y:60px" data-fiche="yvonne" tabindex="0">
+          <span class="fgen">Génération III</span>
+          <h4 class="nm">Prénom <b>NOM</b></h4>
+          <p class="fdates">≈ 1815 — ?</p>
+          <p class="fmeta ph">Filiation à confirmer par l'acte de décès</p>
+          <div class="fpieces"><span class="dot p-x"></span><span class="dot p-m"></span><span class="dot p-x"></span></div>
+          <span class="fmore">Voir la fiche →</span>
+        </article>
+
+        <!-- ---- GÉNÉRATION IV ---- -->
+        <article role="button" class="fiche" style="--x:300px;--y:300px" data-fiche="yvonne" tabindex="0">
+          <span class="fgen">Génération IV</span>
+          <h4 class="nm">Prénom <b>NOM</b></h4>
+          <p class="fdates">1840 — 1902</p>
+          <p class="fmeta ph">Métier · commune · service militaire</p>
+          <div class="fpieces"><span class="dot p-n"></span><span class="dot p-m"></span><span class="dot p-d"></span></div>
+          <span class="fmore">Voir la fiche →</span>
+        </article>
+
+        <span class="alliance" style="--x:518px;--y:358px"><i></i><i></i><b>1866</b></span>
+
+        <article role="button" class="fiche femme" style="--x:560px;--y:300px" data-fiche="yvonne" tabindex="0">
+          <span class="fgen">Génération IV</span>
+          <h4 class="nm">Prénom <b>NOM</b></h4>
+          <p class="fdates">1844 — 1913</p>
+          <p class="fmeta ph">Commune · seule fille survivante de la fratrie</p>
+          <div class="fpieces"><span class="dot p-n"></span><span class="dot p-m"></span><span class="dot p-d"></span></div>
+          <span class="fmore">Voir la fiche →</span>
+        </article>
+
+        <!-- ---- GÉNÉRATION V ---- -->
+        <article role="button" class="fiche" style="--x:170px;--y:545px" data-fiche="yvonne" tabindex="0">
+          <span class="fgen">Génération V</span>
+          <h4 class="nm">Prénom <b>NOM</b></h4>
+          <p class="fdates">1868 — 1869</p>
+          <p class="fmeta ph">Mort à onze mois</p>
+          <div class="fpieces"><span class="dot p-n"></span><span class="dot p-d"></span></div>
+          <span class="fmore">Voir la fiche →</span>
+        </article>
+
+        <article role="button" class="fiche femme souche" style="--x:430px;--y:545px" data-fiche="yvonne" tabindex="0">
+          <span class="fgen">Génération V · ligne directe</span>
+          <h4 class="nm">Prénom <b>NOM</b></h4>
+          <p class="fdates">1871 — 1948</p>
+          <p class="fmeta ph">Commune · trois filiations successives</p>
+          <div class="fpieces"><span class="dot p-n"></span><span class="dot p-m"></span><span class="dot p-d"></span></div>
+          <span class="fmore">Voir la fiche →</span>
+        </article>
+
+        <article role="button" class="fiche doute" style="--x:690px;--y:545px" data-fiche="yvonne" tabindex="0">
+          <span class="fgen">Génération V</span>
+          <h4 class="nm">Prénom <b>NOM</b></h4>
+          <p class="fdates">≈ 1874 — ?</p>
+          <p class="fmeta ph">Cité au recensement, absent des tables — rattachement probable</p>
+          <div class="fpieces"><span class="dot p-x"></span><span class="dot p-x"></span></div>
+          <span class="fmore">Voir la fiche →</span>
+        </article>
+      </div>
+    </div>
+    <p style="font-family:var(--sans);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+      color:var(--encre-3);margin:12px 0 60px">
+      Faites glisser l'arbre horizontalement pour l'explorer — ou utilisez − / + pour ajuster la taille.</p>
+  </div>
+</div>
+
+
+<!-- ============================================================
+     PANNEAU 3 — FRISE (placeholder)
+     ============================================================ -->
+<div class="panneau" id="p-frise" role="tabpanel" aria-labelledby="t-frise" hidden>
+  <div class="wrap">
+    <div class="tete-panneau">
+      <h2>La frise</h2>
+      <p>Essai en cours — non repris dans ce prototype.</p>
+    </div>
+    <div style="border:1px dashed var(--filet-fort);padding:80px;text-align:center;margin:30px 0 60px;
+      font-family:var(--sans);font-size:10.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--encre-3)">
+      Emplacement de la frise chronologique
+    </div>
+  </div>
+</div>
+
+
+<!-- ============================================================
+     PANNEAU 4 — RECHERCHES
+     ============================================================ -->
+<div class="panneau" id="p-recherches" role="tabpanel" aria-labelledby="t-recherches" hidden>
+  <div class="wrap">
+    <div class="tete-panneau">
+      <h2>Les recherches</h2>
+      <p>Ce que l'on cherche, ce que l'on a trouvé, et ce que l'on a cherché en vain — les
+        recherches négatives ont autant de valeur que les trouvailles, à condition d'être écrites.</p>
+    </div>
+
+    <section class="fil-seance">
+      <h3>En marge — ce que la dernière séance a réglé ou soulevé</h3>
+      <div class="marge marge--rangee">
+        <div class="note-marge">
+          <h5>Question refermée</h5>
+          <p>La fratrie de Joséphine : elle était <b>fille unique</b>. MONJEAN, dit
+            « beau-frère de l'épouse » en 1892, avait épousé une CARPENTIER de Trouvans —
+            il était beau-frère de l'<i>époux</i>.</p>
+        </div>
+                <div class="note-marge">
+          <h5>Question refermée</h5>
+          <p>Le pharmacien de la tradition orale : c'était Carpentier, recensé sous le même
+            toit à Serrigny.</p>
+        </div>
+                <div class="note-marge doute">
+          <h5>Reste ouvert</h5>
+          <p>Clotilde Hortense, née en 1839, sœur aînée de Théolinde, n'apparaît dans
+            <b>aucune</b> des cinq listes de recensement ni dans aucune table de décès.</p>
+        </div>
+                <div class="note-marge doute">
+          <h5>Recherche négative</h5>
+          <p>À Gray, les tables ont livré <b>quatre maisons GRILLOT distinctes</b> dont une
+            seule est la nôtre. Deux homonymes tombent.</p>
+        </div>
+      </div>
+    </section>
+
+    <nav class="sous-nav" id="sousNav" role="tablist" aria-label="État des pistes">
+      <button role="tab" aria-selected="true" aria-controls="v-cours" class="on" data-vue="v-cours">En cours <span class="compte">7</span></button>
+      <button role="tab" aria-selected="false" tabindex="-1" aria-controls="v-close" data-vue="v-close">Résolues <span class="compte">5</span></button>
+      <button role="tab" aria-selected="false" tabindex="-1" aria-controls="v-neg" data-vue="v-neg">Recherches négatives <span class="compte">4</span></button>
+      <button role="tab" aria-selected="false" tabindex="-1" aria-controls="v-ecarte" data-vue="v-ecarte">Pistes écartées <span class="compte">2</span></button>
+    </nav>
+
+    <!-- ---- EN COURS ---- -->
+    <div class="vue-rech on" id="v-cours" role="tabpanel">
+      <article class="piste haute">
+        <div class="piste-tete">
+          <h4>Le jugement du tribunal de <span class="ph">Beaune</span>, 14 mai 1897</h4>
+          <span class="prio haute">Priorité haute</span>
+        </div>
+        <p class="cote ph">Archives départementales · série U · cote à identifier</p>
+        <dl>
+          <dt>Ce qu'on cherche</dt>
+          <dd>Le jugement qui annule la reconnaissance de <b><span class="ph">1892</span></b>.</dd>
+          <dt>Ce qu'il dirait</dt>
+          <dd>Qui a saisi le tribunal, sur quel motif, et si une paternité de remplacement a été
+            évoquée. <b>C'est la seule pièce qui puisse trancher.</b></dd>
+          <dt>Où chercher</dt>
+          <dd class="ph">Répertoire des jugements civils du tribunal, année 1897, puis minutes.
+            Vérifier d'abord si la série est communicable.</dd>
+          <dt>Dernier point</dt>
+          <dd class="ph">30 août 2026 — inventaire en ligne consulté, cote non encore identifiée.</dd>
+        </dl>
+      </article>
+
+      <article class="piste haute">
+        <div class="piste-tete">
+          <h4 class="ph">Les décès de deux ascendants entre 1846 et 1865</h4>
+          <span class="prio haute">Priorité haute</span>
+        </div>
+        <p class="cote ph">Archives départementales · état civil · tables décennales 1843-1872</p>
+        <dl>
+          <dt>Ce qu'on cherche</dt>
+          <dd class="ph">Deux actes de décès, dans une fourchette de vingt ans, commune non certaine.</dd>
+          <dt>Ce qu'ils diraient</dt>
+          <dd class="ph">Ce sont les <b>seuls actes qui nommeraient la génération d'avant</b>.</dd>
+          <dt>Où chercher</dt>
+          <dd class="ph">Tables décennales des trois communes voisines, puis registres année par année.</dd>
+          <dt>Dernier point</dt>
+          <dd class="ph">Deux communes dépouillées sur trois.</dd>
+        </dl>
+      </article>
+
+      <article class="piste">
+        <div class="piste-tete">
+          <h4 class="ph">Un mariage cherché par la carrière du père plutôt que par la commune</h4>
+          <span class="prio moyenne">Priorité moyenne</span>
+        </div>
+        <p class="cote ph">Archives nationales · dossiers de personnel de l'instruction publique</p>
+        <dl>
+          <dt>Ce qu'on cherche</dt>
+          <dd class="ph">Le lieu du premier mariage, inconnu.</dd>
+          <dt>Piste retenue</dt>
+          <dd class="ph">Le père était professeur : son dossier de carrière donnerait ses affectations
+            successives, donc les villes où le mariage a pu être célébré.</dd>
+          <dt>Dernier point</dt>
+          <dd class="ph">Demande de communication à formuler.</dd>
+        </dl>
+      </article>
+
+      <article class="piste basse">
+        <div class="piste-tete">
+          <h4 class="ph">Le sort d'une fille née en 1839, absente de toutes les listes</h4>
+          <span class="prio basse">Priorité basse</span>
+        </div>
+        <p class="cote ph">Recensements · tables de décès</p>
+        <dl>
+          <dt>Ce qu'on cherche</dt>
+          <dd class="ph">Une trace, n'importe laquelle, après l'acte de naissance.</dd>
+          <dt>Difficulté</dt>
+          <dd class="ph">Absente des cinq recensements conservés et de toutes les tables de décès de
+            la commune. Départ probable, mariage ailleurs, ou décès hors commune.</dd>
+          <dt>Dernier point</dt>
+          <dd class="ph">En attente — reprendre par les communes limitrophes.</dd>
+        </dl>
+      </article>
+    </div>
+
+    <!-- ---- RÉSOLUES ---- -->
+    <div class="vue-rech" id="v-close" role="tabpanel" hidden>
+      <article class="piste close">
+        <div class="piste-tete">
+          <h4 class="ph">La fratrie supposée d'une aïeule</h4>
+          <span class="sceau">Résolu · <span class="ph">15<sup>e</sup> séance</span></span>
+        </div>
+        <p class="cote ph">Acte de mariage de 1892 · recensements de 1886 et 1891</p>
+        <dl>
+          <dt>La question</dt>
+          <dd class="ph">Un témoin est dit « beau-frère de l'épouse » : elle avait donc une sœur.</dd>
+          <dt>Ce qui a servi</dt>
+          <dd class="ph">Le mariage du témoin lui-même, retrouvé dans une commune voisine.</dd>
+        </dl>
+        <p class="reponse ph"><span class="quoi">Réponse</span>
+          <b>Elle était fille unique.</b> Le témoin avait épousé une homonyme d'un autre village :
+          il était beau-frère de l'<i>époux</i>, et la mention de l'acte est une erreur de rédaction.</p>
+      </article>
+
+      <article class="piste close">
+        <div class="piste-tete">
+          <h4 class="ph">Le « pharmacien » de la tradition orale</h4>
+          <span class="sceau">Résolu · <span class="ph">14<sup>e</sup> séance</span></span>
+        </div>
+        <p class="cote ph">Recensement de 1891 · liste nominative</p>
+        <dl>
+          <dt>La question</dt>
+          <dd class="ph">La famille parlait d'un pharmacien sans jamais le nommer.</dd>
+          <dt>Ce qui a servi</dt>
+          <dd class="ph">La liste nominative, lue ménage par ménage plutôt que par le seul patronyme.</dd>
+        </dl>
+        <p class="reponse ph"><span class="quoi">Réponse</span>
+          C'était l'homme déjà connu du dossier sous un autre rôle, <b>recensé sous le même toit</b>.
+          La tradition orale disait vrai, mais avait perdu le nom.</p>
+      </article>
+
+      <article class="piste close">
+        <div class="piste-tete">
+          <h4 class="ph">Le lieu de naissance d'un aïeul, introuvable dans sa ville</h4>
+          <span class="sceau">Résolu · <span class="ph">16<sup>e</sup> séance</span></span>
+        </div>
+        <p class="cote ph">Acte de décès de 1890</p>
+        <dl>
+          <dt>La question</dt>
+          <dd class="ph">Un siècle d'absence dans les tables de la ville où on le croyait né.</dd>
+        </dl>
+        <p class="reponse ph"><span class="quoi">Réponse</span>
+          <b>Il était né dans une autre commune</b>, à douze kilomètres. L'acte de décès le dit
+          en toutes lettres et nomme enfin ses parents — <b>neuf personnes entrent dans l'arbre</b>.</p>
+      </article>
+    </div>
+
+    <!-- ---- RECHERCHES NÉGATIVES ---- -->
+    <div class="vue-rech" id="v-neg" role="tabpanel" hidden>
+      <article class="piste negatif" style="border-left-color:var(--filet-fort)">
+        <div class="piste-tete">
+          <h4 class="ph">Tables décennales 1853-1872 d'une commune voisine</h4>
+          <span class="sceau negatif">Dépouillé · rien</span>
+        </div>
+        <p class="cote ph">Vingt années lues intégralement · 30 août 2026</p>
+        <p class="reponse ph"><span class="quoi">Conclusion</span>
+          Aucune occurrence du patronyme sur vingt ans. <b>La famille n'a pas transité par cette
+          commune</b> : la piste peut être fermée, elle n'a pas à être reprise.</p>
+      </article>
+
+      <article class="piste negatif" style="border-left-color:var(--filet-fort)">
+        <div class="piste-tete">
+          <h4 class="ph">Registres paroissiaux antérieurs à 1781</h4>
+          <span class="sceau negatif">Lacune de fonds</span>
+        </div>
+        <p class="cote ph">Série communale · consulté en ligne</p>
+        <p class="reponse ph"><span class="quoi">Conclusion</span>
+          Les registres sont <b>manquants pour la période</b>. Ce n'est pas une recherche à refaire :
+          seule une source de substitution (minutes notariales, rôles d'imposition) pourrait avancer.</p>
+      </article>
+
+      <article class="piste negatif" style="border-left-color:var(--filet-fort)">
+        <div class="piste-tete">
+          <h4 class="ph">Quatre maisons homonymes dans la même ville</h4>
+          <span class="sceau negatif">Tri fait</span>
+        </div>
+        <p class="cote ph">Tables décennales, quatre décennies</p>
+        <p class="reponse ph"><span class="quoi">Conclusion</span>
+          Sur quatre foyers portant le même nom, <b>un seul est le nôtre</b>. Les trois autres sont
+          documentés ici pour éviter qu'une future séance ne les reprenne par erreur.</p>
+      </article>
+    </div>
+
+    <!-- ---- PISTES ÉCARTÉES ---- -->
+    <div class="vue-rech" id="v-ecarte" role="tabpanel" hidden>
+      <article class="piste ecarte" style="border-left-color:var(--grenat-clair)">
+        <div class="piste-tete">
+          <h4 class="ph">L'hypothèse d'un rattachement par un homonyme de la même génération</h4>
+          <span class="sceau ecarte">Écartée</span>
+        </div>
+        <p class="cote ph">Formulée à la 12<sup>e</sup> séance, écartée à la 16<sup>e</sup></p>
+        <p class="reponse ph"><span class="quoi">Pourquoi</span>
+          Les deux hommes sont <b>vivants au même moment dans deux communes différentes</b>, ce
+          qu'établissent deux recensements simultanés. La confusion venait d'un prénom identique
+          porté dans deux familles voisines.</p>
+      </article>
+
+      <article class="piste ecarte" style="border-left-color:var(--grenat-clair)">
+        <div class="piste-tete">
+          <h4 class="ph">Une ascendance noble suggérée par la tradition familiale</h4>
+          <span class="sceau ecarte">Écartée</span>
+        </div>
+        <p class="cote ph">Aucune pièce à l'appui</p>
+        <p class="reponse ph"><span class="quoi">Pourquoi</span>
+          Aucun acte du dossier ne porte de particule ni de qualité. <b>Tous les métiers relevés sur
+          cinq générations sont ruraux ou artisanaux.</b> On la note ici pour mémoire, sans suite.</p>
+      </article>
+    </div>
+
+    <div style="height:60px"></div>
+  </div>
+</div>
+
+
+<!-- ============================================================
+     PANNEAU 5 — TRANSCRIPTIONS
+     ============================================================ -->
+<div class="panneau" id="p-transcriptions" role="tabpanel" aria-labelledby="t-transcriptions" hidden>
+  <div class="wrap">
+    <div class="tete-panneau">
+      <h2>Les transcriptions</h2>
+      <p>Quatre-vingt-six actes en main, tous transcrits. La transcription garde l'orthographe et
+        la ponctuation de l'original ; ce qui est illisible est signalé en rouge.</p>
+    </div>
+
+    <div class="tr-grille">
+      <!-- liste -->
+      <aside class="tr-liste">
+        <div class="tr-filtre">
+          <input type="search" id="qActes" placeholder="Nom, commune, année…" aria-label="Filtrer les actes">
+        </div>
+        <ul>
+          <li><button class="on" type="button"><span class="sq p-m"></span>
+            <span class="ti ph">Mariage — commune, 1836<span class="an">Acte n° 4 · 12 février 1836</span></span></button></li>
+          <li><button type="button"><span class="sq p-n"></span>
+            <span class="ti ph">Naissance — commune, 1840<span class="an">Acte n° 17 · 3 mai 1840</span></span></button></li>
+          <li><button type="button"><span class="sq p-d"></span>
+            <span class="ti ph">Décès — commune, 1890<span class="an">Acte n° 31 · 9 novembre 1890</span></span></button></li>
+          <li><button type="button"><span class="sq p-m"></span>
+            <span class="ti ph">Mariage — commune, 1866<span class="an">Acte n° 8 · 24 avril 1866</span></span></button></li>
+          <li><button type="button"><span class="sq p-n"></span>
+            <span class="ti ph">Naissance — ville, 1889<span class="an">Acte n° 2 041 · 1<sup>er</sup> octobre 1889</span></span></button></li>
+          <li><button type="button"><span class="sq p-d"></span>
+            <span class="ti ph">Décès — commune, 1825<span class="an">Acte n° 6 · 18 janvier 1825</span></span></button></li>
+          <li><button type="button"><span class="sq p-x"></span>
+            <span class="ti ph">Recensement — commune, 1876<span class="an">Liste nominative · ménage 42</span></span></button></li>
+        </ul>
+      </aside>
+
+      <!-- acte affiché -->
+      <div class="acte">
+        <div class="acte-tete">
+          <p class="quoi">Acte de mariage</p>
+          <h3 class="ph">Prénom NOM &amp; Prénom NOM — commune, 12 février 1836</h3>
+          <p class="ref">
+            <span class="ph">Archives départementales · 5 Mi 123/4</span>
+            <span class="ph">Vue 87/214</span>
+            <span class="ph">Transcrit le 30 août 2026</span>
+          </p>
+        </div>
+
+        <div class="acte-corps">
+          <div>
+            <div class="texte-acte">
+              <p><span class="lettrine">L</span><span class="ph">'an mil huit cent trente-six, le douze
+                février, à dix heures du matin, par-devant nous, maire et officier de l'état civil de la
+                commune de …, canton de …, département de …, sont comparus le sieur …, âgé de … ans,
+                cultivateur, domicilié en cette commune, né à … le …, fils majeur de … et de …,
+                ses père et mère, présents et consentants ;</span></p>
+              <p class="ph">Et demoiselle …, âgée de … ans, sans profession, domiciliée en cette
+                commune, née à … le …, fille mineure de feu … , décédé en cette commune le …, et de
+                …, présente et consentante ;</p>
+              <p class="ph">Lesquels nous ont requis de procéder à la célébration du mariage projeté
+                entre eux, et dont les publications ont été faites devant la porte de notre maison
+                commune les dimanches … et …, sans qu'il nous ait été signifié d'opposition
+                <span class="incertain">[deux mots illisibles, pliure]</span>.</p>
+              <p class="ph">En présence de …, âgé de … ans, <span class="incertain">[profession
+                douteuse : « mareschal » ou « marchand »]</span>, ami des époux ; de …, âgé de … ans,
+                oncle maternel de l'épouse ; … Lecture faite, les époux et les témoins ont signé avec
+                nous, à l'exception de l'épouse qui a déclaré ne le savoir faire.</p>
+            </div>
+
+            <div class="apprend">
+              <h5>Ce que cet acte apprend</h5>
+              <ul>
+                <li class="ph">Le lieu et la date de naissance de l'épouse, jusqu'ici inconnus.</li>
+                <li class="ph">Le décès du père de l'épouse <b>avant février 1836</b> — nouvelle borne
+                  pour une recherche d'acte de décès.</li>
+                <li class="ph">Un oncle maternel nommé, qui ouvre une branche collatérale entière.</li>
+                <li class="ph">L'épouse ne sait pas signer, l'époux si : un écart d'alphabétisation
+                  qu'on retrouve sur trois générations.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="vue-acte">Vue de l'acte<br>placeholder</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="height:60px"></div>
+  </div>
+</div>
+
+
+</main>
+
+<!-- ============ PIED ============ -->
+<footer>
+  <div class="wrap">
+    <div class="pied-grille">
+      <div class="marque" style="display:block">
+        <p style="font-family:var(--display);font-size:19px;margin:0">Arbre généalogique</p>
+        <p style="font-family:var(--sans);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--laiton-clair);margin:6px 0 0">Explorer · Comprendre · Transmettre</p>
+      </div>
+      <div>
+        <h5>Le dossier</h5>
+        <ul><li>L'arbre complet</li><li>La frise</li><li>Les transcriptions</li></ul>
+      </div>
+      <div>
+        <h5>Les recherches</h5>
+        <ul><li>Pistes en cours</li><li>Recherches négatives</li><li>Pistes écartées</li></ul>
+      </div>
+      <div>
+        <h5>Sources</h5>
+        <ul><li>Archives de la Haute-Saône</li><li>Archives du Jura</li><li>Archives de la Côte-d'Or</li></ul>
+      </div>
+    </div>
+    <p class="legal">Document de travail — dix-septième séance, 30 août 2026 · Usage familial
+      <button type="button" id="basculePh" aria-pressed="false">Masquer les emplacements</button></p>
+  </div>
+</footer>
+
+</div><!-- /shell -->
+
+<!-- ============ TIROIR : FICHE PERSONNE ============ -->
+<div class="voile" id="voile"></div>
+
+<aside class="tiroir" id="tiroir" role="dialog" aria-modal="true" aria-labelledby="tiroirNom">
+  <div class="tiroir-tete">
+    <button class="fermer" id="fermer" aria-label="Fermer la fiche">×</button>
+    <p class="gen">Génération V</p>
+    <h2 id="tiroirNom">Yvonne <b>CARPENTIER</b></h2>
+    <p class="dates">1889 — <span class="ph">?</span></p>
+    <p class="lien">Pour <span class="ph">Marie FONTANA</span> : <b>arrière-grand-mère</b></p>
+  </div>
+
+  <nav class="tiroir-nav">
+    <a href="#s-chrono" class="actif">Chronologie</a>
+    <a href="#s-fil">Filiations</a>
+    <a href="#s-notes">À vérifier</a>
+    <a href="#s-dossier">Dossier</a>
+    <a href="#s-parente">Parenté</a>
+  </nav>
+
+  <div class="tiroir-corps" id="tiroirCorps">
+
+    <section class="dsec" id="s-chrono">
+      <h3>Chronologie</h3>
+      <ul class="chrono">
+        <li><span class="pastille p-n"></span>
+          <span><span class="quoi">Naissance</span>
+            <span class="txt">1<sup>er</sup> octobre 1889, <b>Lyon</b> — <em>déclarée fille naturelle,
+              mère non dénommée à l'acte.</em></span></span></li>
+        <li><span class="pastille p-m"></span>
+          <span><span class="quoi">Reconnaissance</span>
+            <span class="txt"><span class="ph">12 avril</span> 1892, <b>Serrigny</b> — reconnue par
+              Victor Jean-Baptiste CARPENTIER lors de son mariage.</span></span></li>
+        <li><span class="pastille p-x"></span>
+          <span><span class="quoi">Jugement · acte non retrouvé</span>
+            <span class="txt">14 mai 1897, <b>Beaune</b> — <em>la reconnaissance est annulée par le
+              tribunal. Le jugement lui-même n'est pas en main.</em></span></span></li>
+        <li><span class="pastille p-x"></span>
+          <span><span class="quoi">Adoption · acte non retrouvé</span>
+            <span class="txt"><span class="ph">1905-1906</span> — adoptée par sa grand-mère
+              Théolinde PAUFARD.</span></span></li>
+        <li><span class="pastille p-m"></span>
+          <span><span class="quoi">Mariage</span>
+            <span class="txt">1906, <b><span class="ph">Fahy-lès-Autrey</span></b> — avec
+              <span class="ph">Émile VILLETTE</span>.</span></span></li>
+        <li><span class="pastille p-x"></span>
+          <span><span class="quoi">Décès · non renseigné</span>
+            <span class="txt"><em>Date et lieu à établir.</em></span></span></li>
+      </ul>
+    </section>
+
+    <section class="dsec" id="s-fil">
+      <h3>Ses filiations, dans l'ordre</h3>
+      <ul class="filiations">
+        <li><span class="t">Filiation d'origine · 1889 — 1892</span>
+          <span class="b"><b>Aucun père nommé.</b> Née fille naturelle ; l'acte de naissance
+            ne désigne ni père ni mère.</span></li>
+        <li class="doute"><span class="t">Reconnaissance · 1892 — 1897</span>
+          <span class="b"><b>Victor Jean-Baptiste CARPENTIER.</b> Reconnue au mariage, puis
+            l'acte est annulé cinq ans plus tard — la paternité biologique n'est établie
+            par aucune pièce.</span></li>
+        <li><span class="t">Adoption · à partir de <span class="ph">1906</span></span>
+          <span class="b"><b>Théolinde PAUFARD.</b> Sa propre grand-mère maternelle.
+            <span class="quoi"> — voir la fiche</span></span></li>
+      </ul>
+    </section>
+
+    <section class="dsec" id="s-notes">
+      <h3>À savoir, à vérifier</h3>
+      <ul class="dnotes">
+        <li class="doute">Une tradition familiale attribue la paternité à un <b>palefrenier du
+          village</b>. Aucune pièce ne l'appuie ni ne la contredit.</li>
+        <li>Carpentier était <b>veuf de Julie-Lucie GÉNIN</b>, morte le 25 juin 1889 :
+          Yvonne a donc été conçue du vivant de la première épouse. C'est l'explication la
+          plus économique du mariage de 1892, mais elle reste une hypothèse.</li>
+      </ul>
+    </section>
+
+    <section class="dsec" id="s-dossier">
+      <h3>Son dossier</h3>
+      <ul class="actes">
+        <li><button type="button"><span class="sq p-n"></span>
+          <span class="lb">Acte de naissance — Lyon<span class="role">1<sup>er</sup> octobre 1889</span></span>
+          <span class="go">Lire l'acte →</span></button></li>
+        <li><button type="button"><span class="sq p-m"></span>
+          <span class="lb">Mariage CARPENTIER × <span class="ph">MOREL</span> — Serrigny<span class="role">1892 · reconnaissance</span></span>
+          <span class="go">Lire l'acte →</span></button></li>
+        <li class="manquant"><button type="button" disabled><span class="sq p-x"></span>
+          <span class="lb">Jugement du tribunal de Beaune<span class="role">14 mai 1897 · non retrouvé</span></span></button></li>
+        <li class="manquant"><button type="button" disabled><span class="sq p-x"></span>
+          <span class="lb">Arrêt d'adoption<span class="role"><span class="ph">1905-1906</span> · non retrouvé</span></span></button></li>
+      </ul>
+    </section>
+
+    <section class="dsec" id="s-parente">
+      <h3>Parenté</h3>
+      <ul class="parente">
+        <li><span class="role">Mère</span>
+          <span><a>Marie PAUFARD</a> <span class="quoi">— arrière-arrière-grand-mère</span></span></li>
+        <li><span class="role">Père</span>
+          <span><i style="color:var(--encre-3)">aucun établi ; deux filiations successives annulées</i></span></li>
+        <li><span class="role">Adoptante</span>
+          <span><a>Théolinde PAUFARD</a> <span class="quoi">— trisaïeule</span></span></li>
+        <li><span class="role">Fratrie</span>
+          <span><i style="color:var(--encre-3)">aucune — <span class="ph">à confirmer par le recensement de 1896</span></i></span></li>
+        <li><span class="role">Époux</span>
+          <span><a class="ph">Émile VILLETTE</a></span></li>
+        <li><span class="role">Enfants</span>
+          <span><a class="ph">Germaine</a>, <a class="ph">Raymond</a></span></li>
+      </ul>
+    </section>
+
+  </div>
+</aside>
+
+<script>
+/* ----------------------------------------------------------------
+   Comportements du prototype. Même périmètre qu'avant — onglets,
+   tiroir, sous-navigation, liste des actes — plus le clavier, la
+   gestion du focus, le filtre du champ de recherche et la bascule
+   des emplacements.
+   ---------------------------------------------------------------- */
+(function(){
+  'use strict';
+  var $  = function(s,c){ return (c||document).querySelector(s); };
+  var $$ = function(s,c){ return Array.prototype.slice.call((c||document).querySelectorAll(s)); };
+
+  /* ---- onglets : sélection, flèches, Début / Fin ---- */
+  function grouper(onglets, montrer){
+    function activer(bouton, focus){
+      onglets.forEach(function(o){
+        var actif = o === bouton;
+        o.setAttribute('aria-selected', actif);
+        o.tabIndex = actif ? 0 : -1;
+        montrer(o, actif);
+      });
+      if (focus) bouton.focus();
+    }
+    onglets.forEach(function(o, i){
+      o.addEventListener('click', function(){ activer(o, false); });
+      o.addEventListener('keydown', function(e){
+        var d = {ArrowRight:1, ArrowLeft:-1, Home:'d', End:'f'}[e.key];
+        if (d === undefined) return;
+        e.preventDefault();
+        var j = d === 'd' ? 0 : d === 'f' ? onglets.length - 1
+                                          : (i + d + onglets.length) % onglets.length;
+        activer(onglets[j], true);
+      });
+    });
+  }
+
+  grouper($$('.onglets button'), function(onglet, actif){
+    var panneau = document.getElementById(onglet.getAttribute('aria-controls'));
+    if (!panneau) return;
+    panneau.classList.toggle('is-active', actif);
+    panneau.hidden = !actif;
+    if (actif) requestAnimationFrame(function(){
+      window.scrollTo({ top:0, behavior:'auto' }); filtrer();
+    });
+  });
+
+  grouper($$('#sousNav button'), function(onglet, actif){
+    var vue = document.getElementById(onglet.dataset.vue);
+    if (!vue) return;
+    onglet.classList.toggle('on', actif);
+    vue.classList.toggle('on', actif);
+    vue.hidden = !actif;
+  });
+
+  /* ---- tiroir : ouverture, fermeture, focus retenu puis rendu ---- */
+  var tiroir = $('#tiroir'), corps = $('#tiroirCorps'), declencheur = null;
+  var FOCUSABLES = 'a[href],button:not([disabled]),input,select,[tabindex]:not([tabindex="-1"])';
+
+  function ouvrir(e){
+    declencheur = e.currentTarget;
+    document.body.classList.add('tiroir-ouvert');
+    corps.scrollTop = 0;
+    var premier = $(FOCUSABLES, tiroir);
+    if (premier) premier.focus();
+  }
+  function fermer(){
+    if (!document.body.classList.contains('tiroir-ouvert')) return;
+    document.body.classList.remove('tiroir-ouvert');
+    if (declencheur){ declencheur.focus(); declencheur = null; }
+  }
+  $$('[data-fiche]').forEach(function(b){ b.addEventListener('click', ouvrir); });
+  $('#fermer').addEventListener('click', fermer);
+  $('#voile').addEventListener('click', fermer);
+
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape') return fermer();
+    if (e.key !== 'Tab' || !document.body.classList.contains('tiroir-ouvert')) return;
+    var l = $$(FOCUSABLES, tiroir).filter(function(x){ return x.offsetParent !== null; });
+    if (!l.length) return;
+    var premier = l[0], dernier = l[l.length - 1];
+    if (e.shiftKey && document.activeElement === premier){ e.preventDefault(); dernier.focus(); }
+    else if (!e.shiftKey && document.activeElement === dernier){ e.preventDefault(); premier.focus(); }
+  });
+
+  /* ---- navigation interne du tiroir ---- */
+  var liens = $$('.tiroir-nav a');
+  liens.forEach(function(a){
+    a.addEventListener('click', function(e){
+      e.preventDefault();
+      var cible = $(a.getAttribute('href'));
+      corps.scrollTo({ top: cible.offsetTop - corps.offsetTop - 8, behavior:'smooth' });
+    });
+  });
+  corps.addEventListener('scroll', function(){
+    var y = corps.scrollTop + 40, actif = liens[0];
+    liens.forEach(function(a){
+      var sec = $(a.getAttribute('href'));
+      if (sec && sec.offsetTop - corps.offsetTop <= y) actif = a;
+    });
+    liens.forEach(function(a){ a.classList.toggle('actif', a === actif); });
+  });
+
+  /* ---- liste des transcriptions : sélection et filtre ---- */
+  var actes = $$('.tr-liste button');
+  actes.forEach(function(b){
+    b.addEventListener('click', function(){
+      actes.forEach(function(x){ x.classList.remove('on'); });
+      b.classList.add('on');
+    });
+  });
+  var qActes = $('#qActes');
+  if (qActes) qActes.addEventListener('input', function(){
+    var t = qActes.value.trim().toLowerCase();
+    $$('.tr-liste li').forEach(function(li){
+      li.classList.toggle('hors-jeu', t !== '' && li.textContent.toLowerCase().indexOf(t) === -1);
+    });
+  });
+
+  /* ---- recherche générale : filtre le panneau ouvert ---- */
+  var q = $('#q'), decompte = $('#qCompte');
+  var CIBLES = '.branche, .pistes > li, .piste, .tr-liste li, .fiche, .note-marge';
+
+  function filtrer(){
+    var t = (q.value || '').trim().toLowerCase();
+    var panneau = $('.panneau.is-active');
+    $$(CIBLES).forEach(function(x){ x.classList.remove('hors-jeu'); });
+    if (!t || !panneau){ decompte.textContent = ''; return; }
+    var items = $$(CIBLES, panneau), trouves = 0;
+    items.forEach(function(x){
+      var ok = x.textContent.toLowerCase().indexOf(t) !== -1;
+      x.classList.toggle('hors-jeu', !ok);
+      if (ok) trouves++;
+    });
+    decompte.textContent = !items.length ? 'rien à filtrer ici'
+      : trouves + (trouves > 1 ? ' résultats' : ' résultat');
+  }
+  q.addEventListener('input', filtrer);
+  q.addEventListener('keydown', function(e){ if (e.key === 'Escape'){ q.value = ''; filtrer(); } });
+
+  /* ---- fiches de l'arbre au clavier ---- */
+  $$('.fiche').forEach(function(f){
+    f.addEventListener('keydown', function(e){
+      if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); f.click(); }
+    });
+  });
+
+  /* ---- bascule des emplacements à remplir ---- */
+  var bascule = $('#basculePh');
+  bascule.addEventListener('click', function(){
+    var masque = document.body.classList.toggle('sans-ph');
+    bascule.setAttribute('aria-pressed', masque);
+    bascule.textContent = masque ? 'Afficher les emplacements' : 'Masquer les emplacements';
+  });
+})();
+</script>
+</body>
+</html>
